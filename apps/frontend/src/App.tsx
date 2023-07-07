@@ -1,20 +1,20 @@
 import { useEffect, useState } from 'react';
 import './App.css';
-import SignUpForm from './components/SignUpForm/SignUpForm';
+import LoginContainer from './containers/LoginContainer/LoginContainer';
 
 function App() {
-  const [text, setText] = useState('');
+  // const [text, setText] = useState('');
 
-  useEffect(() => {
-    fetch('/api')
-      .then((res) => res.text())
-      .then(setText);
-  }, []);
+  // useEffect(() => {
+  //   fetch('/api')
+  //     .then((res) => res.text())
+  //     .then(setText);
+  // }, []);
 
   return (
     <>
-      <SignUpForm />
-      {text}
+      <LoginContainer />
+  
     </>
   );
 }

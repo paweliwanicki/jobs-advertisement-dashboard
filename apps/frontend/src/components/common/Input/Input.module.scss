@@ -1,12 +1,54 @@
+@import "../../../default.scss";
+
 .inputLabel {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
   gap: 5px;
+  width: 100%;
 
-  .error {
-    color: #ff0000;
-    font-size: 12px;
+  .inputBox {
+    position: relative;
+    width: 100%;
+    display: inline-flex;
+    &.error {
+      outline: $error solid 1px;
+    }
+    > input {
+      &.withIcon {
+        padding-left: 72px;
+      }
+
+      padding-left: 20px;
+      height: 80px;
+      color: $very-dark-blue;
+      background-color: $white;
+      border: none;
+      flex-grow: 1;
+
+      &::placeholder {
+        opacity: 0.5;
+      }
+    }
+    > img {
+      width: 24px;
+      height: 24px;
+      position: absolute;
+      top: 28px;
+      left: 32px;
+    }
   }
+  .validationInfo {
+    font-size: 12px;
+    margin-block-start: 0;
+    background-color: $dark-grey;
+  }
+}
+.error {
+  color: $error;
+}
+
+.valid {
+  color: $valid;
 }
