@@ -1,31 +1,62 @@
-@import "../../../default.scss";
+@import '../../../styles/default.scss';
 
 .inputLabel {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
-  gap: 5px;
   width: 100%;
+  margin-bottom: 10px;
+
+  > p {
+    margin-bottom: 3px;
+  }
 
   .inputBox {
     position: relative;
     width: 100%;
     display: inline-flex;
+    border-radius: 6px;
+
     &.error {
-      outline: $error solid 1px;
+      outline: 1px solid $error;
+      -webkit-box-shadow: 0px 0px 10px 0px $error;
+      -moz-box-shadow: 0px 0px 10px 0px $error;
+      box-shadow: 0px 0px 10px 0px $error;
     }
+
+    &.valid {
+      outline: 1px solid $valid;
+      -webkit-box-shadow: 0px 0px 15px 0px $valid;
+      -moz-box-shadow: 0px 0px 15px 0px $valid;
+      box-shadow: 0px 0px 15px 0px $valid;
+    }
+
     > input {
       &.withIcon {
         padding-left: 72px;
       }
 
       padding-left: 20px;
-      height: 80px;
+      padding-right: 40px;
+
+      &.small {
+        height: 40px;
+      }
+      &.medium {
+        height: 60px;
+      }
+      &.large {
+        height: 80px;
+      }
+
       color: $very-dark-blue;
       background-color: $white;
       border: none;
+      outline: none;
       flex-grow: 1;
+      border-radius: inherit;
+      flex-shrink: 0;
 
       &::placeholder {
         opacity: 0.5;
@@ -34,15 +65,35 @@
     > img {
       width: 24px;
       height: 24px;
+      margin-left: 32px;
+      align-self: center;
       position: absolute;
-      top: 28px;
-      left: 32px;
+    }
+
+    .validationIcon {
+      right: 15px;
     }
   }
   .validationInfo {
     font-size: 12px;
     margin-block-start: 0;
-    background-color: $dark-grey;
+    background-color: $white;
+    padding: 2px 5px;
+    font-weight: 700;
+    margin-left: 6px;
+    border-bottom-right-radius: 6px;
+    border-bottom-left-radius: 6px;
+    z-index: 1;
+    font-family: $font-family-bold;
+    min-height: 25px;
+
+    &.error {
+      border-top: 2px solid $error;
+    }
+
+    &.valid {
+      border-top: 2px solid $valid;
+    }
   }
 }
 .error {

@@ -1,0 +1,37 @@
+@import '../../../styles/default.scss';
+.button {
+  transition: background-color 0.5s;
+  border-radius: 5px;
+  outline: none;
+  border: none;
+  font-family: $font-family-bold;
+  font-size: 16px;
+
+  &:active {
+    outline: none;
+    border: none;
+  }
+
+  &:focus-visible,
+  &:focus {
+    outline: none;
+  }
+
+  &.primary {
+    background-color: $violet;
+    color: $white;
+
+    &:hover {
+      background-color: $light-violet;
+    }
+  }
+
+  &.secondary {
+    background-color: #eff0fc;
+    color: $violet;
+
+    &:hover {
+      background-color: #c5c9f4;
+    }
+  }
+}

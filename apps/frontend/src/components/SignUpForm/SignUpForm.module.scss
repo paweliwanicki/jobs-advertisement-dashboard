@@ -1,12 +1,11 @@
 .signUpForm {
   display: flex;
   flex-direction: column;
-  gap: 15px;
   align-items: center;
-  justify-content: space-between;
-  
   padding-block-start: 15px;
-  
+  margin-bottom: 15px;
 
-
+  > button {
+    align-self: flex-end;
+  }
 }
