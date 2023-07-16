@@ -1,0 +1,34 @@
+@import '../../../styles/default.scss';
+
+.overlay {
+  background-color: #00000090;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  position: fixed;
+  .modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    right: auto;
+    bottom: auto;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    background-color: $light-grey;
+    color: black;
+    width: 600px;
+    height: 50%;
+    position: relative;
+    padding: 25px;
+    border-radius: 6px;
+
+    .closeIcon {
+      width: 32px;
+      cursor: pointer;
+      position: absolute;
+      right: 5px;
+      top: 5px;
+    }
+  }
+}

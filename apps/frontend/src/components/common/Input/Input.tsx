@@ -2,6 +2,7 @@ import classes from './Input.module.scss';
 import { ReactNode } from 'react';
 import validIcon from '../../../assets/icons/valid.svg';
 import errorIcon from '../../../assets/icons/error.svg';
+import { Tooltip } from 'react-tooltip';
 
 type InputTypes = 'text' | 'number' | 'password' | 'email';
 
@@ -10,7 +11,7 @@ type InputSize = 'small' | 'medium' | 'large';
 type InputProps = {
   id: string;
   type: InputTypes;
-  labelText: string;
+  label: ReactNode;
   size?: InputSize;
   hasError?: boolean;
   icon?: ReactNode;
@@ -24,7 +25,7 @@ type InputProps = {
 const Input = ({
   id,
   icon,
-  labelText,
+  label,
   errorText,
   validText,
   hasError,
@@ -43,8 +44,7 @@ const Input = ({
 
   return (
     <label className={classes.inputLabel}>
-      <p>{labelText}</p>
-
+      <div className={classes.labelText}>{label}</div>
       <div className={inputBoxClassNames}>
         {icon}
         <input
@@ -58,22 +58,23 @@ const Input = ({
           }
         />
         {showValidationInfo && (
-          <img
-            className={classes.validationIcon}
-            src={hasError ? errorIcon : validIcon}
-            alt="validation"
-          />
+          <>
+            <img
+              className={classes.validationIcon}
+              src={hasError ? errorIcon : validIcon}
+              alt="validation"
+              id={`validation-icon-${id}`}
+            />
+            <Tooltip
+              anchorSelect={`#validation-icon-${id}`}
+              place="bottom-end"
+              variant={hasError ? 'error' : 'success'}
+              content={hasError ? errorText : validText}
+              className={classes.tooltipError}
+            />
+          </>
         )}
       </div>
-      {showValidationInfo && (
-        <p
-          className={`${classes.validationInfo} ${
-            !hasError ? classes.valid : classes.error
-          }`}
-        >
-          {hasError ? errorText : validText}
-        </p>
-      )}
     </label>
   );
 };

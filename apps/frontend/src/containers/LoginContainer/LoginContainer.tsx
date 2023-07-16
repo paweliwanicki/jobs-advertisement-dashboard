@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import SignUpForm from '../../components/SignUpForm/SignUpForm';
 import classes from './LoginContainer.module.scss';
-import logoImage from '../../assets/logos/logo.png';
 
 type Form = 'SIGN_UP' | 'SIGN_IN';
 
@@ -21,7 +20,6 @@ const LoginContainer = () => {
 
   return (
     <div className={classes.loginContainer}>
-      <img className={classes.logo} src={logoImage} alt="website logo" />
       {activeForm === 'SIGN_UP' ? <SignUpForm /> : <>sig</>}
 
       <div className={classes.formChangeBox}>
