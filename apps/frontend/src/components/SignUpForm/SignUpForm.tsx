@@ -1,35 +1,36 @@
-import { ApiService } from '../../utils/ApiService';
-import Input from '../common/Input/Input';
-import classes from './SignUpForm.module.scss';
-import { ChangeEvent, ReactNode, useState } from 'react';
-import Button from '../common/Button/Button';
-import infoIcon from '../../assets/icons/info.svg';
-import { Tooltip } from 'react-tooltip';
-import Checkbox from '../common/Checkbox/Checkbox';
-import Modal from '../common/Modal/Modal';
+import { ApiService } from "../../utils/ApiService";
+import Input from "../common/Input/Input";
+import classes from "./SignUpForm.module.scss";
+import { ChangeEvent, ReactNode, useCallback, useState } from "react";
+import Button from "../common/Button/Button";
+import { Tooltip } from "react-tooltip";
+import Checkbox from "../common/Checkbox/Checkbox";
+import Modal from "../common/Modal/Modal";
+import SvgIcon from "../common/SvgIcon/SvgIcon";
 
 type InputError =
-  | 'EMPTY'
-  | 'WRONG_PASSWORD_FORMAT'
-  | 'PASSWORDS_NOT_MATCH'
-  | 'WRONG_USERNAME'
-  | 'MISSING_TERMS';
-const passwordRegex = new RegExp(
-  '^(?=(.*[a-z]){1,})(?=(.*[A-Z]){1,})(?=(.*[0-9]){1,})(?=(.*[!@#$%^&*()\\-__+.]){1,}).{8,}$'
+  | "EMPTY"
+  | "WRONG_PASSWORD_FORMAT"
+  | "PASSWORDS_NOT_MATCH"
+  | "WRONG_USERNAME";
+
+const USERNAME_REGEX = new RegExp(
+  "^(?=(.*[a-z]){1,})(?=(.*[0-9]){1,}).{6,12}$"
+);
+const PASSWORD_REGEX = new RegExp(
+  "^(?=(.*[a-z]){1,})(?=(.*[A-Z]){1,})(?=(.*[0-9]){1,})(?=(.*[!@#$%^&*()\\-__+.]){1,}).{8,}$"
 );
 
-const userNameRegex = new RegExp('^(?=(.*[a-z]){1,})(?=(.*[0-9]){1,}).{6,12}$');
-
 const INPUT_ERRORS_MESSAGES: Record<InputError, string> = {
-  EMPTY: 'Can not be empty!',
+  EMPTY: "Can not be empty!",
   WRONG_PASSWORD_FORMAT:
-    'Password does not meet requirements! Please check the requirements in the password hint.',
+    "Password does not meet requirements! Please check the requirements in the password hint.",
   WRONG_USERNAME:
-    'Username must be alphanumeric and total length between 6 and 12 characters!',
-  PASSWORDS_NOT_MATCH: 'Password and confirm password do not match!',
-  MISSING_TERMS: 'Checkbox must be checked!',
+    "Username must be alphanumeric and total length between 6 and 12 characters!",
+  PASSWORDS_NOT_MATCH: "Password and confirm password do not match!",
 } as const;
 
+// move terms and privacy to db, fetch them on demand and useMemo
 const TERMS_CONDITION: ReactNode = (
   <>
     <h3>Terms and Conditions</h3>
@@ -48,9 +49,9 @@ const PRIVACY_STATEMENT: ReactNode = (
 );
 
 const SignUpForm = () => {
-  const [username, setUsername] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [confirmPassword, setConfirmPassword] = useState<string>('');
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [termsChecked, setTermsChecked] = useState<boolean>(false);
 
   const [usernameError, setUsernameError] = useState<string | null>();
@@ -58,7 +59,7 @@ const SignUpForm = () => {
   const [confirmPasswordError, setConfirmPasswordError] = useState<
     string | null
   >();
-  const [termsError, setTermsError] = useState<string | null>();
+  const [termsError, setTermsError] = useState<boolean>(false);
 
   const [showModal, setShowModal] = useState<boolean>(false);
   const [modalContent, setModalContent] = useState<ReactNode>();
@@ -68,7 +69,7 @@ const SignUpForm = () => {
       username: string;
       password: string;
     }>({
-      path: '/api',
+      path: "/api",
       // payload: JSON.stringify({
       //   username,
       //   password,
@@ -78,75 +79,90 @@ const SignUpForm = () => {
     console.log(response);
   };
 
-  const handleUsernameOnChange = (username: string) => {
+  const handleUsernameOnChange = useCallback((username: string) => {
     setUsernameError(null);
     setUsername(username);
-  };
+  }, []);
 
-  const handlePasswordOnChange = (password: string) => {
+  const handlePasswordOnChange = useCallback((password: string) => {
     setPasswordError(null);
     setPassword(password);
-  };
+  }, []);
 
-  const handleConfirmPasswordOnChange = (confirmPassword: string) => {
-    setConfirmPasswordError(null);
-    setConfirmPassword(confirmPassword);
-  };
+  const handleConfirmPasswordOnChange = useCallback(
+    (confirmPassword: string) => {
+      setConfirmPasswordError(null);
+      setConfirmPassword(confirmPassword);
+    },
+    []
+  );
 
   const handleFormOnSubmit = () => {
-    const isValid = validateInputs(username, password, confirmPassword);
+    const isValid = validateInputs(
+      username,
+      password,
+      confirmPassword,
+      termsChecked
+    );
     if (!isValid) return;
     //handleSignUp();
   };
 
-  const handleOnCheckboxChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setTermsError(null);
-    setTermsChecked(e.target.checked);
-  };
+  const handleOnCheckboxChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setTermsError(false);
+      setTermsChecked(e.target.checked);
+    },
+    []
+  );
 
-  const validateInputs = (
-    username: string,
-    password: string,
-    confirmPassword: string
-  ): boolean => {
-    let isValid = true;
+  const validateInputs = useCallback(
+    (
+      username: string,
+      password: string,
+      confirmPassword: string,
+      termsChecked: boolean
+    ): boolean => {
+      let isValid = true;
 
-    // validate username
-    if (username === '') {
-      setUsernameError(INPUT_ERRORS_MESSAGES.EMPTY);
-      isValid = false;
-    } else if (!userNameRegex.test(username)) {
-      setUsernameError(INPUT_ERRORS_MESSAGES.WRONG_USERNAME);
-      isValid = false;
-    }
+      // validate username
+      if (username === "") {
+        setUsernameError(INPUT_ERRORS_MESSAGES.EMPTY);
+        isValid = false;
+      } else if (!USERNAME_REGEX.test(username)) {
+        setUsernameError(INPUT_ERRORS_MESSAGES.WRONG_USERNAME);
+        isValid = false;
+      }
 
-    // validate password
-    if (password === '') {
-      setPasswordError(INPUT_ERRORS_MESSAGES.EMPTY);
-      isValid = false;
-    } else if (!passwordRegex.test(password)) {
-      setPasswordError(INPUT_ERRORS_MESSAGES.WRONG_PASSWORD_FORMAT);
-      isValid = false;
-    }
+      // validate password
+      if (password === "") {
+        setPasswordError(INPUT_ERRORS_MESSAGES.EMPTY);
+        isValid = false;
+      } else if (!PASSWORD_REGEX.test(password)) {
+        setPasswordError(INPUT_ERRORS_MESSAGES.WRONG_PASSWORD_FORMAT);
+        isValid = false;
+      }
 
-    // validate confirm password
-    if (confirmPassword === '') {
-      setConfirmPasswordError(INPUT_ERRORS_MESSAGES.EMPTY);
-      isValid = false;
-    } else if (confirmPassword !== password) {
-      setConfirmPasswordError(INPUT_ERRORS_MESSAGES.PASSWORDS_NOT_MATCH);
-      //setPasswordError(INPUT_ERRORS_MESSAGES.PASSWORDS_NOT_MATCH);
-      isValid = false;
-    }
+      // validate confirm password
+      if (confirmPassword === "") {
+        setConfirmPasswordError(INPUT_ERRORS_MESSAGES.EMPTY);
+        isValid = false;
+      } else if (confirmPassword !== password) {
+        setConfirmPasswordError(INPUT_ERRORS_MESSAGES.PASSWORDS_NOT_MATCH);
+        //setPasswordError(INPUT_ERRORS_MESSAGES.PASSWORDS_NOT_MATCH);
+        isValid = false;
+      }
 
-    // validate terms checkbox
-    if (!termsChecked) {
-      setTermsError(INPUT_ERRORS_MESSAGES.MISSING_TERMS);
-      isValid = false;
-    }
+      // validate terms checkbox
+      if (!termsChecked) {
+        setTermsError(true);
+        isValid = false;
+      }
 
-    return isValid;
-  };
+      return isValid;
+    },
+    []
+  );
 
   const showTermsAndConditions = () => {
     setModalContent(TERMS_CONDITION);
@@ -170,11 +186,7 @@ const SignUpForm = () => {
         id="username"
         label={
           <>
-            <img
-              id="username-info-icon"
-              className={classes.infoIcon}
-              src={infoIcon}
-            />
+            <SvgIcon id="icon-info" elementId="username-info-icon" />
             <span>
               Username<span className={classes.required}>*</span>
             </span>
@@ -186,8 +198,8 @@ const SignUpForm = () => {
             />
           </>
         }
-        errorText={usernameError ?? ''}
-        hasError={Boolean(usernameError)}
+        errorText={usernameError ?? ""}
+        hasError={usernameError !== ""}
         onChange={handleUsernameOnChange}
         placeholder="Your new username"
       />
@@ -197,11 +209,7 @@ const SignUpForm = () => {
         id="password"
         label={
           <>
-            <img
-              id="password-info-icon"
-              className={classes.infoIcon}
-              src={infoIcon}
-            />
+            <SvgIcon id="icon-info" elementId="password-info-icon" />
             <span>
               Password<span className={classes.required}>*</span>
             </span>
@@ -213,8 +221,8 @@ const SignUpForm = () => {
             />
           </>
         }
-        errorText={passwordError ?? ''}
-        hasError={Boolean(passwordError)}
+        errorText={passwordError ?? ""}
+        hasError={passwordError !== ""}
         onChange={handlePasswordOnChange}
         placeholder="Your password"
       />
@@ -224,11 +232,7 @@ const SignUpForm = () => {
         id="confirm-password"
         label={
           <>
-            <img
-              id="confirm-password-info-icon"
-              className={classes.infoIcon}
-              src={infoIcon}
-            />
+            <SvgIcon id="icon-info" elementId="confirm-password-info-icon" />
             <span>
               Confirm password<span className={classes.required}>*</span>
             </span>
@@ -240,8 +244,8 @@ const SignUpForm = () => {
             />
           </>
         }
-        errorText={confirmPasswordError ?? ''}
-        hasError={Boolean(confirmPasswordError)}
+        errorText={confirmPasswordError ?? ""}
+        hasError={confirmPasswordError !== ""}
         onChange={handleConfirmPasswordOnChange}
         placeholder="Confirm your password"
       />
@@ -251,14 +255,13 @@ const SignUpForm = () => {
           onChange={handleOnCheckboxChange}
           isChecked={termsChecked}
           hasError={Boolean(termsError)}
-          errorText={termsError ?? ''}
         />
         <p>
           I agree to the
           <span onClick={showTermsAndConditions}>
-            {' '}
+            {" "}
             Terms and Conditions
-          </span>{' '}
+          </span>{" "}
           and
           <span onClick={showPrivacyStatement}> Privacy Statement</span>
           <span className={classes.required}>*</span>

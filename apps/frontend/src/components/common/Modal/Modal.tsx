@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import ReactModal from 'react-modal';
 import classes from './Modal.module.scss';
-import closeIcon from '../../../assets/icons/close.svg';
+import SvgIcon from '../SvgIcon/SvgIcon';
 
 type ModalProps = {
   isOpen: boolean;
@@ -15,8 +15,11 @@ const Modal = ({ isOpen, children, onClose }: ModalProps) => {
       className={classes.modal}
       overlayClassName={classes.overlay}
       onRequestClose={onClose}
+      appElement={document.body}
     >
-      <img src={closeIcon} className={classes.closeIcon} onClick={onClose} />
+
+      <SvgIcon id='icon-close' classNames={classes.closeIcon} onClick={onClose} width={32} height={32} />
+     
       {children}
     </ReactModal>
   );

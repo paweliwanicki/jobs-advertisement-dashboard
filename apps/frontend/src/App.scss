@@ -1,0 +1,13 @@
+/* css custom reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+#root {
+  margin: 0 auto;
+  text-align: center;
+  width: 100%;
+}

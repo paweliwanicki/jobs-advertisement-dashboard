@@ -1,4 +1,4 @@
-@import '../../styles/default.scss';
+@import "../../styles/variables.scss";
 
 .signUpForm {
   display: flex;
@@ -19,23 +19,17 @@
     margin-block-end: 15px;
   }
 
-  .infoIcon {
-    width: 18px;
-    height: 18px;
-    cursor: help;
-  }
-
   .termsBox {
     display: flex;
     align-items: flex-start;
     justify-content: flex-start;
     align-self: flex-start;
     gap: 20px;
+    margin-bottom: 20px;
 
     > p {
       text-align: justify;
       font-size: 14px;
-      // line-height: 14px;
       > span:not(.required) {
         color: #ec7f49;
         font-family: $font-family-bold;

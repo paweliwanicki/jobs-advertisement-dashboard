@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import './App.css';
+import './App.scss';
 import LoginContainer from './containers/LoginContainer/LoginContainer';
 import Layout from './containers/Layout/Layout';
 

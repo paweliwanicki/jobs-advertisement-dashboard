@@ -1,4 +1,4 @@
-@import '../../../styles/default.scss';
+@import '../../../styles/variables.scss';
 
 .overlay {
   background-color: #00000090;
@@ -18,13 +18,12 @@
     background-color: $light-grey;
     color: black;
     width: 600px;
-    height: 50%;
+    height: 70%;
     position: relative;
     padding: 25px;
     border-radius: 6px;
 
     .closeIcon {
-      width: 32px;
       cursor: pointer;
       position: absolute;
       right: 5px;
