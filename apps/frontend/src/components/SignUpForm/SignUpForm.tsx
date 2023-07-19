@@ -1,18 +1,21 @@
+import { ChangeEvent, ReactNode, useCallback, useState } from "react";
 import { ApiService } from "../../utils/ApiService";
 import Input from "../common/Input/Input";
 import classes from "./SignUpForm.module.scss";
-import { ChangeEvent, ReactNode, useCallback, useState } from "react";
 import Button from "../common/Button/Button";
 import { Tooltip } from "react-tooltip";
 import Checkbox from "../common/Checkbox/Checkbox";
 import Modal from "../common/Modal/Modal";
 import SvgIcon from "../common/SvgIcon/SvgIcon";
+import { SignFormProps } from "../../containers/LoginContainer/LoginContainer";
 
 type InputError =
   | "EMPTY"
   | "WRONG_PASSWORD_FORMAT"
   | "PASSWORDS_NOT_MATCH"
-  | "WRONG_USERNAME";
+  | "WRONG_USERNAME_FORMAT";
+
+type SignUpResponseMessage = "USERNAME_IN_USE";
 
 const USERNAME_REGEX = new RegExp(
   "^(?=(.*[a-z]){1,})(?=(.*[0-9]){1,}).{6,12}$"
@@ -25,10 +28,15 @@ const INPUT_ERRORS_MESSAGES: Record<InputError, string> = {
   EMPTY: "Can not be empty!",
   WRONG_PASSWORD_FORMAT:
     "Password does not meet requirements! Please check the requirements in the password hint.",
-  WRONG_USERNAME:
+  WRONG_USERNAME_FORMAT:
     "Username must be alphanumeric and total length between 6 and 12 characters!",
   PASSWORDS_NOT_MATCH: "Password and confirm password do not match!",
 } as const;
+
+const SIGN_UP_RESPONSE_MESSAGES: Record<SignUpResponseMessage, string> = {
+  USERNAME_IN_USE:
+    "Unfortunately, the username is already in use. Use a different username and try again.",
+};
 
 // move terms and privacy to db, fetch them on demand and useMemo
 const TERMS_CONDITION: ReactNode = (
@@ -54,11 +62,9 @@ const SignUpForm = () => {
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [termsChecked, setTermsChecked] = useState<boolean>(false);
 
-  const [usernameError, setUsernameError] = useState<string | null>();
-  const [passwordError, setPasswordError] = useState<string | null>();
-  const [confirmPasswordError, setConfirmPasswordError] = useState<
-    string | null
-  >();
+  const [usernameError, setUsernameError] = useState<string>("");
+  const [passwordError, setPasswordError] = useState<string>("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState<string>("");
   const [termsError, setTermsError] = useState<boolean>(false);
 
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -75,45 +81,34 @@ const SignUpForm = () => {
       //   password,
       // }),
     });
-
+    //setSignMessage('siema');
     console.log(response);
   };
 
   const handleUsernameOnChange = useCallback((username: string) => {
-    setUsernameError(null);
+    usernameError !== "" && setUsernameError("");
     setUsername(username);
-  }, []);
+  }, [usernameError]);
 
   const handlePasswordOnChange = useCallback((password: string) => {
-    setPasswordError(null);
+    passwordError != "" && setPasswordError("");
     setPassword(password);
-  }, []);
+  }, [passwordError]);
 
   const handleConfirmPasswordOnChange = useCallback(
     (confirmPassword: string) => {
-      setConfirmPasswordError(null);
+      confirmPasswordError !== "" && setConfirmPasswordError("");
       setConfirmPassword(confirmPassword);
     },
-    []
+    [confirmPasswordError]
   );
-
-  const handleFormOnSubmit = () => {
-    const isValid = validateInputs(
-      username,
-      password,
-      confirmPassword,
-      termsChecked
-    );
-    if (!isValid) return;
-    //handleSignUp();
-  };
 
   const handleOnCheckboxChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      setTermsError(false);
+      termsError && setTermsError(false);
       setTermsChecked(e.target.checked);
     },
-    []
+    [termsError]
   );
 
   const validateInputs = useCallback(
@@ -130,7 +125,7 @@ const SignUpForm = () => {
         setUsernameError(INPUT_ERRORS_MESSAGES.EMPTY);
         isValid = false;
       } else if (!USERNAME_REGEX.test(username)) {
-        setUsernameError(INPUT_ERRORS_MESSAGES.WRONG_USERNAME);
+        setUsernameError(INPUT_ERRORS_MESSAGES.WRONG_USERNAME_FORMAT);
         isValid = false;
       }
 
@@ -149,7 +144,6 @@ const SignUpForm = () => {
         isValid = false;
       } else if (confirmPassword !== password) {
         setConfirmPasswordError(INPUT_ERRORS_MESSAGES.PASSWORDS_NOT_MATCH);
-        //setPasswordError(INPUT_ERRORS_MESSAGES.PASSWORDS_NOT_MATCH);
         isValid = false;
       }
 
@@ -163,16 +157,31 @@ const SignUpForm = () => {
     },
     []
   );
+  const handleFormOnSubmit = useCallback(() => {
+    const isValid = validateInputs(
+      username,
+      password,
+      confirmPassword,
+      termsChecked
+    );
+    if (!isValid) return;
+    //handleSignUp();
+  }, [username, password, confirmPassword, termsChecked, validateInputs]);
 
-  const showTermsAndConditions = () => {
+  const showTermsAndConditions = useCallback(() => {
     setModalContent(TERMS_CONDITION);
     setShowModal(true);
-  };
+  }, []);
 
-  const showPrivacyStatement = () => {
+  const showPrivacyStatement = useCallback(() => {
     setModalContent(PRIVACY_STATEMENT);
     setShowModal(true);
-  };
+  }, []);
+
+  const closeModal = useCallback(() => {
+    setModalContent(null);
+    setShowModal(false);
+  }, []);
 
   return (
     <div className={classes.signUpForm}>
@@ -198,7 +207,7 @@ const SignUpForm = () => {
             />
           </>
         }
-        errorText={usernameError ?? ""}
+        errorText={usernameError}
         hasError={usernameError !== ""}
         onChange={handleUsernameOnChange}
         placeholder="Your new username"
@@ -221,7 +230,7 @@ const SignUpForm = () => {
             />
           </>
         }
-        errorText={passwordError ?? ""}
+        errorText={passwordError}
         hasError={passwordError !== ""}
         onChange={handlePasswordOnChange}
         placeholder="Your password"
@@ -244,7 +253,7 @@ const SignUpForm = () => {
             />
           </>
         }
-        errorText={confirmPasswordError ?? ""}
+        errorText={confirmPasswordError}
         hasError={confirmPasswordError !== ""}
         onChange={handleConfirmPasswordOnChange}
         placeholder="Confirm your password"
@@ -272,7 +281,7 @@ const SignUpForm = () => {
         Sign Up
       </Button>
 
-      <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+      <Modal isOpen={showModal} onClose={closeModal}>
         {modalContent}
       </Modal>
     </div>

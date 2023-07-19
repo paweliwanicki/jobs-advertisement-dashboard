@@ -5,6 +5,10 @@ import SignInForm from "../../components/SignInForm/SignInForm";
 
 type Form = "SIGN_UP" | "SIGN_IN";
 
+export type SignFormProps = {
+  setSignMessage: (message: string) => void;
+}
+
 const FORM_CHANGE_TEXT: Record<Form, Record<string, string>> = {
   SIGN_UP: {
     label: "Have already an account?",
@@ -18,11 +22,17 @@ const FORM_CHANGE_TEXT: Record<Form, Record<string, string>> = {
 
 const LoginContainer = () => {
   const [activeForm, setActiveForm] = useState<Form>("SIGN_IN");
+  const [signResponseMessage, setSignResponseMessage] = useState<string | null>(
+    null
+  );
 
   return (
     <div className={classes.loginContainer}>
       {activeForm === "SIGN_UP" ? <SignUpForm /> : <SignInForm />}
 
+      <div className={classes.signResponseMessage}>
+        {signResponseMessage && <p>{signResponseMessage}</p>}
+      </div>
       <div className={classes.formChangeBox}>
         <p>{FORM_CHANGE_TEXT[activeForm].label}</p>
         <button

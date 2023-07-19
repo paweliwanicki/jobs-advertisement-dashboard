@@ -6,15 +6,18 @@
   align-items: center;
   margin-bottom: 15px;
 
-  .loginAttemptInfo {
-    color: $error;
-    height: 30px;
-    line-height: normal;
-    text-align: left;
+  .rememberMeBox {
+    display: inline-flex;
     width: 100%;
-    margin-bottom: 20px;
+    align-items: center;
+    gap :15px;
     font-size: 14px;
+    margin-bottom: 10px;
   }
+
+ 
+
+  
 
   > h2 {
     margin-block-end: 25px;
@@ -30,15 +33,4 @@
     margin-bottom: 25px;
   }
 
-  // :global {
-  //   .react-tooltip {
-  //     z-index: 3;
-  //     font-size: 13px;
-  //     width: calc(100% - 100px);
-
-  //     &.error {
-  //       width: auto;
-  //     }
-  //   }
-  // }
 }

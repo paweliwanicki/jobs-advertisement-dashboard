@@ -30,8 +30,9 @@
     > p {
       text-align: justify;
       font-size: 14px;
+      line-height: normal;
       > span:not(.required) {
-        color: #ec7f49;
+        color: $orange;
         font-family: $font-family-bold;
         cursor: pointer;
       }
@@ -41,17 +42,5 @@
   > button {
     align-self: flex-end;
     margin-bottom: 25px;
-  }
-
-  :global {
-    .react-tooltip {
-      z-index: 3;
-      font-size: 13px;
-      width: calc(100% - 100px);
-
-      &.error {
-        width: auto;
-      }
-    }
   }
 }
