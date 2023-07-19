@@ -1,4 +1,4 @@
-@import "../../styles/variables.scss";
+@import '../../styles/variables.scss';
 
 .loginContainer {
   border-radius: 6px;
@@ -8,11 +8,11 @@
   display: flex;
   flex-flow: column;
   position: relative;
-  background-image: url("./bg-login-container.svg");
+  background-image: url('./bg-login-container.svg');
   background-position: center;
   background-size: cover;
   align-self: center;
-  margin: 25px auto;
+  margin: auto;
 
   .signResponseMessage {
     min-height: 45px;

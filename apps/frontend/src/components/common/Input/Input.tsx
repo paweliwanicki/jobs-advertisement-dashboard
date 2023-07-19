@@ -12,24 +12,25 @@ type InputProps = {
   id: string;
   type: InputTypes;
   label: ReactNode;
-  size?: InputSize;
   hasError?: boolean;
   icon?: ReactNode;
   value?: string;
-  errorText?: string;
+  errorText?: string | null;
   validText?: string;
   placeholder?: string;
+  size?: InputSize;
   onChange: (val: string) => void;
 };
 
 const Input = ({
   id,
-  icon,
+  type,
   label,
   hasError,
+  icon,
   value,
-  validText,
   errorText,
+  validText,
   placeholder,
   size = 'medium',
   onChange,
@@ -48,7 +49,7 @@ const Input = ({
       <div className={inputBoxClassNames}>
         {icon}
         <input
-          type="text"
+          type={type}
           name={id}
           value={value}
           onChange={(e) => onChange(e.target.value)}
@@ -69,7 +70,9 @@ const Input = ({
               anchorSelect={`#validation-icon-${id}`}
               place="bottom-end"
               variant={hasError ? 'error' : 'success'}
-              content={hasError ? errorText : validText}
+              content={
+                (errorText || validText) ?? (hasError ? errorText : validText)
+              }
               className={classes.tooltipError}
             />
           </>

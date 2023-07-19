@@ -1,4 +1,4 @@
-@import "../../styles/variables.scss";
+@import '../../styles/variables.scss';
 
 .signUpForm {
   display: flex;
@@ -12,6 +12,7 @@
 
   > h2 {
     margin-block-end: 25px;
+    font-family: $font-family-bold;
   }
 
   > h4 {
@@ -24,7 +25,7 @@
     align-items: flex-start;
     justify-content: flex-start;
     align-self: flex-start;
-    gap: 20px;
+    gap: 15px;
     margin-bottom: 20px;
 
     > p {
@@ -41,6 +42,5 @@
 
   > button {
     align-self: flex-end;
-    margin-bottom: 25px;
   }
 }

@@ -6,8 +6,9 @@
   border: none;
   font-family: $font-family-bold;
   font-size: 16px;
-  padding: 16px 38px ;
+  padding: 16px 38px;
   font-weight: 700;
+  cursor: pointer;
 
   &:active {
     outline: none;

@@ -57,7 +57,7 @@ const forceApiTokenRefresh = async (
   if (parsedRefreshToken.statusCode === 0) {
     localStorage.setItem('jwtToken', parsedRefreshToken.result.jwtToken);
   } else {
-    throw Error('Error while refdreshing the jwt token');
+    throw Error('Error while refreshing the jwt token');
   }
 };
 
@@ -113,7 +113,6 @@ const request = async (
   );
 
   const response = await fetch(path, { headers, method, body: payload });
-  
 
   let body;
 

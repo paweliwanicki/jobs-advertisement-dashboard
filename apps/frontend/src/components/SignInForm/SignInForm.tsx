@@ -1,54 +1,29 @@
-import { ApiService } from "../../utils/ApiService";
-import Input from "../common/Input/Input";
-import classes from "./SignInForm.module.scss";
-import { ChangeEvent, useCallback, useState } from "react";
-import Button from "../common/Button/Button";
-import Checkbox from "../common/Checkbox/Checkbox";
+import Input from '../common/Input/Input';
+import classes from './SignInForm.module.scss';
+import { ChangeEvent, useCallback, useState } from 'react';
+import Button from '../common/Button/Button';
+import Checkbox from '../common/Checkbox/Checkbox';
+import { useSignForm } from '../../hooks/useSignForm';
+import { SignForm } from '../../containers/LoginContainer/LoginContainer';
 
-type InputError = "EMPTY";
-type SignInResponseMessage = "WRONG_CREDENTIALS";
+const SignInForm = ({ onSubmit }: SignForm) => {
+  const { validateSignInForm } = useSignForm();
 
-const INPUT_ERRORS_MESSAGES: Record<InputError, string> = {
-  EMPTY: "Can not be empty!",
-} as const;
-
-const SIGN_IN_RESPONSE_MESSAGES: Record<SignInResponseMessage, string> = {
-  WRONG_CREDENTIALS:
-    "You typed wrong username or password! Please check your credentials and try to sign in again.",
-};
-
-const SignInForm = () => {
-  const [username, setUsername] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [usernameError, setUsernameError] = useState<string>();
-  const [passwordError, setPasswordError] = useState<string>();
+  const [username, setUsername] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [usernameError, setUsernameError] = useState<string | null>(null);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
 
   const [rememberMeIsChecked, setRememberMeIsChecked] =
     useState<boolean>(false);
-  
-
-  const handleSignIn = async () => {
-    const response = await ApiService.get<{
-      username: string;
-      password: string;
-    }>({
-      path: "/api",
-      // payload: JSON.stringify({
-      //   username,
-      //   password,
-      // }),
-    });
-    //setLoginAttemptInfo('Wrong username or password, please try again');
-    console.log(response);
-  };
 
   const handleUsernameOnChange = useCallback((username: string) => {
-    setUsernameError('');
+    setUsernameError(null);
     setUsername(username);
   }, []);
 
   const handlePasswordOnChange = useCallback((password: string) => {
-    setPasswordError('');
+    setPasswordError(null);
     setPassword(password);
   }, []);
 
@@ -59,33 +34,20 @@ const SignInForm = () => {
     []
   );
 
-  const validateInputs = useCallback(
-    (username: string, password: string): boolean => {
-      let isValid = true;
-
-      // validate username
-      if (username === "") {
-        setUsernameError(INPUT_ERRORS_MESSAGES.EMPTY);
-        isValid = false;
-      }
-
-      // validate password
-      if (password === "") {
-        setPasswordError(INPUT_ERRORS_MESSAGES.EMPTY);
-        isValid = false;
-      }
-      return isValid;
-    },
-    []
-  );
-
-  
   const handleFormOnSubmit = useCallback(() => {
-    //setLoginAttemptInfo(SIGN_IN_RESPONSE_MESSAGES.WRONG_CREDENTIALS);
-    const isValid = validateInputs(username, password);
-    if (!isValid) return;
-    //handleSignUp();
-  }, [username, password, validateInputs]);
+    const { isValid, usernameError, passwordError } = validateSignInForm(
+      username,
+      password
+    );
+
+    if (!isValid) {
+      usernameError && setUsernameError(usernameError);
+      passwordError && setPasswordError(passwordError);
+      return;
+    }
+
+    onSubmit(username, password);
+  }, [username, password, validateSignInForm, onSubmit]);
 
   return (
     <div className={classes.signInForm}>
@@ -98,7 +60,7 @@ const SignInForm = () => {
         id="username"
         label="Username"
         errorText={usernameError}
-        hasError={usernameError !== ""}
+        hasError={usernameError !== ''}
         onChange={handleUsernameOnChange}
         placeholder="Your username"
       />
@@ -108,7 +70,7 @@ const SignInForm = () => {
         id="password"
         label="Password"
         errorText={passwordError}
-        hasError={passwordError !== ""}
+        hasError={passwordError !== ''}
         onChange={handlePasswordOnChange}
         placeholder="Your password"
       />
@@ -117,11 +79,16 @@ const SignInForm = () => {
         <Checkbox
           onChange={handleOnCheckboxChange}
           isChecked={rememberMeIsChecked}
+          size="medium"
+          label="Remember me"
         />
-        <span>Remember me</span>
       </div>
 
-      <Button type="button" variant="secondary" onClick={handleFormOnSubmit}>
+      <Button
+        type="button"
+        variant="secondary"
+        onClick={() => void handleFormOnSubmit()}
+      >
         Sign In
       </Button>
     </div>
