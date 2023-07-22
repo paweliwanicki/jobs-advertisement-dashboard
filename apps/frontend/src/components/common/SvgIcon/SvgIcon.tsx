@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
-import svgSprite from "../../../assets/sprite.svg";
+import { useState, useEffect, useCallback } from 'react';
+import svgSprite from '../../../assets/sprite.svg';
+import classes from './SvgIcon.module.scss';
 
 type SvgIconProps = {
   id: string;
@@ -11,18 +12,20 @@ type SvgIconProps = {
   hoverColor?: string;
   viewBox?: string;
   onClick?: () => void;
+  onMouseDown?: () => void;
 };
 
 const SvgIcon = ({
   id,
   elementId,
-  classNames,
+  classNames = '',
   height = 24,
   width = 24,
-  color = "",
-  hoverColor = "",
+  color = '',
+  hoverColor = '',
   viewBox = `0 0 ${width} ${height}`,
   onClick,
+  onMouseDown,
 }: SvgIconProps) => {
   const [fill, setFill] = useState<string>(color);
 
@@ -48,9 +51,9 @@ const SvgIcon = ({
       fill={fill}
       onMouseEnter={onMouseEnterHandler}
       onMouseLeave={onMouseLeaveHandler}
-      //data-id={id}
-      className={classNames}
+      className={`${classes.svgIcon} ${classNames}`}
       onClick={onClick}
+      onMouseDown={onMouseDown}
     >
       <use href={svgSprite + `#${id}`} />
     </svg>

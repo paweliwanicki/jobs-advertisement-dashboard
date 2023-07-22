@@ -60,7 +60,7 @@ const SignInForm = ({ onSubmit }: SignForm) => {
         id="username"
         label="Username"
         errorText={usernameError}
-        hasError={usernameError !== ''}
+        hasError={Boolean(usernameError)}
         onChange={handleUsernameOnChange}
         placeholder="Your username"
       />
@@ -70,7 +70,7 @@ const SignInForm = ({ onSubmit }: SignForm) => {
         id="password"
         label="Password"
         errorText={passwordError}
-        hasError={passwordError !== ''}
+        hasError={Boolean(passwordError)}
         onChange={handlePasswordOnChange}
         placeholder="Your password"
       />

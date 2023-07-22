@@ -51,7 +51,7 @@ const SIGN_RESPONSE_MESSAGES: Record<SignResponseMessage, string> = {
     'You typed wrong username or password! Please check your credentials and try to sign in again.',
   USERNAME_IN_USE:
     'Unfortunately, the username is already in use. Use a different username and try again.',
-};
+} as const;
 
 const USERNAME_REGEX = new RegExp(
   '^(?=(.*[a-z]){1,})(?=(.*[0-9]){1,}).{6,12}$'

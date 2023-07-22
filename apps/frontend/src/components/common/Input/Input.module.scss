@@ -1,4 +1,4 @@
-@import "../../../styles/variables.scss";
+@import '../../../styles/variables.scss';
 
 .inputLabel {
   display: flex;
@@ -76,16 +76,27 @@
         opacity: 0.5;
       }
     }
-    > img {
+    > svg {
       width: 24px;
       height: 24px;
-      margin-left: 32px;
       align-self: center;
       position: absolute;
     }
 
     .validationIcon {
       right: 15px;
+    }
+
+    .showPasswordIcon {
+      cursor: pointer;
+      right: 15px;
+      &.error {
+        right: 48px;
+      }
+    }
+
+    .showPasswordTooltip {
+      width: auto;
     }
   }
 }
