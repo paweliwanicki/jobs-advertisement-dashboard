@@ -13,6 +13,7 @@ type SvgIconProps = {
   viewBox?: string;
   onClick?: () => void;
   onMouseDown?: () => void;
+  onMouseUp?: () => void;
 };
 
 const SvgIcon = ({
@@ -26,6 +27,7 @@ const SvgIcon = ({
   viewBox = `0 0 ${width} ${height}`,
   onClick,
   onMouseDown,
+  onMouseUp,
 }: SvgIconProps) => {
   const [fill, setFill] = useState<string>(color);
 
@@ -35,7 +37,8 @@ const SvgIcon = ({
 
   const onMouseLeaveHandler = useCallback(() => {
     setFill(color);
-  }, [color]);
+    onMouseUp && onMouseUp();
+  }, [color, onMouseUp]);
 
   // set color if props.color has been changed
   useEffect(() => {
@@ -54,6 +57,7 @@ const SvgIcon = ({
       className={`${classes.svgIcon} ${classNames}`}
       onClick={onClick}
       onMouseDown={onMouseDown}
+      onMouseUp={onMouseUp}
     >
       <use href={svgSprite + `#${id}`} />
     </svg>

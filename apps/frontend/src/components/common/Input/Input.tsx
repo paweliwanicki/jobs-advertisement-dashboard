@@ -1,22 +1,21 @@
-import classes from './Input.module.scss';
-import { ReactNode, useState, useCallback } from 'react';
-import validIcon from '../../../assets/icons/valid.svg';
-import errorIcon from '../../../assets/icons/error.svg';
-import { Tooltip } from 'react-tooltip';
-import SvgIcon from '../SvgIcon/SvgIcon';
+import classes from "./Input.module.scss";
+import { ReactNode, useState, useCallback } from "react";
+import { Tooltip } from "react-tooltip";
+import SvgIcon from "../SvgIcon/SvgIcon";
 
-type InputTypes = 'text' | 'number' | 'password' | 'email';
+type InputTypes = "text" | "number" | "password" | "email";
 
-type InputSize = 'small' | 'medium' | 'large';
+type InputSize = "small" | "medium" | "large";
 
 type InputProps = {
   id: string;
   type: InputTypes;
   label: ReactNode;
+  isValidated?: boolean;
   hasError?: boolean;
   icon?: ReactNode;
   value?: string;
-  errorText?: string | null;
+  errorText?: string;
   validText?: string;
   placeholder?: string;
   size?: InputSize;
@@ -27,27 +26,33 @@ const Input = ({
   id,
   type,
   label,
+  isValidated,
   hasError,
   icon,
   value,
   errorText,
   validText,
   placeholder,
-  size = 'medium',
+  size = "medium",
   onChange,
 }: InputProps) => {
   const [inputType, setInputType] = useState<InputTypes>(type);
 
   let inputBoxClassNames = `${classes.inputBox}`;
 
-  const showValidationInfo = errorText || validText;
+  const showValidationInfo =
+    (errorText !== "" || validText !== "") && isValidated;
   if (showValidationInfo) {
     const validClassName = !hasError ? classes.valid : classes.error;
     inputBoxClassNames = `${inputBoxClassNames} ${validClassName}`;
   }
 
   const handleShowPassword = useCallback(() => {
-    setInputType('password');
+    setInputType("text");
+  }, []);
+
+  const handleHidePassword = useCallback(() => {
+    setInputType("password");
   }, []);
 
   return (
@@ -66,7 +71,7 @@ const Input = ({
           }
         />
 
-        {type === 'password' && (
+        {type === "password" && (
           <>
             <SvgIcon
               classNames={
@@ -74,13 +79,14 @@ const Input = ({
                   ? `${classes.showPasswordIcon} ${classes.error}`
                   : classes.showPasswordIcon
               }
-              id="icon-eye"
+              id={inputType === "text" ? "icon-eye" : "icon-eye-crossed"}
               elementId={`show-password-icon-${id}`}
               color="#6e8098"
               hoverColor="#6e8098"
               width={24}
               height={24}
               onMouseDown={handleShowPassword}
+              onMouseUp={handleHidePassword}
             />
             <Tooltip
               anchorSelect={`#show-password-icon-${id}`}
@@ -92,15 +98,9 @@ const Input = ({
         )}
         {showValidationInfo && (
           <>
-            {/* <img
-              className={classes.validationIcon}
-              src={hasError ? errorIcon : validIcon}
-              alt="validation"
-              id={`validation-icon-${id}`}
-            /> */}
             <SvgIcon
               classNames={classes.validationIcon}
-              id={hasError ? 'icon-error' : 'icon-valid'}
+              id={hasError ? "icon-error" : "icon-valid"}
               elementId={`validation-icon-${id}`}
               color="#bb0909"
               hoverColor="#bb0909"
@@ -111,8 +111,8 @@ const Input = ({
             <Tooltip
               anchorSelect={`#validation-icon-${id}`}
               place="bottom-end"
-              variant={hasError ? 'error' : 'success'}
-              content={showValidationInfo && (hasError ? errorText : validText)}
+              variant={hasError ? "error" : "success"}
+              content={hasError ? errorText : validText}
               className={classes.tooltipError}
             />
           </>

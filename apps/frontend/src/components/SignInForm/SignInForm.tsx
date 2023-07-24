@@ -1,31 +1,39 @@
-import Input from '../common/Input/Input';
-import classes from './SignInForm.module.scss';
-import { ChangeEvent, useCallback, useState } from 'react';
-import Button from '../common/Button/Button';
-import Checkbox from '../common/Checkbox/Checkbox';
-import { useSignForm } from '../../hooks/useSignForm';
-import { SignForm } from '../../containers/LoginContainer/LoginContainer';
+import Input from "../common/Input/Input";
+import classes from "./SignInForm.module.scss";
+import { ChangeEvent, useCallback, useState } from "react";
+import Button from "../common/Button/Button";
+import Checkbox from "../common/Checkbox/Checkbox";
+import { useSignForm } from "../../hooks/useSignForm";
+import { SignForm } from "../../containers/LoginContainer/LoginContainer";
 
 const SignInForm = ({ onSubmit }: SignForm) => {
-  const { validateSignInForm } = useSignForm();
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
 
-  const [username, setUsername] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [usernameError, setUsernameError] = useState<string | null>(null);
-  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const { validateSignInForm, clearValidationAndError, errors, isValidated } =
+    useSignForm();
+
+  const { usernameError, passwordError } = errors;
+  const { usernameIsValidated, passwordIsValidated } = isValidated;
 
   const [rememberMeIsChecked, setRememberMeIsChecked] =
     useState<boolean>(false);
 
-  const handleUsernameOnChange = useCallback((username: string) => {
-    setUsernameError(null);
-    setUsername(username);
-  }, []);
+  const handleUsernameOnChange = useCallback(
+    (username: string) => {
+      usernameError && clearValidationAndError("USERNAME");
+      setUsername(username);
+    },
+    [usernameError, clearValidationAndError]
+  );
 
-  const handlePasswordOnChange = useCallback((password: string) => {
-    setPasswordError(null);
-    setPassword(password);
-  }, []);
+  const handlePasswordOnChange = useCallback(
+    (password: string) => {
+      passwordError && clearValidationAndError("PASSWORD");
+      setPassword(password);
+    },
+    [passwordError, clearValidationAndError]
+  );
 
   const handleOnCheckboxChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -35,17 +43,10 @@ const SignInForm = ({ onSubmit }: SignForm) => {
   );
 
   const handleFormOnSubmit = useCallback(() => {
-    const { isValid, usernameError, passwordError } = validateSignInForm(
-      username,
-      password
-    );
-
+    const isValid = validateSignInForm(username, password);
     if (!isValid) {
-      usernameError && setUsernameError(usernameError);
-      passwordError && setPasswordError(passwordError);
       return;
     }
-
     onSubmit(username, password);
   }, [username, password, validateSignInForm, onSubmit]);
 
@@ -63,6 +64,7 @@ const SignInForm = ({ onSubmit }: SignForm) => {
         hasError={Boolean(usernameError)}
         onChange={handleUsernameOnChange}
         placeholder="Your username"
+        isValidated={usernameIsValidated}
       />
 
       <Input
@@ -73,6 +75,7 @@ const SignInForm = ({ onSubmit }: SignForm) => {
         hasError={Boolean(passwordError)}
         onChange={handlePasswordOnChange}
         placeholder="Your password"
+        isValidated={passwordIsValidated}
       />
 
       <div className={classes.rememberMeBox}>
@@ -84,11 +87,7 @@ const SignInForm = ({ onSubmit }: SignForm) => {
         />
       </div>
 
-      <Button
-        type="button"
-        variant="secondary"
-        onClick={() => void handleFormOnSubmit()}
-      >
+      <Button type="button" variant="secondary" onClick={handleFormOnSubmit}>
         Sign In
       </Button>
     </div>

@@ -1,13 +1,13 @@
-import { ChangeEvent, ReactNode, useCallback, useState } from 'react';
-import Input from '../common/Input/Input';
-import classes from './SignUpForm.module.scss';
-import Button from '../common/Button/Button';
-import { Tooltip } from 'react-tooltip';
-import Checkbox from '../common/Checkbox/Checkbox';
-import Modal from '../common/Modal/Modal';
-import SvgIcon from '../common/SvgIcon/SvgIcon';
-import { useSignForm } from '../../hooks/useSignForm';
-import { SignForm } from '../../containers/LoginContainer/LoginContainer';
+import { ChangeEvent, ReactNode, useCallback, useState } from "react";
+import Input from "../common/Input/Input";
+import classes from "./SignUpForm.module.scss";
+import Button from "../common/Button/Button";
+import { Tooltip } from "react-tooltip";
+import Checkbox from "../common/Checkbox/Checkbox";
+import Modal from "../common/Modal/Modal";
+import SvgIcon from "../common/SvgIcon/SvgIcon";
+import { useSignForm } from "../../hooks/useSignForm";
+import { SignForm } from "../../containers/LoginContainer/LoginContainer";
 
 // move terms and privacy to db, fetch them on demand and useMemo
 const TERMS_CONDITION: ReactNode = (
@@ -28,67 +28,70 @@ const PRIVACY_STATEMENT: ReactNode = (
 );
 
 const SignUpForm = ({ onSubmit }: SignForm) => {
-  const { validateSignUpForm } = useSignForm();
+  const { validateSignUpForm, clearValidationAndError, errors, isValidated } =
+    useSignForm();
 
-  const [username, setUsername] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [confirmPassword, setConfirmPassword] = useState<string>('');
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [termsChecked, setTermsChecked] = useState<boolean>(false);
 
-  const [usernameError, setUsernameError] = useState<string>('');
-  const [passwordError, setPasswordError] = useState<string>('');
-  const [confirmPasswordError, setConfirmPasswordError] = useState<string>('');
-  const [termsError, setTermsError] = useState<boolean>(false);
+  const {
+    usernameError,
+    passwordError,
+    confirmPasswordError,
+    termsCheckError,
+  } = errors;
+  const {
+    usernameIsValidated,
+    passwordIsValidated,
+    confirmPasswordIsValidated,
+  } = isValidated;
 
   const [showModal, setShowModal] = useState<boolean>(false);
   const [modalContent, setModalContent] = useState<ReactNode>();
 
   const handleUsernameOnChange = useCallback(
     (username: string) => {
-      usernameError !== '' && setUsernameError('');
+      usernameError && clearValidationAndError("USERNAME");
       setUsername(username);
     },
-    [usernameError]
+    [usernameError, clearValidationAndError]
   );
 
   const handlePasswordOnChange = useCallback(
     (password: string) => {
-      passwordError != '' && setPasswordError('');
+      passwordError && clearValidationAndError("PASSWORD");
       setPassword(password);
     },
-    [passwordError]
+    [passwordError, clearValidationAndError]
   );
 
   const handleConfirmPasswordOnChange = useCallback(
     (confirmPassword: string) => {
-      confirmPasswordError !== '' && setConfirmPasswordError('');
+      confirmPasswordError && clearValidationAndError("CONFIRM_PASSWORD");
       setConfirmPassword(confirmPassword);
     },
-    [confirmPasswordError]
+    [confirmPasswordError, clearValidationAndError]
   );
 
   const handleOnCheckboxChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      termsError && setTermsError(false);
+      termsCheckError && clearValidationAndError("TERMS");
       setTermsChecked(e.target.checked);
     },
-    [termsError]
+    [termsCheckError, clearValidationAndError]
   );
 
   const handleFormOnSubmit = useCallback(() => {
-    const {
-      isValid,
-      usernameError,
-      passwordError,
-      confirmPasswordError,
-      termsCheckedError,
-    } = validateSignUpForm(username, password, confirmPassword, termsChecked);
+    const isValid = validateSignUpForm(
+      username,
+      password,
+      confirmPassword,
+      termsChecked
+    );
 
     if (!isValid) {
-      usernameError && setUsernameError(usernameError);
-      passwordError && setPasswordError(passwordError);
-      confirmPasswordError && setConfirmPasswordError(confirmPasswordError);
-      termsCheckedError && setTermsError(termsCheckedError);
       return;
     }
 
@@ -113,7 +116,7 @@ const SignUpForm = ({ onSubmit }: SignForm) => {
   }, []);
 
   const closeModal = useCallback(() => {
-    setModalContent(null);
+    setModalContent(undefined);
     setShowModal(false);
   }, []);
 
@@ -142,9 +145,10 @@ const SignUpForm = ({ onSubmit }: SignForm) => {
           </>
         }
         errorText={usernameError}
-        hasError={usernameError !== ''}
+        hasError={Boolean(usernameError)}
         onChange={handleUsernameOnChange}
         placeholder="Your new username"
+        isValidated={usernameIsValidated}
       />
 
       <Input
@@ -165,9 +169,10 @@ const SignUpForm = ({ onSubmit }: SignForm) => {
           </>
         }
         errorText={passwordError}
-        hasError={passwordError !== ''}
+        hasError={Boolean(passwordError)}
         onChange={handlePasswordOnChange}
         placeholder="Your password"
+        isValidated={passwordIsValidated}
       />
 
       <Input
@@ -188,24 +193,22 @@ const SignUpForm = ({ onSubmit }: SignForm) => {
           </>
         }
         errorText={confirmPasswordError}
-        hasError={confirmPasswordError !== ''}
+        hasError={Boolean(confirmPasswordError)}
         onChange={handleConfirmPasswordOnChange}
         placeholder="Confirm your password"
+        isValidated={confirmPasswordIsValidated}
       />
 
       <div className={classes.termsBox}>
         <Checkbox
           onChange={handleOnCheckboxChange}
           isChecked={termsChecked}
-          hasError={Boolean(termsError)}
+          hasError={Boolean(termsCheckError)}
           size="medium"
         />
         <p>
           I agree to the
-          <span onClick={showTermsAndConditions}>
-            {' '}
-            Terms and Conditions
-          </span>{' '}
+          <span onClick={showTermsAndConditions}> Terms and Conditions </span>
           and
           <span onClick={showPrivacyStatement}> Privacy Statement</span>
           <span className={classes.required}>*</span>
