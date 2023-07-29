@@ -1,14 +1,21 @@
-import Input from "../common/Input/Input";
-import classes from "./SignInForm.module.scss";
-import { ChangeEvent, useCallback, useState } from "react";
-import Button from "../common/Button/Button";
-import Checkbox from "../common/Checkbox/Checkbox";
-import { useSignForm } from "../../hooks/useSignForm";
-import { SignForm } from "../../containers/LoginContainer/LoginContainer";
+import Input from '../common/Input/Input';
+import classes from './SignInForm.module.scss';
+import { ChangeEvent, useCallback, useState, useEffect } from 'react';
+import Button from '../common/Button/Button';
+import Checkbox from '../common/Checkbox/Checkbox';
+import { useSignForm } from '../../hooks/useSignForm';
+import { SignForm } from '../../containers/LoginContainer/LoginContainer';
+import { useMotionAnimate } from 'motion-hooks';
 
 const SignInForm = ({ onSubmit }: SignForm) => {
-  const [username, setUsername] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const { play } = useMotionAnimate(
+    `.${classes.signInForm}`,
+    { opacity: 1 },
+    {
+      duration: 0.5,
+      easing: [0.22, 0.03, 0.26, 1],
+    }
+  );
 
   const { validateSignInForm, clearValidationAndError, errors, isValidated } =
     useSignForm();
@@ -16,23 +23,25 @@ const SignInForm = ({ onSubmit }: SignForm) => {
   const { usernameError, passwordError } = errors;
   const { usernameIsValidated, passwordIsValidated } = isValidated;
 
+  const [username, setUsername] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
   const [rememberMeIsChecked, setRememberMeIsChecked] =
     useState<boolean>(false);
 
   const handleUsernameOnChange = useCallback(
     (username: string) => {
-      usernameError && clearValidationAndError("USERNAME");
+      usernameIsValidated && clearValidationAndError('USERNAME');
       setUsername(username);
     },
-    [usernameError, clearValidationAndError]
+    [usernameIsValidated, clearValidationAndError]
   );
 
   const handlePasswordOnChange = useCallback(
     (password: string) => {
-      passwordError && clearValidationAndError("PASSWORD");
+      passwordIsValidated && clearValidationAndError('PASSWORD');
       setPassword(password);
     },
-    [passwordError, clearValidationAndError]
+    [passwordIsValidated, clearValidationAndError]
   );
 
   const handleOnCheckboxChange = useCallback(
@@ -50,6 +59,11 @@ const SignInForm = ({ onSubmit }: SignForm) => {
     onSubmit(username, password);
   }, [username, password, validateSignInForm, onSubmit]);
 
+  useEffect(() => {
+    void play();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div className={classes.signInForm}>
       <h2>Sign In</h2>
@@ -61,7 +75,7 @@ const SignInForm = ({ onSubmit }: SignForm) => {
         id="username"
         label="Username"
         errorText={usernameError}
-        hasError={Boolean(usernameError)}
+        hasError={!!usernameError}
         onChange={handleUsernameOnChange}
         placeholder="Your username"
         isValidated={usernameIsValidated}
@@ -72,7 +86,7 @@ const SignInForm = ({ onSubmit }: SignForm) => {
         id="password"
         label="Password"
         errorText={passwordError}
-        hasError={Boolean(passwordError)}
+        hasError={!!passwordError}
         onChange={handlePasswordOnChange}
         placeholder="Your password"
         isValidated={passwordIsValidated}

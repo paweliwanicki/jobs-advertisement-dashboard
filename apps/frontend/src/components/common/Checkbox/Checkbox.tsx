@@ -21,8 +21,8 @@ const Checkbox = ({
     <div className={`${classes.checkboxContainer} ${classes[size]}`}>
       <input type="checkbox" checked={isChecked} onChange={onChange} />
       <span
-        className={`${classes.checkmark} ${hasError ? classes.error : ''} ${
-          classes[size]
+        className={`${classes.checkmark} ${classes[size]} ${
+          hasError ? classes.error : ''
         }`}
         id="checkmark"
       ></span>

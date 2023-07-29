@@ -1,4 +1,4 @@
-@import '../../../styles/variables.scss';
+@use '../../../styles/variables.scss';
 
 .inputLabel {
   display: flex;
@@ -22,10 +22,11 @@
   }
 
   .inputBox {
-    position: relative;
     width: 100%;
     display: inline-flex;
     border-radius: 6px;
+    background-color: variables.$white;
+    padding-right: 10px;
 
     .tooltipError {
       width: auto;
@@ -33,26 +34,28 @@
     }
 
     &.error {
-      outline: 1px solid $error;
-      -webkit-box-shadow: 0px 0px 10px 0px $error;
-      -moz-box-shadow: 0px 0px 10px 0px $error;
-      box-shadow: 0px 0px 10px 0px $error;
+      outline: 1px solid variables.$error;
+      -webkit-box-shadow: 0px 0px 10px 0px variables.$error;
+      -moz-box-shadow: 0px 0px 10px 0px variables.$error;
+      box-shadow: 0px 0px 10px 0px variables.$error;
     }
 
     &.valid {
-      outline: 1px solid $valid;
-      -webkit-box-shadow: 0px 0px 15px 0px $valid;
-      -moz-box-shadow: 0px 0px 15px 0px $valid;
-      box-shadow: 0px 0px 15px 0px $valid;
+      outline: 1px solid variables.$valid;
+      -webkit-box-shadow: 0px 0px 15px 0px variables.$valid;
+      -moz-box-shadow: 0px 0px 15px 0px variables.$valid;
+      box-shadow: 0px 0px 15px 0px variables.$valid;
     }
 
     > input {
+      padding-left: 20px;
+      padding-right: 5px;
+      border-top-left-radius: inherit;
+      border-bottom-left-radius: inherit;
+
       &.withIcon {
         padding-left: 72px;
       }
-
-      padding-left: 20px;
-      padding-right: 40px;
 
       &.small {
         height: 40px;
@@ -64,8 +67,8 @@
         height: 80px;
       }
 
-      color: $very-dark-blue;
-      background-color: $white;
+      color: variables.$very-dark-blue;
+      background-color: variables.$white;
       border: none;
       outline: none;
       flex-grow: 1;
@@ -76,34 +79,30 @@
         opacity: 0.5;
       }
     }
-    > svg {
-      width: 24px;
-      height: 24px;
-      align-self: center;
-      position: absolute;
-    }
 
-    .validationIcon {
-      right: 15px;
-    }
+    .iconsBox {
+      display: inline-flex;
+      gap: 7px;
 
-    .showPasswordIcon {
-      cursor: pointer;
-      right: 15px;
-      &.error {
-        right: 48px;
+      > svg {
+        align-self: center;
+        cursor: pointer;
       }
-    }
 
-    .showPasswordTooltip {
-      width: auto;
+      .validationIcon {
+        opacity: 0;
+      }
+
+      .showPasswordTooltip {
+        width: auto;
+      }
     }
   }
 }
 .error {
-  color: $error;
+  color: variables.$error;
 }
 
 .valid {
-  color: $valid;
+  color: variables.$valid;
 }

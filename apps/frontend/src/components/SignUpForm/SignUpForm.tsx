@@ -1,13 +1,20 @@
-import { ChangeEvent, ReactNode, useCallback, useState } from "react";
-import Input from "../common/Input/Input";
-import classes from "./SignUpForm.module.scss";
-import Button from "../common/Button/Button";
-import { Tooltip } from "react-tooltip";
-import Checkbox from "../common/Checkbox/Checkbox";
-import Modal from "../common/Modal/Modal";
-import SvgIcon from "../common/SvgIcon/SvgIcon";
-import { useSignForm } from "../../hooks/useSignForm";
-import { SignForm } from "../../containers/LoginContainer/LoginContainer";
+import {
+  ChangeEvent,
+  ReactNode,
+  useCallback,
+  useState,
+  useEffect,
+} from 'react';
+import Input from '../common/Input/Input';
+import classes from './SignUpForm.module.scss';
+import Button from '../common/Button/Button';
+import { Tooltip } from 'react-tooltip';
+import Checkbox from '../common/Checkbox/Checkbox';
+import Modal from '../common/Modal/Modal';
+import SvgIcon from '../common/SvgIcon/SvgIcon';
+import { useSignForm } from '../../hooks/useSignForm';
+import { SignForm } from '../../containers/LoginContainer/LoginContainer';
+import { useMotionAnimate } from 'motion-hooks';
 
 // move terms and privacy to db, fetch them on demand and useMemo
 const TERMS_CONDITION: ReactNode = (
@@ -28,13 +35,17 @@ const PRIVACY_STATEMENT: ReactNode = (
 );
 
 const SignUpForm = ({ onSubmit }: SignForm) => {
+  const { play } = useMotionAnimate(
+    `.${classes.signUpForm}`,
+    { opacity: 1 },
+    {
+      duration: 0.5,
+      easing: [0.22, 0.03, 0.26, 1],
+    }
+  );
+
   const { validateSignUpForm, clearValidationAndError, errors, isValidated } =
     useSignForm();
-
-  const [username, setUsername] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [confirmPassword, setConfirmPassword] = useState<string>("");
-  const [termsChecked, setTermsChecked] = useState<boolean>(false);
 
   const {
     usernameError,
@@ -48,36 +59,41 @@ const SignUpForm = ({ onSubmit }: SignForm) => {
     confirmPasswordIsValidated,
   } = isValidated;
 
+  const [username, setUsername] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [confirmPassword, setConfirmPassword] = useState<string>('');
+  const [termsChecked, setTermsChecked] = useState<boolean>(false);
+
   const [showModal, setShowModal] = useState<boolean>(false);
   const [modalContent, setModalContent] = useState<ReactNode>();
 
   const handleUsernameOnChange = useCallback(
     (username: string) => {
-      usernameError && clearValidationAndError("USERNAME");
+      usernameIsValidated && clearValidationAndError('USERNAME');
       setUsername(username);
     },
-    [usernameError, clearValidationAndError]
+    [usernameIsValidated, clearValidationAndError]
   );
 
   const handlePasswordOnChange = useCallback(
     (password: string) => {
-      passwordError && clearValidationAndError("PASSWORD");
+      passwordIsValidated && clearValidationAndError('PASSWORD');
       setPassword(password);
     },
-    [passwordError, clearValidationAndError]
+    [passwordIsValidated, clearValidationAndError]
   );
 
   const handleConfirmPasswordOnChange = useCallback(
     (confirmPassword: string) => {
-      confirmPasswordError && clearValidationAndError("CONFIRM_PASSWORD");
+      confirmPasswordIsValidated && clearValidationAndError('CONFIRM_PASSWORD');
       setConfirmPassword(confirmPassword);
     },
-    [confirmPasswordError, clearValidationAndError]
+    [confirmPasswordIsValidated, clearValidationAndError]
   );
 
   const handleOnCheckboxChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      termsCheckError && clearValidationAndError("TERMS");
+      termsCheckError && clearValidationAndError('TERMS');
       setTermsChecked(e.target.checked);
     },
     [termsCheckError, clearValidationAndError]
@@ -118,6 +134,11 @@ const SignUpForm = ({ onSubmit }: SignForm) => {
   const closeModal = useCallback(() => {
     setModalContent(undefined);
     setShowModal(false);
+    console.log('close');
+  }, []);
+
+  useEffect(() => {
+    void play();
   }, []);
 
   return (
@@ -145,7 +166,7 @@ const SignUpForm = ({ onSubmit }: SignForm) => {
           </>
         }
         errorText={usernameError}
-        hasError={Boolean(usernameError)}
+        hasError={!!usernameError}
         onChange={handleUsernameOnChange}
         placeholder="Your new username"
         isValidated={usernameIsValidated}
@@ -169,7 +190,7 @@ const SignUpForm = ({ onSubmit }: SignForm) => {
           </>
         }
         errorText={passwordError}
-        hasError={Boolean(passwordError)}
+        hasError={!!passwordError}
         onChange={handlePasswordOnChange}
         placeholder="Your password"
         isValidated={passwordIsValidated}
@@ -193,7 +214,7 @@ const SignUpForm = ({ onSubmit }: SignForm) => {
           </>
         }
         errorText={confirmPasswordError}
-        hasError={Boolean(confirmPasswordError)}
+        hasError={!!confirmPasswordError}
         onChange={handleConfirmPasswordOnChange}
         placeholder="Confirm your password"
         isValidated={confirmPasswordIsValidated}

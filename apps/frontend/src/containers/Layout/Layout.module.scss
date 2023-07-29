@@ -1,7 +1,15 @@
-@import '../../styles/variables.scss';
-
 .layout {
   display: flex;
   flex-flow: column;
   height: 100%;
+  gap: 25px;
+
+  main {
+    width: 100%;
+    max-width: 1110px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+  }
 }

@@ -58,6 +58,8 @@ const SvgIcon = ({
       onClick={onClick}
       onMouseDown={onMouseDown}
       onMouseUp={onMouseUp}
+      onPointerDown={onMouseDown}
+      onPointerUp={onMouseUp}
     >
       <use href={svgSprite + `#${id}`} />
     </svg>

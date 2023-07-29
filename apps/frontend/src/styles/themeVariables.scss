@@ -1,0 +1,25 @@
+@use './variables.scss';
+
+$themes: (
+  light: (
+    background: variables.$white,
+    button-primary: variables.$violet,
+    button-primary-hover: variables.$light-violet,
+    button-primary-color: variables.$white,
+    button-secondary: variables.$very-light-grey,
+    button-secondary-hover: variables.$very-light-violet,
+    button-secondary-color: variables.$violet,
+    input-background: variables.$white,
+  ),
+
+  dark: (
+    background: variables.$midnight,
+    button-primary: variables.$dark-blue,
+    button-primary-hover: variables.$dark-grey,
+    button-primary-color: variables.$white,
+    button-secondary: variables.$dark-blue,
+    button-secondary-hover: variables.$dark-grey,
+    button-secondary-color: variables.$white,
+    input-background: variables.$very-dark-blue,
+  ),
+);

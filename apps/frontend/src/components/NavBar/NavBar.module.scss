@@ -1,12 +1,15 @@
+@use '../../styles/utils.scss';
+
 .navBar {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-image: url('./bg-pattern-header.svg');
+  background-image: url('./bg-desktop-header.svg');
   background-position: center;
   background-size: cover;
   width: 100%;
   height: 160px;
+  padding-inline: 40px;
 
   .content {
     max-width: 1100px;
@@ -15,9 +18,17 @@
     justify-content: space-between;
     align-items: center;
 
-    > img {
+    .logo {
       height: 64px;
       width: 64px;
     }
+  }
+
+  @include utils.respond-to(bp-small) {
+    background-image: url('./bg-tablet-header.svg');
+  }
+
+  @include utils.respond-to(bp-very-small) {
+    background-image: url('./bg-mobile-header.svg');
   }
 }
