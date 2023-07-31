@@ -1,11 +1,16 @@
-import classes from './NavBar.module.scss';
-import logoImage from '../../assets/logos/logo.png';
-import Switch from '../common/Switch/Switch';
-import SvgIcon from '../common/SvgIcon/SvgIcon';
+import classes from "./NavBar.module.scss";
+import logoImage from "../../assets/logos/logo.png";
+import Switch from "../common/Switch/Switch";
+import SvgIcon from "../common/SvgIcon/SvgIcon";
+import { useContext } from "react";
+import { ThemeContext } from "../../contexts/themeContext";
 
 const NavBar = () => {
-  const handleChangeThemeContext = (dark: boolean) => {
-    console.log(dark ? 'dark' : 'light');
+  const { theme, setTheme } = useContext(ThemeContext);
+  const handleChangeThemeContext = () => {
+    const newTheme = theme === "dark" ? "light" : "dark";
+    setTheme(newTheme);
+    localStorage.setItem("theme", newTheme);
   };
 
   return (

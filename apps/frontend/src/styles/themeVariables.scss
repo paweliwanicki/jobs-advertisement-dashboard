@@ -1,25 +1,67 @@
-@use './variables.scss';
+@use "./variables.scss";
 
 $themes: (
   light: (
     background: variables.$white,
-    button-primary: variables.$violet,
-    button-primary-hover: variables.$light-violet,
+    button-primary-bg: variables.$violet,
+    button-primary-bg-hover: variables.$light-violet,
     button-primary-color: variables.$white,
-    button-secondary: variables.$very-light-grey,
-    button-secondary-hover: variables.$very-light-violet,
+    button-secondary-bg: variables.$very-light-grey,
+    button-secondary-bg-hover: variables.$very-light-violet,
     button-secondary-color: variables.$violet,
     input-background: variables.$white,
   ),
 
   dark: (
     background: variables.$midnight,
-    button-primary: variables.$dark-blue,
-    button-primary-hover: variables.$dark-grey,
+    button-primary-bg: variables.$dark-blue,
+    button-primary-bg-hover: variables.$dark-grey,
     button-primary-color: variables.$white,
-    button-secondary: variables.$dark-blue,
-    button-secondary-hover: variables.$dark-grey,
+    button-secondary-bg: variables.$dark-blue,
+    button-secondary-bg-hover: variables.$dark-grey,
     button-secondary-color: variables.$white,
     input-background: variables.$very-dark-blue,
   ),
 );
+
+@mixin themify($themes) {
+  @each $theme, $map in $themes {
+    :global(.theme-#{$theme}) & {
+      $theme-map: () !global;
+      @each $key, $submap in $map {
+        $value: map-get(map-get($themes, $theme), "#{$key}");
+        $theme-map: map-merge(
+          $theme-map,
+          (
+            $key: $value,
+          )
+        ) !global;
+      }
+      @content;
+      $theme-map: null !global;
+    }
+  }
+}
+
+// @mixin themify($themes) {
+//   @each $theme, $map in $themes {
+//     .theme-#{$theme} & {
+//       $theme-map: () !global;
+//       @each $key, $submap in $map {
+//         $value: map-get(map-get($themes, $theme), '#{$key}');
+//         $theme-map: map-merge(
+//           $theme-map,
+//             (
+//               $key: $value,
+//             )
+//           ) !global;
+//         }
+//         @content;
+//         $theme-map: null !global;
+//       }
+//    }
+// }
+
+@function themed($key) {
+  @return map-get($theme-map, $key);
+}

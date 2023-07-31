@@ -1,14 +1,16 @@
 import Footer from '../../components/Footer/Footer';
 import NavBar from '../../components/NavBar/NavBar';
+import { Theme } from '../../contexts/themeContext';
 import classes from './Layout.module.scss';
 
 type LayoutProps = {
+  theme: Theme;
   children: React.ReactNode;
 };
 
-const Layout = ({ children }: LayoutProps) => {
+const Layout = ({ children, theme }: LayoutProps) => {
   return (
-    <div className={classes.layout}>
+    <div className={`${classes.layout} ${classes[theme]}`}>
       <NavBar />
       <main>{children}</main>
       <Footer />
