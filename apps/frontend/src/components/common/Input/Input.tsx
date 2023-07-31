@@ -48,29 +48,8 @@ const Input = ({
     {
       duration: 0.5,
       easing: [0.22, 0.03, 0.26, 1],
-      //delay: 0.3,
     }
   );
-
-  const validationIconFadeAnimation = useMotionAnimate(
-    `.${classes.validationIcon}`,
-    { opacity: 0 },
-    {
-      duration: 0.5,
-      easing: [0.22, 0.03, 0.26, 1],
-      //delay: 0.3,
-    }
-  );
-
-  // const iconsBoxAnimation = useMotionAnimate(
-  //   `.${classes.iconsBox}`,
-  //   { width: '55px' },
-  //   {
-  //     duration: 0.8,
-  //     easing: [0.22, 0.03, 0.26, 1],
-  //     //delay: 0.3,
-  //   }
-  // );
 
   const [inputType, setInputType] = useState<InputTypes>(type);
 

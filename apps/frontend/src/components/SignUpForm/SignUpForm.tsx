@@ -134,11 +134,11 @@ const SignUpForm = ({ onSubmit }: SignForm) => {
   const closeModal = useCallback(() => {
     setModalContent(undefined);
     setShowModal(false);
-    console.log('close');
   }, []);
 
   useEffect(() => {
     void play();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

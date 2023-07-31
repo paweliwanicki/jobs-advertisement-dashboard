@@ -10,7 +10,7 @@ type LayoutProps = {
 
 const Layout = ({ children, theme }: LayoutProps) => {
   return (
-    <div className={`${classes.layout} ${classes[theme]}`}>
+    <div className={`${classes.layout} theme-${theme}`}>
       <NavBar />
       <main>{children}</main>
       <Footer />

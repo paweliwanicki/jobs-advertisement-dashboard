@@ -46,7 +46,7 @@ const Modal = ({ isOpen, children, onClose }: ModalProps) => {
       <SvgIcon
         id="icon-close"
         classNames={classes.closeIcon}
-        onClick={onClose}
+        onClick={handleModalClose}
         width={32}
         height={32}
       />
