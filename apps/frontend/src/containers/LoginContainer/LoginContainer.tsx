@@ -1,10 +1,10 @@
-import { useCallback, useState } from "react";
-import SignUpForm from "../../components/SignUpForm/SignUpForm";
-import classes from "./LoginContainer.module.scss";
-import SignInForm from "../../components/SignInForm/SignInForm";
-import { useSignForm } from "../../hooks/useSignForm";
+import { useCallback, useState } from 'react';
+import SignUpForm from '../../components/SignUpForm/SignUpForm';
+import classes from './LoginContainer.module.scss';
+import SignInForm from '../../components/SignInForm/SignInForm';
+import { useSignForm } from '../../hooks/useSignForm';
 
-type Form = "SIGN_UP" | "SIGN_IN";
+type Form = 'SIGN_UP' | 'SIGN_IN';
 
 export type SignForm = {
   onSubmit: (username: string, password: string) => void;
@@ -12,19 +12,19 @@ export type SignForm = {
 
 const FORM_CHANGE_TEXT: Record<Form, Record<string, string>> = {
   SIGN_UP: {
-    label: "Have already an account?",
-    btn: "Sign in!",
+    label: 'Have already an account?',
+    btn: 'Sign in!',
   },
   SIGN_IN: {
-    label: "Do not have an account yet?",
-    btn: "Sign up!",
+    label: 'Do not have an account yet?',
+    btn: 'Sign up!',
   },
 } as const;
 
 const LoginContainer = () => {
   const { message, handleSignIn, handleSignUp, clearMessage } = useSignForm();
 
-  const [activeForm, setActiveForm] = useState<Form>("SIGN_IN");
+  const [activeForm, setActiveForm] = useState<Form>('SIGN_IN');
 
   const handleSignInOnSubmit = (username: string, password: string) => {
     handleSignIn(username, password)
@@ -43,13 +43,13 @@ const LoginContainer = () => {
   };
 
   const handleCHangeSignForm = useCallback(() => {
-    setActiveForm(activeForm === "SIGN_IN" ? "SIGN_UP" : "SIGN_IN");
+    setActiveForm(activeForm === 'SIGN_IN' ? 'SIGN_UP' : 'SIGN_IN');
     clearMessage();
   }, [activeForm, clearMessage]);
 
   return (
-    <div className={classes.loginContainer}>
-      {activeForm === "SIGN_UP" ? (
+    <div className={classes.loginContainer} role="logincontainer">
+      {activeForm === 'SIGN_UP' ? (
         <SignUpForm onSubmit={handleSignUpOnSubmit} />
       ) : (
         <SignInForm onSubmit={handleSignInOnSubmit} />
