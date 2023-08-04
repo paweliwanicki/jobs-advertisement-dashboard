@@ -42,13 +42,13 @@ const LoginContainer = () => {
       });
   };
 
-  const handleCHangeSignForm = useCallback(() => {
+  const handleChangeSignForm = useCallback(() => {
     setActiveForm(activeForm === 'SIGN_IN' ? 'SIGN_UP' : 'SIGN_IN');
     clearMessage();
   }, [activeForm, clearMessage]);
 
   return (
-    <div className={classes.loginContainer} role="logincontainer">
+    <div className={classes.loginContainer}>
       {activeForm === 'SIGN_UP' ? (
         <SignUpForm onSubmit={handleSignUpOnSubmit} />
       ) : (
@@ -62,7 +62,7 @@ const LoginContainer = () => {
         <p>{FORM_CHANGE_TEXT[activeForm].label}</p>
         <button
           className={classes.formChangeBtn}
-          onClick={handleCHangeSignForm}
+          onClick={handleChangeSignForm}
         >
           {FORM_CHANGE_TEXT[activeForm].btn}
         </button>

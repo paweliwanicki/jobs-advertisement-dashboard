@@ -16,19 +16,21 @@ const Checkbox = ({
   hasError,
   size = 'large',
   onChange,
-}: CheckboxProps) => (
-  <label className={`${classes.checkbox}`}>
-    <div className={`${classes.checkboxContainer} ${classes[size]}`}>
-      <input type="checkbox" checked={isChecked} onChange={onChange} />
-      <span
-        className={`${classes.checkmark} ${classes[size]} ${
-          hasError ? classes.error : ''
-        }`}
-        id="checkmark"
-      ></span>
-    </div>
-    {label && <span className={classes.checkboxLabel}>{label}</span>}
-  </label>
-);
+}: CheckboxProps) => {
+  return (
+    <label className={`${classes.checkbox}`}>
+      <div className={`${classes.checkboxContainer} ${classes[size]}`}>
+        <input type="checkbox" onChange={onChange} checked={isChecked} />
+        <span
+          className={`${classes.checkmark} ${classes[size]} ${
+            hasError ? classes.error : ''
+          }`}
+          id="checkmark"
+        ></span>
+      </div>
+      {label && <span className={classes.checkboxLabel}>{label}</span>}
+    </label>
+  );
+};
 
 export default Checkbox;
