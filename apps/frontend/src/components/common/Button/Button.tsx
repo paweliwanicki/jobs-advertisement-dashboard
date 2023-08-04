@@ -11,9 +11,18 @@ type ButtonProps = {
   onClick: () => void;
 };
 
-const Button = ({ variant, classNames, children }: ButtonProps) => {
+const Button = ({
+  children,
+  variant,
+  classNames,
+  type = 'button',
+  onClick,
+}: ButtonProps) => {
   return (
-    <button className={`${classes.button} ${classes[variant]} ${classNames}`}>
+    <button
+      className={`${classes.button} ${classes[variant]} ${classNames} ${classes[type]}`}
+      onClick={onClick}
+    >
       {children}
     </button>
   );
