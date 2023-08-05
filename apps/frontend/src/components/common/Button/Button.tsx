@@ -14,14 +14,15 @@ type ButtonProps = {
 const Button = ({
   children,
   variant,
-  classNames,
+  classNames = '',
   type = 'button',
   onClick,
 }: ButtonProps) => {
   return (
     <button
-      className={`${classes.button} ${classes[variant]} ${classNames} ${classes[type]}`}
+      className={`${classes.button} ${classes[variant]} ${classNames}`}
       onClick={onClick}
+      type={type}
     >
       {children}
     </button>

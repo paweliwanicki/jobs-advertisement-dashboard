@@ -40,7 +40,6 @@ const SvgIcon = ({
     onMouseUp && onMouseUp();
   }, [color, onMouseUp]);
 
-  // set color if props.color has been changed
   useEffect(() => {
     setFill(color);
   }, [color]);

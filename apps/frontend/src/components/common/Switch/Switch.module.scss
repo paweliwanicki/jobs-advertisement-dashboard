@@ -2,8 +2,6 @@
 
 $background-color_1: #ccc;
 $background-color_2: white;
-$background-color_3: #5964e0;
-
 .switchBox {
   display: inline-flex;
   align-items: center;
@@ -52,7 +50,7 @@ $background-color_3: #5964e0;
         width: 14px;
         left: 5px;
         bottom: 5px;
-        background-color: $background-color_3;
+        background-color: variables.$violet;
         -webkit-transition: 0.4s;
         transition: 0.4s;
         border-radius: 50%;

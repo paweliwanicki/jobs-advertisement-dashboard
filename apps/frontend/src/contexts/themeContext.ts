@@ -9,7 +9,5 @@ type ThemeContextType = {
 
 export const ThemeContext = createContext<ThemeContextType>({
   theme: 'light',
-  setTheme: (theme: string) => {
-    console.log(theme);
-  },
+  setTheme: (theme: string) => theme,
 });
