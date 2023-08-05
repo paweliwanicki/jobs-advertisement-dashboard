@@ -1,6 +1,6 @@
-
-@import './fonts.scss';
-@import './styles/variables.scss';
+@use './fonts.scss';
+@use './styles/variables.scss';
+@use './styles/themeVariables.scss';
 
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -21,20 +21,6 @@ body {
   display: flex;
   min-width: 320px;
   min-height: 100vh;
-  background-color: #f4f6f8;
   -webkit-font-smoothing: antialiased;
   font-family: 'Kumbh Sans Regular', sans-serif;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
 }

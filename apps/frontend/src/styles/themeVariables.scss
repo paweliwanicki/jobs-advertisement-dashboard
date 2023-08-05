@@ -1,0 +1,51 @@
+@use './variables.scss';
+
+$themes: (
+  light: (
+    background: variables.$very-light-grey,
+    button-primary-bg: variables.$violet,
+    button-primary-bg-hover: variables.$light-violet,
+    button-primary-color: variables.$white,
+    button-secondary-bg: variables.$very-light-grey,
+    button-secondary-bg-hover: variables.$very-light-violet,
+    button-secondary-color: variables.$violet,
+    input-background: variables.$white,
+    input-color: variables.$very-dark-blue,
+  ),
+
+  dark: (
+    background: variables.$midnight,
+    button-primary-bg: variables.$dark-blue,
+    button-primary-bg-hover: variables.$dark-grey,
+    button-primary-color: variables.$white,
+    button-secondary-bg: variables.$dark-blue,
+    button-secondary-bg-hover: variables.$dark-grey,
+    button-secondary-color: variables.$white,
+    input-background: variables.$very-dark-blue,
+    input-color: variables.$white,
+    login-container-bg: none,
+  ),
+);
+
+@mixin themify($themes) {
+  @each $theme, $map in $themes {
+    :global(.theme-#{$theme}) & {
+      $theme-map: () !global;
+      @each $key, $submap in $map {
+        $value: map-get(map-get($themes, $theme), '#{$key}');
+        $theme-map: map-merge(
+          $theme-map,
+          (
+            $key: $value,
+          )
+        ) !global;
+      }
+      @content;
+      $theme-map: null !global;
+    }
+  }
+}
+
+@function themed($key) {
+  @return map-get($theme-map, $key);
+}

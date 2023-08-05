@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
+    "test": "turbo run test",
+    "test:watch": "turbo run test:watch",
     "start": "node apps/backend/dist/main"
   },
   "workspaces": [

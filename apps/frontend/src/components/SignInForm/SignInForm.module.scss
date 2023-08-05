@@ -1,10 +1,11 @@
-@import '../../styles/variables.scss';
+@use '../../styles/variables.scss';
 
 .signInForm {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-bottom: 15px;
+  opacity: 0;
 
   .rememberMeBox {
     display: inline-flex;
@@ -17,7 +18,7 @@
 
   > h2 {
     margin-block-end: 25px;
-    font-family: $font-family-bold;
+    font-family: variables.$font-family-bold;
   }
 
   > h4 {

@@ -1,31 +1,48 @@
 import Input from '../common/Input/Input';
 import classes from './SignInForm.module.scss';
-import { ChangeEvent, useCallback, useState } from 'react';
+import { ChangeEvent, useCallback, useState, useEffect } from 'react';
 import Button from '../common/Button/Button';
 import Checkbox from '../common/Checkbox/Checkbox';
 import { useSignForm } from '../../hooks/useSignForm';
 import { SignForm } from '../../containers/LoginContainer/LoginContainer';
+import { useMotionAnimate } from 'motion-hooks';
 
 const SignInForm = ({ onSubmit }: SignForm) => {
-  const { validateSignInForm } = useSignForm();
+  const { play } = useMotionAnimate(
+    `.${classes.signInForm}`,
+    { opacity: 1 },
+    {
+      duration: 0.5,
+      easing: [0.22, 0.03, 0.26, 1],
+    }
+  );
+
+  const { validateSignInForm, clearValidationAndError, errors, isValidated } =
+    useSignForm();
+
+  const { usernameError, passwordError } = errors;
+  const { usernameIsValidated, passwordIsValidated } = isValidated;
 
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [usernameError, setUsernameError] = useState<string | null>(null);
-  const [passwordError, setPasswordError] = useState<string | null>(null);
-
   const [rememberMeIsChecked, setRememberMeIsChecked] =
     useState<boolean>(false);
 
-  const handleUsernameOnChange = useCallback((username: string) => {
-    setUsernameError(null);
-    setUsername(username);
-  }, []);
+  const handleUsernameOnChange = useCallback(
+    (username: string) => {
+      usernameIsValidated && clearValidationAndError('USERNAME');
+      setUsername(username);
+    },
+    [usernameIsValidated, clearValidationAndError]
+  );
 
-  const handlePasswordOnChange = useCallback((password: string) => {
-    setPasswordError(null);
-    setPassword(password);
-  }, []);
+  const handlePasswordOnChange = useCallback(
+    (password: string) => {
+      passwordIsValidated && clearValidationAndError('PASSWORD');
+      setPassword(password);
+    },
+    [passwordIsValidated, clearValidationAndError]
+  );
 
   const handleOnCheckboxChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -35,19 +52,17 @@ const SignInForm = ({ onSubmit }: SignForm) => {
   );
 
   const handleFormOnSubmit = useCallback(() => {
-    const { isValid, usernameError, passwordError } = validateSignInForm(
-      username,
-      password
-    );
-
+    const isValid = validateSignInForm(username, password);
     if (!isValid) {
-      usernameError && setUsernameError(usernameError);
-      passwordError && setPasswordError(passwordError);
       return;
     }
-
     onSubmit(username, password);
   }, [username, password, validateSignInForm, onSubmit]);
+
+  useEffect(() => {
+    void play();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className={classes.signInForm}>
@@ -60,9 +75,10 @@ const SignInForm = ({ onSubmit }: SignForm) => {
         id="username"
         label="Username"
         errorText={usernameError}
-        hasError={usernameError !== ''}
+        hasError={!!usernameError}
         onChange={handleUsernameOnChange}
         placeholder="Your username"
+        isValidated={usernameIsValidated}
       />
 
       <Input
@@ -70,9 +86,10 @@ const SignInForm = ({ onSubmit }: SignForm) => {
         id="password"
         label="Password"
         errorText={passwordError}
-        hasError={passwordError !== ''}
+        hasError={!!passwordError}
         onChange={handlePasswordOnChange}
         placeholder="Your password"
+        isValidated={passwordIsValidated}
       />
 
       <div className={classes.rememberMeBox}>
@@ -84,11 +101,7 @@ const SignInForm = ({ onSubmit }: SignForm) => {
         />
       </div>
 
-      <Button
-        type="button"
-        variant="secondary"
-        onClick={() => void handleFormOnSubmit()}
-      >
+      <Button type="button" variant="secondary" onClick={handleFormOnSubmit}>
         Sign In
       </Button>
     </div>

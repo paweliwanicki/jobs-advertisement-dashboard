@@ -1,18 +1,23 @@
-@import '../../styles/variables.scss';
+@use '../../styles/variables.scss';
+@use '../../styles/themeVariables.scss';
 
 .loginContainer {
   border-radius: 6px;
-  background: #5964e0;
   width: 500px;
   padding: 25px 50px;
   display: flex;
   flex-flow: column;
   position: relative;
-  background-image: url('./bg-login-container.svg');
   background-position: center;
   background-size: cover;
-  align-self: center;
   margin: auto;
+  background-image: url('./bg-login-container.svg');
+  transition: background-image linear 0.5s, background-color linear 0.5s;
+
+  @include themeVariables.themify(themeVariables.$themes) {
+    background-image: themeVariables.themed('login-container-bg');
+    background-color: themeVariables.themed('login-container-bg-color');
+  }
 
   .signResponseMessage {
     min-height: 45px;
@@ -20,11 +25,11 @@
     width: 100%;
 
     > p {
-      color: $orange;
+      color: variables.$orange;
       line-height: normal;
       text-align: left;
       font-size: 14px;
-      font-family: $font-family-bold;
+      font-family: variables.$font-family-bold;
       display: inline-flex;
       gap: 10px;
       text-align: justify;
@@ -40,15 +45,13 @@
     .formChangeBtn {
       margin-top: 5px;
       align-self: flex-end;
-      color: #f4f6f8;
+      color: variables.$very-light-grey;
       padding: 0;
       font-size: 13px;
-      color: $light-grey;
-      font-family: $font-family-bold;
-      cursor: pointer;
+      font-family: variables.$font-family-bold;
       border: none;
       background-color: transparent;
-      margin-top: auto;
+      cursor: pointer;
 
       &:hover {
         text-decoration: underline;

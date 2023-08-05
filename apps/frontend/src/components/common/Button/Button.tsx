@@ -12,16 +12,15 @@ type ButtonProps = {
 };
 
 const Button = ({
-  variant,
   children,
+  variant,
+  classNames = '',
   type = 'button',
   onClick,
 }: ButtonProps) => {
   return (
     <button
-      className={`${classes.button} ${classes[variant]} ${
-        classes.classNames ? classes.classNames : ''
-      }`}
+      className={`${classes.button} ${classes[variant]} ${classNames}`}
       onClick={onClick}
       type={type}
     >

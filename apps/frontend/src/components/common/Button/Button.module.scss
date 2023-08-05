@@ -1,10 +1,12 @@
-@import '../../../styles/variables.scss';
+@use '../../../styles/variables.scss';
+@use '../../../styles//themeVariables.scss';
+
 .button {
   transition: background-color 0.5s;
   border-radius: 5px;
   outline: none;
   border: none;
-  font-family: $font-family-bold;
+  font-family: variables.$font-family-bold;
   font-size: 16px;
   padding: 16px 38px;
   font-weight: 700;
@@ -21,20 +23,29 @@
   }
 
   &.primary {
-    background-color: $violet;
-    color: $white;
+    //background-color:  variables.$white;
+    @include themeVariables.themify(themeVariables.$themes) {
+      background-color: themeVariables.themed('button-primary-bg');
+      color: themeVariables.themed('button-primary-color');
+    }
 
     &:hover {
-      background-color: $light-violet;
+      @include themeVariables.themify(themeVariables.$themes) {
+        background-color: themeVariables.themed('button-primary-bg-hover');
+      }
     }
   }
 
   &.secondary {
-    background-color: #eff0fc;
-    color: $violet;
+    @include themeVariables.themify(themeVariables.$themes) {
+      background-color: themeVariables.themed('button-secondary-bg');
+      color: themeVariables.themed('button-secondary-color');
+    }
+  }
 
-    &:hover {
-      background-color: #c5c9f4;
+  &:hover {
+    @include themeVariables.themify(themeVariables.$themes) {
+      background-color: themeVariables.themed('button-secondary-bg-hover');
     }
   }
 }

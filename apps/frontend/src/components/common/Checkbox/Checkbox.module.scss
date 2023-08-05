@@ -1,8 +1,7 @@
-@import '../../../styles/variables.scss';
+@use '../../../styles/variables.scss';
 
 $background-color_1: #e8e8ea;
 $background-color_2: #d5d8f7;
-$background-color_3: #5964e0;
 
 label.checkbox {
   display: inline-flex;
@@ -10,7 +9,6 @@ label.checkbox {
   .checkboxContainer {
     display: block;
     position: relative;
-
     height: 24px;
     width: 24px;
     border-radius: 3px;
@@ -32,22 +30,22 @@ label.checkbox {
       width: 0;
 
       &.error {
-        outline: 1px solid $error;
-        -webkit-box-shadow: 0px 0px 10px 0px $error;
-        -moz-box-shadow: 0px 0px 10px 0px $error;
-        box-shadow: 0px 0px 10px 0px $error;
+        outline: 1px solid variables.$error;
+        -webkit-box-shadow: 0px 0px 10px 0px variables.$error;
+        -moz-box-shadow: 0px 0px 10px 0px variables.$error;
+        box-shadow: 0px 0px 10px 0px variables.$error;
       }
 
       &.valid {
-        outline: 1px solid $valid;
-        -webkit-box-shadow: 0px 0px 15px 0px $valid;
-        -moz-box-shadow: 0px 0px 15px 0px $valid;
-        box-shadow: 0px 0px 15px 0px $valid;
+        outline: 1px solid variables.$valid;
+        -webkit-box-shadow: 0px 0px 15px 0px variables.$valid;
+        -moz-box-shadow: 0px 0px 15px 0px variables.$valid;
+        box-shadow: 0px 0px 15px 0px variables.$valid;
       }
       &:checked {
         ~ {
           .checkmark {
-            background-color: $background-color_3;
+            background-color: variables.$violet;
             &:after {
               display: block;
             }
@@ -73,7 +71,7 @@ label.checkbox {
         top: 4px;
         width: 7px;
         height: 14px;
-        border: solid white;
+        border: solid variables.$white;
         border-width: 0 2px 2px 0;
         -webkit-transform: rotate(45deg);
         -ms-transform: rotate(45deg);
@@ -93,17 +91,17 @@ label.checkbox {
       }
 
       &.error {
-        outline: 1px solid $error;
-        -webkit-box-shadow: 0px 0px 10px 0px $error;
-        -moz-box-shadow: 0px 0px 10px 0px $error;
-        box-shadow: 0px 0px 10px 0px $error;
+        outline: 1px solid variables.$error;
+        -webkit-box-shadow: 0px 0px 10px 0px variables.$error;
+        -moz-box-shadow: 0px 0px 10px 0px variables.$error;
+        box-shadow: 0px 0px 10px 0px variables.$error;
       }
 
       &.valid {
-        outline: 1px solid $valid;
-        -webkit-box-shadow: 0px 0px 15px 0px $valid;
-        -moz-box-shadow: 0px 0px 15px 0px $valid;
-        box-shadow: 0px 0px 15px 0px $valid;
+        outline: 1px solid variables.$valid;
+        -webkit-box-shadow: 0px 0px 15px 0px variables.$valid;
+        -moz-box-shadow: 0px 0px 15px 0px variables.$valid;
+        box-shadow: 0px 0px 15px 0px variables.$valid;
       }
     }
 

@@ -1,7 +1,24 @@
-@import '../../styles/variables.scss';
+@use '../../styles/themeVariables.scss';
 
 .layout {
   display: flex;
   flex-flow: column;
   height: 100%;
+  gap: 25px;
+  transition: background-color linear 0.5s;
+
+  main {
+    width: 100%;
+    max-width: 1110px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+  }
+}
+
+:global {
+  @include themeVariables.themify(themeVariables.$themes) {
+    background-color: themeVariables.themed('background');
+  }
 }

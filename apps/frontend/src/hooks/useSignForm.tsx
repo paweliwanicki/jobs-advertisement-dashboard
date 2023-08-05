@@ -8,31 +8,31 @@ type InputError =
   | 'WRONG_USERNAME_FORMAT';
 
 type SignResponseMessage = 'WRONG_CREDENTIALS' | 'USERNAME_IN_USE';
-
-type SignInFormValidation = {
-  isValid: boolean;
-  usernameError: string | null;
-  passwordError: string | null;
-};
-
-type SignUpFormValidation = SignInFormValidation & {
-  confirmPasswordError: string | null;
-  termsCheckedError: boolean;
-};
+type SignFormInput = 'USERNAME' | 'PASSWORD' | 'CONFIRM_PASSWORD' | 'TERMS';
 
 type SignForm = {
   message: ReactNode;
+  errors: {
+    usernameError: string | undefined;
+    passwordError: string | undefined;
+    confirmPasswordError: string | undefined;
+    termsCheckError: boolean;
+  };
+  isValidated: {
+    usernameIsValidated: boolean;
+    passwordIsValidated: boolean;
+    confirmPasswordIsValidated: boolean;
+    termsCheckIsValidated: boolean;
+  };
   clearMessage: () => void;
-  validateSignInForm: (
-    username: string,
-    password: string
-  ) => SignInFormValidation;
+  clearValidationAndError: (input: SignFormInput) => void;
+  validateSignInForm: (username: string, password: string) => boolean;
   validateSignUpForm: (
     username: string,
     password: string,
     confirmPassword: string,
     termsChecked: boolean
-  ) => SignUpFormValidation;
+  ) => boolean;
   handleSignIn: (username: string, password: string) => Promise<void>;
   handleSignUp: (username: string, password: string) => Promise<void>;
 };
@@ -51,7 +51,7 @@ const SIGN_RESPONSE_MESSAGES: Record<SignResponseMessage, string> = {
     'You typed wrong username or password! Please check your credentials and try to sign in again.',
   USERNAME_IN_USE:
     'Unfortunately, the username is already in use. Use a different username and try again.',
-};
+} as const;
 
 const USERNAME_REGEX = new RegExp(
   '^(?=(.*[a-z]){1,})(?=(.*[0-9]){1,}).{6,12}$'
@@ -62,6 +62,21 @@ const PASSWORD_REGEX = new RegExp(
 
 export const useSignForm = (): SignForm => {
   const [message, setMessage] = useState<ReactNode>();
+  const [usernameError, setUsernameError] = useState<string | undefined>();
+  const [passwordError, setPasswordError] = useState<string | undefined>();
+  const [confirmPasswordError, setConfirmPasswordError] = useState<
+    string | undefined
+  >();
+  const [termsCheckError, setTermsError] = useState<boolean>(false);
+
+  const [usernameIsValidated, setUsernameIsValidated] =
+    useState<boolean>(false);
+  const [passwordIsValidated, setPasswordIsValidated] =
+    useState<boolean>(false);
+  const [confirmPasswordIsValidated, setConfirmPasswordIsValidated] =
+    useState<boolean>(false);
+  const [termsCheckIsValidated, setTermsCheckIsValidated] =
+    useState<boolean>(false);
 
   const handleSignIn = useCallback(
     async (username: string, password: string) => {
@@ -103,24 +118,21 @@ export const useSignForm = (): SignForm => {
   const validateSignInForm = useCallback(
     (username: string, password: string) => {
       let isValid = true;
-      let usernameError = null;
-      let passwordError = null;
 
       if (username === '') {
-        usernameError = INPUT_ERRORS_MESSAGES.EMPTY;
+        setUsernameError(INPUT_ERRORS_MESSAGES.EMPTY);
         isValid = false;
       }
 
       if (password === '') {
-        passwordError = INPUT_ERRORS_MESSAGES.EMPTY;
+        setPasswordError(INPUT_ERRORS_MESSAGES.EMPTY);
         isValid = false;
       }
 
-      return {
-        isValid,
-        usernameError,
-        passwordError,
-      };
+      setUsernameIsValidated(true);
+      setPasswordIsValidated(true);
+
+      return isValid;
     },
     []
   );
@@ -133,52 +145,110 @@ export const useSignForm = (): SignForm => {
       termsChecked: boolean
     ) => {
       let isValid = true;
-      let usernameError = null;
-      let passwordError = null;
-      let confirmPasswordError = null;
 
       if (username === '') {
-        usernameError = INPUT_ERRORS_MESSAGES.EMPTY;
+        setUsernameError(INPUT_ERRORS_MESSAGES.EMPTY);
         isValid = false;
       } else if (!USERNAME_REGEX.test(username)) {
-        usernameError = INPUT_ERRORS_MESSAGES.WRONG_USERNAME_FORMAT;
+        setUsernameError(INPUT_ERRORS_MESSAGES.WRONG_USERNAME_FORMAT);
         isValid = false;
       }
 
       if (password === '') {
-        passwordError = INPUT_ERRORS_MESSAGES.EMPTY;
+        setPasswordError(INPUT_ERRORS_MESSAGES.EMPTY);
         isValid = false;
       } else if (!PASSWORD_REGEX.test(password)) {
-        passwordError = INPUT_ERRORS_MESSAGES.WRONG_PASSWORD_FORMAT;
+        setPasswordError(INPUT_ERRORS_MESSAGES.WRONG_PASSWORD_FORMAT);
         isValid = false;
       }
 
       if (confirmPassword === '') {
-        confirmPasswordError = INPUT_ERRORS_MESSAGES.EMPTY;
+        setConfirmPasswordError(INPUT_ERRORS_MESSAGES.EMPTY);
         isValid = false;
       } else if (confirmPassword !== password) {
-        confirmPasswordError = INPUT_ERRORS_MESSAGES.PASSWORDS_NOT_MATCH;
+        setConfirmPasswordError(INPUT_ERRORS_MESSAGES.PASSWORDS_NOT_MATCH);
         isValid = false;
       }
 
-      return {
-        isValid,
-        usernameError,
-        passwordError,
-        confirmPasswordError,
-        termsCheckedError: !termsChecked,
-      };
+      if (!termsChecked) {
+        setTermsError(true);
+        isValid = false;
+      }
+
+      setUsernameIsValidated(true);
+      setPasswordIsValidated(true);
+      setConfirmPasswordIsValidated(true);
+      setTermsCheckIsValidated(true);
+
+      return isValid;
     },
     []
   );
 
   const clearMessage = useCallback(() => {
-    setMessage(null);
+    setMessage(undefined);
   }, []);
+
+  const clearErrors = useCallback(() => {
+    setUsernameError(undefined);
+    setPasswordError(undefined);
+    setConfirmPasswordError(undefined);
+    setTermsError(false);
+  }, []);
+
+  const clearValidation = useCallback(() => {
+    setPasswordIsValidated(false);
+    setUsernameIsValidated(false);
+    setConfirmPasswordIsValidated(false);
+    setTermsCheckIsValidated(false);
+  }, []);
+
+  const clearValidationAndError = useCallback(
+    (input?: SignFormInput) => {
+      switch (input) {
+        case 'USERNAME':
+          setUsernameError(undefined);
+          setUsernameIsValidated(false);
+          break;
+        case 'PASSWORD':
+          setPasswordError(undefined);
+          setPasswordIsValidated(false);
+          break;
+        case 'CONFIRM_PASSWORD':
+          setConfirmPasswordError(undefined);
+          setConfirmPasswordIsValidated(false);
+          break;
+        case 'TERMS':
+          setTermsError(false);
+          setTermsCheckIsValidated(false);
+          break;
+
+        default: {
+          clearErrors();
+          clearValidation();
+          break;
+        }
+      }
+    },
+    [clearErrors]
+  );
 
   return {
     message,
+    errors: {
+      usernameError,
+      passwordError,
+      confirmPasswordError,
+      termsCheckError,
+    },
+    isValidated: {
+      usernameIsValidated,
+      passwordIsValidated,
+      confirmPasswordIsValidated,
+      termsCheckIsValidated,
+    },
     clearMessage,
+    clearValidationAndError,
     validateSignInForm,
     validateSignUpForm,
     handleSignIn,
