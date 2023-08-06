@@ -5,7 +5,6 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { AuthenticationModule } from './authentication/authentication.module';
-import { UsersModule } from './users/users.module';
 import { MiddlewareConsumer, ValidationPipe } from '@nestjs/common';
 import { APP_PIPE } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -41,7 +40,6 @@ const cookieSession = require('cookie-session');
       dropSchema: true,
     }),
     AuthenticationModule,
-    UsersModule,
   ],
   controllers: [AppController],
   providers: [
