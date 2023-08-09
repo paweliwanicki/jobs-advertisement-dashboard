@@ -35,7 +35,7 @@ const cookieSession = require('cookie-session');
       password: 'admin',
       database: 'app_db',
       entities: [User],
-      synchronize: false,
+      synchronize: true,
       autoLoadEntities: true,
       dropSchema: true,
     }),
@@ -58,13 +58,13 @@ export class AppModule {
     private dataSource: DataSource,
   ) {}
   // set global miuddleware for example test env
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(
-        cookieSession({
-          keys: [this.configService.get('COOKIE_KEY')],
-        }),
-      )
-      .forRoutes('*');
-  }
+  // configure(consumer: MiddlewareConsumer) {
+  //   consumer
+  //     .apply(
+  //       cookieSession({
+  //         keys: [this.configService.get('COOKIE_KEY')],
+  //       }),
+  //     )
+  //     .forRoutes('*');
+  // }
 }

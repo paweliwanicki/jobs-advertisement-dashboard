@@ -34,7 +34,11 @@ type SignForm = {
     termsChecked: boolean
   ) => boolean;
   handleSignIn: (username: string, password: string) => Promise<void>;
-  handleSignUp: (username: string, password: string) => Promise<void>;
+  handleSignUp: (
+    username: string,
+    password: string,
+    confirmPassword: string
+  ) => Promise<void>;
 };
 
 const INPUT_ERRORS_MESSAGES: Record<InputError, string> = {
@@ -97,19 +101,21 @@ export const useSignForm = (): SignForm => {
   );
 
   const handleSignUp = useCallback(
-    async (username: string, password: string) => {
+    async (username: string, password: string, confirmPassword: string) => {
       const response = await ApiService.post<{
         username: string;
         password: string;
+        confirmPassword: string;
       }>({
         path: '/api/auth/signup',
         payload: JSON.stringify({
           username,
           password,
+          confirmPassword,
         }),
       });
 
-      setMessage(SIGN_RESPONSE_MESSAGES.USERNAME_IN_USE);
+      //setMessage(SIGN_RESPONSE_MESSAGES.USERNAME_IN_USE);
       console.log(response);
     },
     []

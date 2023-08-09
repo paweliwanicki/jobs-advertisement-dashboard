@@ -111,7 +111,7 @@ const SignUpForm = ({ onSubmit }: SignForm) => {
       return;
     }
 
-    onSubmit(username, password);
+    onSubmit(username, password, confirmPassword);
   }, [
     username,
     password,
@@ -224,8 +224,10 @@ const SignUpForm = ({ onSubmit }: SignForm) => {
         <Checkbox
           onChange={handleOnCheckboxChange}
           isChecked={termsChecked}
-          hasError={Boolean(termsCheckError)}
+          hasError={!!termsCheckError}
           size="medium"
+          errorText="You must agree conditions and terms!"
+          errorTooltip
         />
         <p>
           I agree to the

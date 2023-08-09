@@ -7,7 +7,11 @@ import { useSignForm } from '../../hooks/useSignForm';
 type Form = 'SIGN_UP' | 'SIGN_IN';
 
 export type SignForm = {
-  onSubmit: (username: string, password: string) => void;
+  onSubmit: (
+    username: string,
+    password: string,
+    confirmPassword: string
+  ) => void;
 };
 
 const FORM_CHANGE_TEXT: Record<Form, Record<string, string>> = {
@@ -30,15 +34,19 @@ const LoginContainer = () => {
     handleSignIn(username, password)
       .then((res) => console.log(res))
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   };
 
-  const handleSignUpOnSubmit = (username: string, password: string) => {
-    handleSignUp(username, password)
+  const handleSignUpOnSubmit = (
+    username: string,
+    password: string,
+    confirmPassword: string
+  ) => {
+    handleSignUp(username, password, confirmPassword)
       .then((res) => console.log(res))
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   };
 

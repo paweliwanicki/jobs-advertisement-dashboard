@@ -13,7 +13,7 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
   @Column()
-  email: string;
+  username: string;
 
   @Column({ default: 'en' })
   lang: string;
@@ -25,7 +25,7 @@ export class User {
   @Exclude()
   password: string;
 
-  // @OneToMany(() => JobOffer, (offer) => offer.user)
+  // @OneToMany(() => JobOffer, (offer) => offer.user_id)
   // offers: JobOffer[];
 
   @AfterInsert()

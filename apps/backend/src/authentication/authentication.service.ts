@@ -14,20 +14,20 @@ const scrypt = promisify(_scrypt);
 export class AuthenticationService {
   constructor(private userService: UsersService) {}
 
-  async userSignUp(email: string, password: string) {
-    const users = await this.userService.find(email);
-    if (users.length) {
-      throw new BadRequestException('Email is in use');
+  async userSignUp(username: string, password: string) {
+    const currentUser = await this.userService.findOneByUsername(username);
+    if (currentUser) {
+      throw new BadRequestException('Username is in use');
     }
     const salt = randomBytes(8).toString('hex');
     const hash = (await scrypt(password, salt, 32)) as Buffer;
     const result = `${salt}.${hash.toString('hex')}`;
-    const user = await this.userService.create(email, result);
+    const user = await this.userService.create(username, result);
     return user;
   }
 
-  async userSignIn(email: string, password: string) {
-    const [user] = await this.userService.find(email);
+  async userSignIn(username: string, password: string) {
+    const user = await this.userService.findOneByUsername(username);
     if (!user) {
       throw new NotFoundException('User not found');
     }

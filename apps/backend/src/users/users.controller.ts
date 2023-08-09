@@ -20,7 +20,7 @@ export class UsersController {
 
   @Get('/:id')
   async findUser(@Param('id') id: string) {
-    const user = await this.usersService.findOne(parseInt(id));
+    const user = await this.usersService.findOneById(parseInt(id));
     if (!user) {
       throw new NotFoundException('User was not found');
     }
@@ -28,8 +28,8 @@ export class UsersController {
   }
 
   @Get()
-  findAllUsers(@Query('email') email: string) {
-    return this.usersService.find(email);
+  findUserByUsername(@Query('username') username: string) {
+    return this.usersService.findOneByUsername(username);
   }
 
   @Delete('/:id')

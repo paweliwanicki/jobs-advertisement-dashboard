@@ -7,22 +7,22 @@ import { Repository } from 'typeorm';
 export class UsersService {
   constructor(@InjectRepository(User) private repo: Repository<User>) {}
 
-  create(email: string, password: string) {
-    const user = this.repo.create({ email, password });
+  create(username: string, password: string) {
+    const user = this.repo.create({ username, password });
     return this.repo.save(user);
   }
 
-  findOne(id: number) {
+  findOneById(id: number) {
     if (!id) return null;
     return this.repo.findOneBy({ id });
   }
 
-  find(email: string) {
-    return this.repo.find({ where: { email } });
+  findOneByUsername(username: string) {
+    return this.repo.findOneBy({ username });
   }
 
   async update(id: number, attrs: Partial<User>) {
-    const user = await this.findOne(id);
+    const user = await this.findOneById(id);
     if (!user) {
       throw new NotFoundException('User was not found');
     }
@@ -31,7 +31,7 @@ export class UsersService {
   }
 
   async remove(id: number) {
-    const user = await this.findOne(id);
+    const user = await this.findOneById(id);
     if (!user) {
       throw new NotFoundException('User was not found');
     }
