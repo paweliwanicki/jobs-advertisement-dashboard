@@ -24,20 +24,23 @@ const cookieSession = require('cookie-session');
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '../..', 'frontend', 'dist'),
     }),
+
     // TypeOrmModule.forRootAsync({
     //   useClass: TypeOrmConfigService,
     // }),
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: '127.0.0.1',
-      port: 3306,
-      username: 'root',
-      password: 'admin',
-      database: 'app_db',
-      entities: [User],
-      synchronize: true,
-      autoLoadEntities: true,
-      dropSchema: true,
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        type: 'postgres',
+        host: configService.get<string>('DB_HOST'),
+        port: configService.get<number>('DB_PORT'),
+        username: configService.get<string>('DB_USERNAME'),
+        password: configService.get<string>('DB_PASSWORD'),
+        database: configService.get<string>('DB_NAME'),
+        synchronize: configService.get<boolean>('SYNCHRONIZE'),
+        entities: [User],
+      }),
     }),
     AuthenticationModule,
   ],
@@ -54,8 +57,7 @@ const cookieSession = require('cookie-session');
 })
 export class AppModule {
   constructor(
-    private configService: ConfigService,
-    private dataSource: DataSource,
+    private configService: ConfigService, //private dataSource: DataSource,
   ) {}
   // set global miuddleware for example test env
   // configure(consumer: MiddlewareConsumer) {
