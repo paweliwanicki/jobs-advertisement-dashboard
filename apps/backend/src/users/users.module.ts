@@ -4,10 +4,18 @@ import { UsersService } from './users.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CurrentUserMiddleware } from './middlewares/current-user.middleware';
 import { User } from './user.entity';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from 'src/authentication/guards/jwt-auth.guard';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User])],
-  providers: [UsersService],
+  providers: [
+    UsersService,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+  ],
   controllers: [UsersController],
   exports: [UsersService],
 })

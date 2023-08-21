@@ -14,6 +14,7 @@ import { User } from 'src/users/user.entity';
 import { SignInUserDto } from 'src/users/dtos/sign-in-user.dto';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { UserDto } from 'src/users/dtos/user.dto';
+import { LocalAuthGuard } from './guards/local-auth.guard';
 
 @Controller('auth')
 @Serialize(UserDto)
@@ -29,14 +30,16 @@ export class AuthenticationController {
   @Post('/signup')
   async createUser(@Body() body: SignUpUserDto, @Session() session: any) {
     const { username, password } = body;
-    const user = await this.authenticationService.userSignUp(
+    const { access_token } = await this.authenticationService.userSignUp(
       username,
       password,
     );
+    console.log(access_token);
     //session.userId = user.id;
-    return user;
+    return access_token;
   }
 
+  @UseGuards(LocalAuthGuard)
   @Post('/signin')
   async signInUser(@Body() body: SignInUserDto, @Session() session: any) {
     const { username, password } = body;
@@ -51,6 +54,7 @@ export class AuthenticationController {
 
   @Post('/signout')
   async signOutUser(@Session() session: any) {
-    session.userId = null;
+    console.log('logout');
+    //session.userId = null;
   }
 }
