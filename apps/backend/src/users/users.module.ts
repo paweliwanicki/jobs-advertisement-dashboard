@@ -11,10 +11,10 @@ import { JwtAuthGuard } from 'src/authentication/guards/jwt-auth.guard';
   imports: [TypeOrmModule.forFeature([User])],
   providers: [
     UsersService,
-    {
-      provide: APP_GUARD,
-      useClass: JwtAuthGuard,
-    },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: JwtAuthGuard,
+    // },
   ],
   controllers: [UsersController],
   exports: [UsersService],

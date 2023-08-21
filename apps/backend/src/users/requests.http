@@ -11,9 +11,5 @@ GET http://localhost:3000/api/auth?email=dasdass@om.pl
 DELETE http://localhost:3000/api/auth/2
 
 
-### get currently signed in user
-GET http://localhost:3000/api/auth/whoami
-
-
 ### sign out user
 POST http://localhost:3000/api/auth/signout

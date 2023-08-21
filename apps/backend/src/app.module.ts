@@ -10,7 +10,6 @@ import { APP_PIPE } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmConfigService } from './config/typeorm.config';
 import { User } from './users/user.entity';
-import { DataSource } from 'typeorm';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const cookieSession = require('cookie-session');
@@ -21,9 +20,9 @@ const cookieSession = require('cookie-session');
       isGlobal: true,
       envFilePath: `.env.${process.env.NODE_ENV}`,
     }),
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '../..', 'frontend', 'dist'),
-    }),
+    // ServeStaticModule.forRoot({
+    //   rootPath: join(__dirname, '../..', 'frontend', 'dist'),
+    // }),
 
     // TypeOrmModule.forRootAsync({
     //   useClass: TypeOrmConfigService,
@@ -59,14 +58,13 @@ export class AppModule {
   constructor(
     private configService: ConfigService, //private dataSource: DataSource,
   ) {}
-  // set global miuddleware for example test env
-  // configure(consumer: MiddlewareConsumer) {
-  //   consumer
-  //     .apply(
-  //       cookieSession({
-  //         keys: [this.configService.get('COOKIE_KEY')],
-  //       }),
-  //     )
-  //     .forRoutes('*');
-  // }
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(
+        cookieSession({
+          keys: [this.configService.get('COOKIE_KEY')],
+        }),
+      )
+      .forRoutes('*');
+  }
 }

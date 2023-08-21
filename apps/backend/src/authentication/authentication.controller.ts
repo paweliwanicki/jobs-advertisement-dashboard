@@ -5,16 +5,17 @@ import {
   Post,
   Session,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
 import { SignUpUserDto } from 'src/users/dtos/sign-up-user.dto';
-import { AuthGuard } from 'src/guards/AuthGuard';
 import { CurrentUser } from 'src/users/decorators/current-user.decorator';
 import { User } from 'src/users/user.entity';
 import { SignInUserDto } from 'src/users/dtos/sign-in-user.dto';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { UserDto } from 'src/users/dtos/user.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 @Controller('auth')
 @Serialize(UserDto)
@@ -22,9 +23,15 @@ export class AuthenticationController {
   constructor(private readonly authenticationService: AuthenticationService) {}
 
   @Get('/whoami')
-  @UseGuards(AuthGuard)
+  @UseGuards(JwtAuthGuard)
   async whoAmI(@CurrentUser() user: User) {
     return user;
+  }
+
+  @Get('/myprofile')
+  @UseGuards(JwtAuthGuard)
+  async getProfile(@Request() req) {
+    return req.user;
   }
 
   @Post('/signup')
@@ -34,8 +41,7 @@ export class AuthenticationController {
       username,
       password,
     );
-    console.log(access_token);
-    //session.userId = user.id;
+    session.token = access_token;
     return access_token;
   }
 
@@ -44,17 +50,17 @@ export class AuthenticationController {
   async signInUser(@Body() body: SignInUserDto, @Session() session: any) {
     const { username, password } = body;
 
-    const user = await this.authenticationService.userSignIn(
+    const { access_token } = await this.authenticationService.userSignIn(
       username,
       password,
     );
-    //session.userId = user.id;
-    return user;
+    session.token = access_token;
+    return access_token;
   }
 
   @Post('/signout')
   async signOutUser(@Session() session: any) {
     console.log('logout');
-    //session.userId = null;
+    session.token = null;
   }
 }
