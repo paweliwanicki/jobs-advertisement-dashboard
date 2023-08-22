@@ -13,6 +13,6 @@
     "/apps/*"
   ],
   "dependencies": {
-    "mysql2": "^3.6.0"
+    "npm-check-updates": "^16.13.0"
   }
 }

@@ -8,12 +8,12 @@ import {
   Request,
 } from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
-import { SignUpUserDto } from 'src/users/dtos/sign-up-user.dto';
-import { CurrentUser } from 'src/users/decorators/current-user.decorator';
-import { User } from 'src/users/user.entity';
-import { SignInUserDto } from 'src/users/dtos/sign-in-user.dto';
-import { Serialize } from 'src/interceptors/serialize.interceptor';
-import { UserDto } from 'src/users/dtos/user.dto';
+import { SignUpUserDto } from '../users/dtos/sign-up-user.dto';
+import { CurrentUser } from '../users/decorators/current-user.decorator';
+import { User } from '../users/user.entity';
+import { SignInUserDto } from '../users/dtos/sign-in-user.dto';
+import { Serialize } from '../interceptors/serialize.interceptor';
+import { UserDto } from '../users/dtos/user.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
@@ -31,6 +31,7 @@ export class AuthenticationController {
   @Get('/myprofile')
   @UseGuards(JwtAuthGuard)
   async getProfile(@Request() req) {
+    console.log(req.user);
     return req.user;
   }
 

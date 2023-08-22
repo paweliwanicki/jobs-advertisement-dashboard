@@ -17,6 +17,7 @@ export class CurrentUserMiddleware implements NestMiddleware {
   constructor(private usersService: UsersService) {}
   async use(request: Request, response: Response, next: NextFunction) {
     const { userId } = request.session || {};
+    console.log(request.session);
 
     if (userId) {
       const user = await this.usersService.findOneById(userId);

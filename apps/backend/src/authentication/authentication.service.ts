@@ -8,8 +8,8 @@ import { randomBytes, scrypt as _scrypt } from 'crypto';
 import { UsersService } from '../users/users.service';
 import { promisify } from 'util';
 import { JwtService } from '@nestjs/jwt';
-import { Serialize } from 'src/interceptors/serialize.interceptor';
-import { UserDto } from 'src/users/dtos/user.dto';
+import { Serialize } from '../interceptors/serialize.interceptor';
+import { UserDto } from '../users/dtos/user.dto';
 
 const scrypt = promisify(_scrypt);
 

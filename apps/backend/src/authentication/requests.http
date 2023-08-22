@@ -4,7 +4,7 @@ POST http://localhost:3000/api/auth/signup
 Content-Type: application/json
 
 {
-  "username": "user_2",
+  "username": "user_3",
   "password": "User1pass!",
   "confirmPassword": "User1pass!"
 }
@@ -27,4 +27,4 @@ POST http://localhost:3000/api/auth/signout
 
 ### GET CURRENTLY SIGNED IN USER
 GET http://localhost:3000/api/auth/myprofile
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjYsInVzZXJuYW1lIjoidXNlcl8yIiwiaWF0IjoxNjkyNjQwNzczLCJleHAiOjE2OTI2NDQzNzN9.T0Tn31Bb1j9T-8EAlwYfKzUExxv__otJhLVSA45_RJw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjYsInVzZXJuYW1lIjoidXNlcl8yIiwiaWF0IjoxNjkyNzI0NjgyLCJleHAiOjE2OTI3MjgyODJ9.kjtJlxfjhFikdN-wg7gDRpUgevb4s-uoLDEb2Mw6eJM

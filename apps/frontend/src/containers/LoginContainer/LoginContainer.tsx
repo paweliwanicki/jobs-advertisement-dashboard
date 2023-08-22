@@ -6,14 +6,6 @@ import { useSignForm } from '../../hooks/useSignForm';
 
 type Form = 'SIGN_UP' | 'SIGN_IN';
 
-export type SignForm = {
-  onSubmit: (
-    username: string,
-    password: string,
-    confirmPassword: string
-  ) => void;
-};
-
 const FORM_CHANGE_TEXT: Record<Form, Record<string, string>> = {
   SIGN_UP: {
     label: 'Have already an account?',

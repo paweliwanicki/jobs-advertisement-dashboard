@@ -4,10 +4,17 @@ import { ChangeEvent, useCallback, useState, useEffect } from 'react';
 import Button from '../common/Button/Button';
 import Checkbox from '../common/Checkbox/Checkbox';
 import { useSignForm } from '../../hooks/useSignForm';
-import { SignForm } from '../../containers/LoginContainer/LoginContainer';
 import { useMotionAnimate } from 'motion-hooks';
 
-const SignInForm = ({ onSubmit }: SignForm) => {
+ type SignInFormProps = {
+  onSubmit: (
+    username: string,
+    password: string,
+  ) => void;
+};
+
+
+const SignInForm = ({ onSubmit }: SignInFormProps) => {
   const { play } = useMotionAnimate(
     `.${classes.signInForm}`,
     { opacity: 1 },

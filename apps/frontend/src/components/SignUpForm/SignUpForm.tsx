@@ -13,7 +13,6 @@ import Checkbox from '../common/Checkbox/Checkbox';
 import Modal from '../common/Modal/Modal';
 import SvgIcon from '../common/SvgIcon/SvgIcon';
 import { useSignForm } from '../../hooks/useSignForm';
-import { SignForm } from '../../containers/LoginContainer/LoginContainer';
 import { useMotionAnimate } from 'motion-hooks';
 
 // move terms and privacy to db, fetch them on demand and useMemo
@@ -34,7 +33,15 @@ const PRIVACY_STATEMENT: ReactNode = (
   </>
 );
 
-const SignUpForm = ({ onSubmit }: SignForm) => {
+type SignUpFormProps = {
+  onSubmit: (
+    username: string,
+    password: string,
+    confirmPassword: string
+  ) => void;
+};
+
+const SignUpForm = ({ onSubmit }: SignUpFormProps) => {
   const { play } = useMotionAnimate(
     `.${classes.signUpForm}`,
     { opacity: 1 },
