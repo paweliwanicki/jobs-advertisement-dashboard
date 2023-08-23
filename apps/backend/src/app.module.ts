@@ -55,16 +55,16 @@ const cookieSession = require('cookie-session');
   ],
 })
 export class AppModule {
-  constructor(
-    private configService: ConfigService, //private dataSource: DataSource,
-  ) {}
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(
-        cookieSession({
-          keys: [this.configService.get('COOKIE_KEY')],
-        }),
-      )
-      .forRoutes('*');
-  }
+  // constructor(
+  //   private configService: ConfigService, //private dataSource: DataSource,
+  // ) {}
+  // configure(consumer: MiddlewareConsumer) {
+  //   consumer
+  //     .apply(
+  //       cookieSession({
+  //         keys: [this.configService.get('COOKIE_KEY')],
+  //       }),
+  //     )
+  //     .forRoutes('*');
+  // }
 }

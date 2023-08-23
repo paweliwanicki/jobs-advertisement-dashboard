@@ -44,6 +44,10 @@ export class AuthenticationService {
     };
   }
 
+  // async userSignOut(user) {
+  //   return this.jwtService.
+  // }
+
   getJwtToken(sub: number, username: string) {
     return this.jwtService.sign({
       sub,

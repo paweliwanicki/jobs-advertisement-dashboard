@@ -36,32 +36,31 @@ export class AuthenticationController {
   }
 
   @Post('/signup')
-  async createUser(@Body() body: SignUpUserDto, @Session() session: any) {
+  async createUser(@Body() body: SignUpUserDto) {
     const { username, password } = body;
     const { access_token } = await this.authenticationService.userSignUp(
       username,
       password,
     );
-    session.token = access_token;
     return access_token;
   }
 
   @UseGuards(LocalAuthGuard)
   @Post('/signin')
-  async signInUser(@Body() body: SignInUserDto, @Session() session: any) {
+  async signInUser(@Body() body: SignInUserDto) {
     const { username, password } = body;
 
     const { access_token } = await this.authenticationService.userSignIn(
       username,
       password,
     );
-    session.token = access_token;
     return access_token;
   }
 
   @Post('/signout')
-  async signOutUser(@Session() session: any) {
+  async signOutUser(@Request() req: any) {
     console.log('logout');
-    session.token = null;
+    //return await this.authenticationService.userSignOut(req.user);
+    //session.token = null;
   }
 }

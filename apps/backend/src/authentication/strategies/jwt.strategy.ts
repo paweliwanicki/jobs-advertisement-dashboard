@@ -21,10 +21,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   @Serialize(UserDto)
   async validate(payload: any) {
-    const user = await this.usersService.findOneByUsername(payload.username);
-    console.log(payload.username);
-    //console.log(payload);
-    if (!user || user.id !== payload.sub) {
+    const user = await this.usersService.findOneById(payload.sub);
+    if (!user) {
       throw new UnauthorizedException();
     }
     return user;
