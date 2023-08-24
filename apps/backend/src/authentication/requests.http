@@ -4,7 +4,7 @@ POST http://localhost:3000/api/auth/signup
 Content-Type: application/json
 
 {
-  "username": "user_3",
+  "username": "user_4",
   "password": "User1pass!",
   "confirmPassword": "User1pass!"
 }
@@ -16,7 +16,7 @@ POST http://localhost:3000/api/auth/signin
 Content-Type: application/json
 
 {
-  "username": "user_2",
+  "username": "user_4",
   "password": "User1pass!"
 }
 
@@ -27,4 +27,10 @@ POST http://localhost:3000/api/auth/signout
 
 ### GET CURRENTLY SIGNED IN USER
 GET http://localhost:3000/api/auth/myprofile
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjYsInVzZXJuYW1lIjoidXNlcl8yIiwiaWF0IjoxNjkyNzgwODQyLCJleHAiOjE2OTI3ODQ0NDJ9.dKRwtgiButG4s6RtFbbDt7szYLoBNZPaA7Azx3Sd-_A
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjYsInVzZXJuYW1lIjoidXNlcl8yIiwiaWF0IjoxNjkyOTA2Nzc0LCJleHAiOjE2OTI5MTAzNzR9.vG325ss2XyO3xEW91cTtXEleu1Sg7CAJCD9GMwDyswg
+
+
+
+### GET CURRENTLY SIGNED IN USER v2
+GET http://localhost:3000/api/auth/whoami
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjksInVzZXJuYW1lIjoidXNlcl80IiwiaWF0IjoxNjkyOTA4NTQ0LCJleHAiOjE2OTI5MTIxNDR9.tviesDvqmTngm51qgyI9g79ZI9fUXdhmwfAbmyxLF84

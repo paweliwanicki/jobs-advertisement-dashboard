@@ -44,17 +44,6 @@ export class AuthenticationService {
     };
   }
 
-  // async userSignOut(user) {
-  //   return this.jwtService.
-  // }
-
-  getJwtToken(sub: number, username: string) {
-    return this.jwtService.sign({
-      sub,
-      username,
-    });
-  }
-
   @Serialize(UserDto)
   async validateUser(username: string, password: string): Promise<any> {
     const user = await this.usersService.findOneByUsername(username);
@@ -67,5 +56,12 @@ export class AuthenticationService {
       return user;
     }
     return null;
+  }
+
+  getJwtToken(sub: number, username: string) {
+    return this.jwtService.sign({
+      sub,
+      username,
+    });
   }
 }

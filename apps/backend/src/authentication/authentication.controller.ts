@@ -3,7 +3,6 @@ import {
   Controller,
   Get,
   Post,
-  Session,
   UseGuards,
   Request,
 } from '@nestjs/common';
@@ -31,7 +30,6 @@ export class AuthenticationController {
   @Get('/myprofile')
   @UseGuards(JwtAuthGuard)
   async getProfile(@Request() req) {
-    console.log(req.user);
     return req.user;
   }
 
@@ -58,9 +56,7 @@ export class AuthenticationController {
   }
 
   @Post('/signout')
-  async signOutUser(@Request() req: any) {
+  async signOutUser() {
     console.log('logout');
-    //return await this.authenticationService.userSignOut(req.user);
-    //session.token = null;
   }
 }

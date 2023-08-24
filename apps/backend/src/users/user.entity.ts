@@ -19,11 +19,14 @@ export class User {
   lang: string;
 
   @Column({ default: false })
-  isAdmin: boolean;
+  is_admin: boolean;
 
   @Column()
   @Exclude()
   password: string;
+
+  @Column({ type: 'bigint' })
+  created_at: number;
 
   // @OneToMany(() => JobOffer, (offer) => offer.user_id)
   // offers: JobOffer[];

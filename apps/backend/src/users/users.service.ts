@@ -8,7 +8,11 @@ export class UsersService {
   constructor(@InjectRepository(User) private repo: Repository<User>) {}
 
   create(username: string, password: string) {
-    const user = this.repo.create({ username, password });
+    const user = this.repo.create({
+      username,
+      password,
+      created_at: new Date().getTime(),
+    });
     return this.repo.save(user);
   }
 
