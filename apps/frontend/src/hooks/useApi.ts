@@ -1,8 +1,8 @@
+import { useCookies } from 'react-cookie';
+
 type RequestOptions = {
   path: string;
   tokenRefreshURL?: string;
-  clientID?: string;
-  jwtToken?: string;
   customHeaders?: Record<string, string>[];
 };
 
@@ -11,9 +11,8 @@ type ExtendedRequestOptions = RequestOptions & {
 };
 
 type TokenRefreshParams = {
+  jwtToken: string;
   tokenRefreshURL: string;
-  clientID?: string;
-  jwtToken?: string;
 };
 
 type ResponseParams = {
@@ -27,7 +26,7 @@ type RefreshTokenResponse = {
   };
 };
 
-enum HttpMethod {
+export enum HttpMethod {
   GET = 'GET',
   POST = 'POST',
   PUT = 'PUT',
@@ -35,14 +34,20 @@ enum HttpMethod {
   DELETE = 'DELETE',
 }
 
+type ApiService = {
+  refreshJwtToken: (params: TokenRefreshParams) => Promise<void>;
+  fetch: <T>(
+    method: HttpMethod,
+    params: ExtendedRequestOptions
+  ) => Promise<[body: T, resParams: ResponseParams]>;
+};
+
 const forceApiTokenRefresh = async (
   params: TokenRefreshParams
-): Promise<void> => {
-  params.clientID = localStorage.getItem('clientID') ?? undefined;
-  params.jwtToken = localStorage.getItem('jwtToken') ?? undefined;
-  const { tokenRefreshURL, clientID, jwtToken } = params;
+): Promise<Error | string> => {
+  const { tokenRefreshURL, jwtToken } = params;
 
-  const headers: Record<string, string> = buildHeaders(jwtToken, clientID);
+  const headers: Record<string, string> = buildHeaders(jwtToken);
 
   const refreshTokenResponse = await fetch(tokenRefreshURL, {
     headers,
@@ -55,7 +60,7 @@ const forceApiTokenRefresh = async (
   };
 
   if (parsedRefreshToken.statusCode === 0) {
-    localStorage.setItem('jwtToken', parsedRefreshToken.result.jwtToken);
+    return parsedRefreshToken.result.jwtToken;
   } else {
     throw Error('Error while refreshing the jwt token');
   }
@@ -67,7 +72,6 @@ function forceSessionTimeExtend(): void {
 
 const buildHeaders = (
   jwtToken = '',
-  clientID = '',
   customHeaders: Record<string, string>[] = []
 ): Record<string, string> => {
   let headers: Record<string, string> = {
@@ -76,10 +80,6 @@ const buildHeaders = (
 
   if (jwtToken) {
     headers.Authorization = `Bearer ${jwtToken}`;
-  }
-
-  if (clientID) {
-    headers.clientID = clientID;
   }
 
   if (customHeaders.length) {
@@ -97,20 +97,14 @@ const buildHeaders = (
 
 const request = async (
   method: HttpMethod,
-  params: ExtendedRequestOptions | RequestOptions
+  params: ExtendedRequestOptions | RequestOptions,
+  jwtToken: string
 ): Promise<[body: any, resParams: ResponseParams]> => {
-  params.clientID = localStorage.getItem('clientID') ?? undefined;
-  params.jwtToken = localStorage.getItem('jwtToken') ?? undefined;
-
   let body;
-  const { clientID, path, tokenRefreshURL, jwtToken, customHeaders } = params;
+  const { path, tokenRefreshURL, customHeaders } = params;
 
   const payload = 'payload' in params ? params.payload : undefined;
-  const headers: Record<string, string> = buildHeaders(
-    jwtToken,
-    clientID,
-    customHeaders
-  );
+  const headers: Record<string, string> = buildHeaders(jwtToken, customHeaders);
 
   const response = await fetch(path, { headers, method, body: payload });
   try {
@@ -120,41 +114,30 @@ const request = async (
   }
 
   if (body?.statusCode === 200 && tokenRefreshURL) {
-    await forceApiTokenRefresh({ tokenRefreshURL, clientID, jwtToken });
-    return await request(method, params);
+    await forceApiTokenRefresh({ tokenRefreshURL, jwtToken });
+    return await request(method, params, jwtToken);
   } else {
     forceSessionTimeExtend();
     return [body, { status: response.status }];
   }
 };
 
-export const ApiService = {
-  post: async <T>(
-    params: ExtendedRequestOptions
-  ): Promise<[body: T, resParams: ResponseParams]> =>
-    await request(HttpMethod.POST, params),
+export const useApi = (): ApiService => {
+  const [cookies, setCookies] = useCookies(['jwtToken']);
 
-  get: async <T>(
-    params: RequestOptions
-  ): Promise<[body: T, resParams: ResponseParams]> =>
-    await request(HttpMethod.GET, params),
+  const fetch = async (method: HttpMethod, params: ExtendedRequestOptions) => {
+    return await request(method, params, cookies.jwtToken);
+  };
 
-  put: async <T>(
-    params: ExtendedRequestOptions
-  ): Promise<[body: T, resParams: ResponseParams]> =>
-    await request(HttpMethod.PUT, params),
+  const refreshJwtToken = async (params: TokenRefreshParams) => {
+    const jwtToken = await forceApiTokenRefresh(params);
+    if (jwtToken) {
+      setCookies('jwtToken', jwtToken);
+    }
+  };
 
-  patch: async <T>(
-    params: ExtendedRequestOptions
-  ): Promise<[body: T, resParams: ResponseParams]> =>
-    await request(HttpMethod.PATCH, params),
-
-  delete: async <T>(
-    params: RequestOptions
-  ): Promise<[body: T, resParams: ResponseParams]> =>
-    await request(HttpMethod.DELETE, params),
-
-  forceApiTokenRefresh: async (params: TokenRefreshParams): Promise<void> => {
-    await forceApiTokenRefresh(params);
-  },
+  return {
+    fetch,
+    refreshJwtToken,
+  };
 };

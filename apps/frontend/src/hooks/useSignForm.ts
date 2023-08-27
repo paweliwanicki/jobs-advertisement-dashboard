@@ -1,5 +1,6 @@
 import { ReactNode, useCallback, useState } from 'react';
-import { ApiService } from '../utils/ApiService';
+import { useCookies } from 'react-cookie';
+import { HttpMethod, useApi } from './useApi';
 
 type InputError =
   | 'EMPTY'
@@ -7,7 +8,7 @@ type InputError =
   | 'PASSWORDS_NOT_MATCH'
   | 'WRONG_USERNAME_FORMAT';
 
-type SignResponseMessage = 'WRONG_CREDENTIALS' | 'USERNAME_IN_USE';
+type SignResponseStatusCodes = 2001 | 2002;
 type SignFormInput = 'USERNAME' | 'PASSWORD' | 'CONFIRM_PASSWORD' | 'TERMS';
 
 type SignForm = {
@@ -50,11 +51,9 @@ const INPUT_ERRORS_MESSAGES: Record<InputError, string> = {
   PASSWORDS_NOT_MATCH: 'Password and confirm password do not match!',
 } as const;
 
-const SIGN_RESPONSE_MESSAGES: Record<SignResponseMessage, string> = {
-  WRONG_CREDENTIALS:
-    'You typed wrong username or password! Please check your credentials and try to sign in again.',
-  USERNAME_IN_USE:
-    'Unfortunately, the username is already in use. Use a different username and try again.',
+const SIGN_RESPONSE_MESSAGES: Record<SignResponseStatusCodes, string> = {
+  2001: 'Unfortunately, the username is already in use. Use a different username and try again.',
+  2002: 'The username and password you are incorrect. Check the credentials you entered and try again.',
 } as const;
 
 const USERNAME_REGEX = new RegExp(
@@ -65,6 +64,9 @@ const PASSWORD_REGEX = new RegExp(
 );
 
 export const useSignForm = (): SignForm => {
+  const apiService = useApi();
+  const [, setCookie] = useCookies(['jwtToken']);
+
   const [message, setMessage] = useState<ReactNode>();
   const [usernameError, setUsernameError] = useState<string | undefined>();
   const [passwordError, setPasswordError] = useState<string | undefined>();
@@ -84,29 +86,38 @@ export const useSignForm = (): SignForm => {
 
   const handleSignIn = useCallback(
     async (username: string, password: string) => {
-      const response = await ApiService.post<{
-        username: string;
-        password: string;
-      }>({
+      const response = await apiService.fetch<{
+        error: string;
+        status: SignResponseStatusCodes;
+        access_token: string;
+      }>(HttpMethod.POST, {
         path: '/api/auth/signin',
         payload: JSON.stringify({
           username,
           password,
         }),
       });
-      console.log(response);
-      setMessage(SIGN_RESPONSE_MESSAGES.WRONG_CREDENTIALS);
+
+      setMessage(
+        response[0].status
+          ? SIGN_RESPONSE_MESSAGES[response[0].status]
+          : undefined
+      );
+
+      if (response[0].access_token) {
+        setCookie('jwtToken', response[0].access_token);
+      }
     },
     []
   );
 
   const handleSignUp = useCallback(
     async (username: string, password: string, confirmPassword: string) => {
-      const response = await ApiService.post<{
-        username: string;
-        password: string;
-        confirmPassword: string;
-      }>({
+      const response = await apiService.fetch<{
+        error: string;
+        status: SignResponseStatusCodes;
+        access_token: string;
+      }>(HttpMethod.POST, {
         path: '/api/auth/signup',
         payload: JSON.stringify({
           username,
@@ -115,8 +126,15 @@ export const useSignForm = (): SignForm => {
         }),
       });
 
-      //setMessage(SIGN_RESPONSE_MESSAGES.USERNAME_IN_USE);
-      console.log(response);
+      setMessage(
+        response[0].status
+          ? SIGN_RESPONSE_MESSAGES[response[0].status]
+          : undefined
+      );
+
+      if (response[0].access_token) {
+        setCookie('jwtToken', response[0].access_token);
+      }
     },
     []
   );

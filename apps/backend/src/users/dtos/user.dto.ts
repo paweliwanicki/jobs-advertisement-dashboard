@@ -6,7 +6,7 @@ export class UserDto {
   @Expose()
   username: string;
   @Expose()
-  isAdmin: boolean;
+  is_admin: boolean;
   @Expose()
   lang: string;
 }

@@ -10,6 +10,8 @@ import { promisify } from 'util';
 import { JwtService } from '@nestjs/jwt';
 import { Serialize } from '../interceptors/serialize.interceptor';
 import { UserDto } from '../users/dtos/user.dto';
+import { AUTH_STATUS_CODES } from './response.status.codes';
+import { User } from 'src/users/user.entity';
 
 const scrypt = promisify(_scrypt);
 
@@ -20,27 +22,33 @@ export class AuthenticationService {
     private jwtService: JwtService,
   ) {}
 
+  async userSignIn(username: string, password: string) {
+    const user = await this.validateUser(username, password);
+    if (!user) {
+      throw new NotFoundException({
+        status: 2002,
+        error: AUTH_STATUS_CODES[2002],
+      });
+    }
+    return {
+      access_token: this.getJwtToken(user.id, user),
+    };
+  }
+
   async userSignUp(username: string, password: string) {
     const currentUser = await this.validateUser(username, password);
     if (currentUser) {
-      throw new BadRequestException('Username is in use');
+      throw new BadRequestException({
+        status: 2001,
+        error: AUTH_STATUS_CODES[2001],
+      });
     }
     const salt = randomBytes(8).toString('hex');
     const hash = (await scrypt(password, salt, 32)) as Buffer;
     const result = `${salt}.${hash.toString('hex')}`;
     const user = await this.usersService.create(username, result);
     return {
-      access_token: this.getJwtToken(user.id, user.username),
-    };
-  }
-
-  async userSignIn(username: string, password: string) {
-    const user = await this.validateUser(username, password);
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-    return {
-      access_token: this.getJwtToken(user.id, user.username),
+      access_token: this.getJwtToken(user.id, user),
     };
   }
 
@@ -51,17 +59,21 @@ export class AuthenticationService {
       const [salt, storedHash] = user.password.split('.');
       const hash = (await scrypt(password, salt, 32)) as Buffer;
       if (storedHash !== hash.toString('hex')) {
-        throw new BadRequestException('Wrong email or password!');
+        throw new BadRequestException({
+          status: 2002,
+          error: AUTH_STATUS_CODES[2002],
+        });
       }
       return user;
     }
     return null;
   }
 
-  getJwtToken(sub: number, username: string) {
+  getJwtToken(sub: number, user: User) {
     return this.jwtService.sign({
       sub,
-      username,
+      username: user.username,
+      is_admin: user.is_admin,
     });
   }
 }

@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
+import { AUTH_STATUS_CODES } from 'src/authentication/response.status.codes';
 
 @Injectable()
 export class UsersService {
@@ -28,7 +29,7 @@ export class UsersService {
   async update(id: number, attrs: Partial<User>) {
     const user = await this.findOneById(id);
     if (!user) {
-      throw new NotFoundException('User was not found');
+      throw new NotFoundException(AUTH_STATUS_CODES[2000]);
     }
     Object.assign(user, attrs);
     return this.repo.save(user);
@@ -37,7 +38,7 @@ export class UsersService {
   async remove(id: number) {
     const user = await this.findOneById(id);
     if (!user) {
-      throw new NotFoundException('User was not found');
+      throw new NotFoundException(AUTH_STATUS_CODES[2000]);
     }
     return this.repo.remove(user);
   }

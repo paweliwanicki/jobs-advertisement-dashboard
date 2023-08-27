@@ -23,11 +23,7 @@ const LoginContainer = () => {
   const [activeForm, setActiveForm] = useState<Form>('SIGN_IN');
 
   const handleSignInOnSubmit = (username: string, password: string) => {
-    handleSignIn(username, password)
-      .then((res) => console.log(res))
-      .catch((err) => {
-        console.error(err);
-      });
+    handleSignIn(username, password);
   };
 
   const handleSignUpOnSubmit = (
@@ -35,11 +31,7 @@ const LoginContainer = () => {
     password: string,
     confirmPassword: string
   ) => {
-    handleSignUp(username, password, confirmPassword)
-      .then((res) => console.log(res))
-      .catch((err) => {
-        console.error(err);
-      });
+    handleSignUp(username, password, confirmPassword);
   };
 
   const handleChangeSignForm = useCallback(() => {
