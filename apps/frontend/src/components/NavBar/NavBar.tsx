@@ -4,6 +4,7 @@ import Switch from '../common/Switch/Switch';
 import SvgIcon from '../common/SvgIcon/SvgIcon';
 import { useContext } from 'react';
 import { ThemeContext } from '../../contexts/themeContext';
+import { Link } from 'react-router-dom';
 
 const NavBar = () => {
   const { theme, setTheme } = useContext(ThemeContext);
@@ -16,7 +17,9 @@ const NavBar = () => {
   return (
     <nav className={classes.navBar}>
       <div className={classes.content}>
-        <img className={classes.logo} src={logoImage} alt="website logo" />
+        <Link to="/">
+          <img className={classes.logo} src={logoImage} alt="website logo" />
+        </Link>
         <Switch
           checked={theme === 'dark'}
           onChange={handleChangeThemeContext}

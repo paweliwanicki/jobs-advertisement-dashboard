@@ -23,6 +23,9 @@
     min-height: 45px;
     margin-bottom: 10px;
     width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
     > p {
       color: variables.$error;
@@ -33,6 +36,9 @@
       display: inline-flex;
       gap: 10px;
       text-align: justify;
+      border-radius: 6px;
+      padding: 3px 5px;
+      background-color: #ffffff73;
     }
   }
 

@@ -1,11 +1,11 @@
-import { createContext } from "react";
+import { createContext } from 'react';
 
 type AuthContextType = {
-  isAuthenticated: boolean;
-  setIsAuthenticated: (isAuthenticated: boolean) => void;
+  jwtToken: string | undefined;
+  setToken: (token: string) => void;
 };
 
 export const AuthContext = createContext<AuthContextType>({
-  isAuthenticated: false,
-  setIsAuthenticated: () => {},
+  jwtToken: undefined,
+  setToken: () => {},
 });

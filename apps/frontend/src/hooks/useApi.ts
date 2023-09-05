@@ -66,12 +66,8 @@ const forceApiTokenRefresh = async (
   }
 };
 
-function forceSessionTimeExtend(): void {
-  window.parent.postMessage('ResetTimer', window.location.origin, []);
-}
-
 const buildHeaders = (
-  jwtToken = '',
+  jwtToken: string | undefined,
   customHeaders: Record<string, string>[] = []
 ): Record<string, string> => {
   let headers: Record<string, string> = {
@@ -117,7 +113,6 @@ const request = async (
     await forceApiTokenRefresh({ tokenRefreshURL, jwtToken });
     return await request(method, params, jwtToken);
   } else {
-    forceSessionTimeExtend();
     return [body, { status: response.status }];
   }
 };

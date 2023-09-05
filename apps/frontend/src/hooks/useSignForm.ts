@@ -1,6 +1,7 @@
 import { ReactNode, useCallback, useState } from 'react';
 import { useCookies } from 'react-cookie';
-import { HttpMethod, useApi } from './useApi';
+import { HttpMethod, useApi as useApi } from './useApi';
+//import { useApi } from './useApiv2';
 
 type InputError =
   | 'EMPTY'
@@ -10,6 +11,12 @@ type InputError =
 
 type SignResponseStatusCodes = 2001 | 2002;
 type SignFormInput = 'USERNAME' | 'PASSWORD' | 'CONFIRM_PASSWORD' | 'TERMS';
+
+type SignResponse = {
+  error: string;
+  status: SignResponseStatusCodes;
+  access_token: string;
+};
 
 type SignForm = {
   message: ReactNode;
@@ -64,7 +71,7 @@ const PASSWORD_REGEX = new RegExp(
 );
 
 export const useSignForm = (): SignForm => {
-  const apiService = useApi();
+  const { fetch } = useApi();
   const [, setCookie] = useCookies(['jwtToken']);
 
   const [message, setMessage] = useState<ReactNode>();
@@ -86,11 +93,7 @@ export const useSignForm = (): SignForm => {
 
   const handleSignIn = useCallback(
     async (username: string, password: string) => {
-      const response = await apiService.fetch<{
-        error: string;
-        status: SignResponseStatusCodes;
-        access_token: string;
-      }>(HttpMethod.POST, {
+      const [data] = await fetch<SignResponse>(HttpMethod.POST, {
         path: '/api/auth/signin',
         payload: JSON.stringify({
           username,
@@ -98,14 +101,10 @@ export const useSignForm = (): SignForm => {
         }),
       });
 
-      setMessage(
-        response[0].status
-          ? SIGN_RESPONSE_MESSAGES[response[0].status]
-          : undefined
-      );
+      setMessage(data.status ? SIGN_RESPONSE_MESSAGES[data.status] : undefined);
 
-      if (response[0].access_token) {
-        setCookie('jwtToken', response[0].access_token);
+      if (data.access_token) {
+        setCookie('jwtToken', data.access_token);
       }
     },
     []
@@ -113,11 +112,7 @@ export const useSignForm = (): SignForm => {
 
   const handleSignUp = useCallback(
     async (username: string, password: string, confirmPassword: string) => {
-      const response = await apiService.fetch<{
-        error: string;
-        status: SignResponseStatusCodes;
-        access_token: string;
-      }>(HttpMethod.POST, {
+      const [data] = await fetch<SignResponse>(HttpMethod.POST, {
         path: '/api/auth/signup',
         payload: JSON.stringify({
           username,
@@ -126,14 +121,10 @@ export const useSignForm = (): SignForm => {
         }),
       });
 
-      setMessage(
-        response[0].status
-          ? SIGN_RESPONSE_MESSAGES[response[0].status]
-          : undefined
-      );
+      setMessage(data.status ? data.status : undefined);
 
-      if (response[0].access_token) {
-        setCookie('jwtToken', response[0].access_token);
+      if (data.access_token) {
+        setCookie('jwtToken', data.access_token);
       }
     },
     []
