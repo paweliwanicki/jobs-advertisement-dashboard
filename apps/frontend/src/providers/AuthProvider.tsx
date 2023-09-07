@@ -1,6 +1,5 @@
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useCookies } from 'react-cookie';
-import axios from 'axios';
 import { AuthContext } from '../contexts/authContext';
 
 type AuthProviderProps = {
@@ -12,25 +11,25 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const [jwtToken, setJwtToken] = useState<string | undefined>(
     cookies.jwtToken
   );
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
+    !!cookies.jwtToken
+  );
 
-  const setToken = (jwtToken: string) => {
+  const setToken = (jwtToken?: string) => {
     setJwtToken(jwtToken);
+    setIsAuthenticated(!!jwtToken);
+    jwtToken ? setCookies('jwtToken', jwtToken) : removeItem('jwtToken');
   };
 
   useEffect(() => {
-    if (jwtToken) {
-      axios.defaults.headers.common['Authorization'] = 'Bearer ' + jwtToken;
-      setCookies('jwtToken', jwtToken);
-    } else {
-      delete axios.defaults.headers.common['Authorization'];
-      removeItem('jwtToken');
-    }
+    setToken(jwtToken);
   }, [jwtToken]);
 
   const contextValue = useMemo(
     () => ({
       jwtToken,
       setToken,
+      isAuthenticated,
     }),
     [jwtToken]
   );

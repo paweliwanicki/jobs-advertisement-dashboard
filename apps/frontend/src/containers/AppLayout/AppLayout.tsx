@@ -12,7 +12,7 @@ const AppLayout = ({ children }: AppLayoutProps) => {
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme }}>
-      <Layout theme={theme}>HOMEPAGE{children}</Layout>;
+      <Layout theme={theme}>{children}</Layout>;
     </ThemeContext.Provider>
   );
 };

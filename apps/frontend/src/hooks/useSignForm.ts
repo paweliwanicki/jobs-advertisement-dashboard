@@ -1,7 +1,6 @@
-import { ReactNode, useCallback, useState } from 'react';
-import { useCookies } from 'react-cookie';
+import { ReactNode, useCallback, useContext, useState } from 'react';
 import { HttpMethod, useApi as useApi } from './useApi';
-//import { useApi } from './useApiv2';
+import { AuthContext } from '../contexts/authContext';
 
 type InputError =
   | 'EMPTY'
@@ -72,7 +71,7 @@ const PASSWORD_REGEX = new RegExp(
 
 export const useSignForm = (): SignForm => {
   const { fetch } = useApi();
-  const [, setCookie] = useCookies(['jwtToken']);
+  const { setToken } = useContext(AuthContext);
 
   const [message, setMessage] = useState<ReactNode>();
   const [usernameError, setUsernameError] = useState<string | undefined>();
@@ -102,10 +101,7 @@ export const useSignForm = (): SignForm => {
       });
 
       setMessage(data.status ? SIGN_RESPONSE_MESSAGES[data.status] : undefined);
-
-      if (data.access_token) {
-        setCookie('jwtToken', data.access_token);
-      }
+      setToken(data.access_token ?? undefined);
     },
     []
   );
@@ -121,11 +117,8 @@ export const useSignForm = (): SignForm => {
         }),
       });
 
-      setMessage(data.status ? data.status : undefined);
-
-      if (data.access_token) {
-        setCookie('jwtToken', data.access_token);
-      }
+      setMessage(data.status ? SIGN_RESPONSE_MESSAGES[data.status] : undefined);
+      setToken(data.access_token ?? undefined);
     },
     []
   );

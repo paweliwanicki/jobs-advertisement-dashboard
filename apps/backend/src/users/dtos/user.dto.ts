@@ -9,4 +9,6 @@ export class UserDto {
   is_admin: boolean;
   @Expose()
   lang: string;
+  @Expose()
+  created_at: number;
 }

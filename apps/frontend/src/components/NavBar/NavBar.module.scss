@@ -22,6 +22,17 @@
       height: 64px;
       width: 64px;
     }
+
+    .userMenu {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+
+      a {
+        height: 48px;
+        cursor: pointer;
+      }
+    }
   }
 
   @include utils.respond-to(bp-small) {

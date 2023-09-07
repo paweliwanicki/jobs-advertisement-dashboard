@@ -20,11 +20,14 @@ const router = createBrowserRouter([
             <div>admin panel</div>
           </AuthGuard>
         ),
-        errorElement: <Page404 />,
       },
       {
         path: '/login',
         element: <LoginContainer />,
+      },
+      {
+        path: '/userpanel',
+        element: <AuthGuard>userpanel</AuthGuard>,
       },
     ],
   },

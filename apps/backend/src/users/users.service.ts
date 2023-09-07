@@ -12,7 +12,7 @@ export class UsersService {
     const user = this.repo.create({
       username,
       password,
-      created_at: new Date().getTime(),
+      created_at: Math.floor(new Date().getTime() / 1000),
     });
     return this.repo.save(user);
   }

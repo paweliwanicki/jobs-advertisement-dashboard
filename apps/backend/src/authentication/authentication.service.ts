@@ -3,13 +3,10 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-
 import { randomBytes, scrypt as _scrypt } from 'crypto';
 import { UsersService } from '../users/users.service';
 import { promisify } from 'util';
 import { JwtService } from '@nestjs/jwt';
-import { Serialize } from '../interceptors/serialize.interceptor';
-import { UserDto } from '../users/dtos/user.dto';
 import { AUTH_STATUS_CODES } from './response.status.codes';
 import { User } from 'src/users/user.entity';
 
@@ -24,6 +21,7 @@ export class AuthenticationService {
 
   async userSignIn(username: string, password: string) {
     const user = await this.validateUser(username, password);
+    console.log(user);
     if (!user) {
       throw new NotFoundException({
         status: 2002,
@@ -52,7 +50,6 @@ export class AuthenticationService {
     };
   }
 
-  @Serialize(UserDto)
   async validateUser(username: string, password: string): Promise<any> {
     const user = await this.usersService.findOneByUsername(username);
     if (user) {
@@ -64,16 +61,22 @@ export class AuthenticationService {
           error: AUTH_STATUS_CODES[2002],
         });
       }
+      console.log(user);
       return user;
     }
     return null;
   }
 
   getJwtToken(sub: number, user: User) {
-    return this.jwtService.sign({
-      sub,
+    const userDetails: Partial<User> = {
       username: user.username,
       is_admin: user.is_admin,
+      created_at: user.created_at,
+    };
+
+    return this.jwtService.sign({
+      sub,
+      ...userDetails,
     });
   }
 }

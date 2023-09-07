@@ -25,7 +25,7 @@ export class User {
   @Exclude()
   password: string;
 
-  @Column({ type: 'bigint' })
+  @Column()
   created_at: number;
 
   // @OneToMany(() => JobOffer, (offer) => offer.user_id)
