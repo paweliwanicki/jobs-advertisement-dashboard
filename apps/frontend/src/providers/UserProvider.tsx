@@ -1,8 +1,8 @@
 import jwt_decode from 'jwt-decode';
-import { useState, ReactNode, useContext, useEffect, useMemo } from 'react';
-import { AuthContext } from '../contexts/authContext';
+import { useState, ReactNode, useEffect, useMemo } from 'react';
 import { User } from '../models/User';
 import { UserContext } from '../contexts/userContext';
+import { useAuth } from '../hooks/useAuth';
 
 type UserProviderProps = {
   children: ReactNode;
@@ -13,12 +13,11 @@ const getUser = (jwtToken?: string): User | undefined => {
 };
 
 export const UserProvider = ({ children }: UserProviderProps) => {
-  const { jwtToken } = useContext(AuthContext);
+  const { jwtToken } = useAuth();
   const [user, setUser] = useState<User | undefined>(() => getUser(jwtToken));
 
   const changeUser = () => {
     const user = getUser(jwtToken);
-    console.log(user);
     setUser(user);
     return user;
   };
@@ -32,7 +31,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
       user,
       changeUser,
     }),
-    [jwtToken]
+    [user, jwtToken]
   );
 
   return (

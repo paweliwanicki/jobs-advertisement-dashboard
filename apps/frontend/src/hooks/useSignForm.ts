@@ -1,6 +1,7 @@
-import { ReactNode, useCallback, useContext, useState } from 'react';
+import { ReactNode, useCallback, useState } from 'react';
 import { HttpMethod, useApi as useApi } from './useApi';
-import { AuthContext } from '../contexts/authContext';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from './useAuth';
 
 type InputError =
   | 'EMPTY'
@@ -70,8 +71,9 @@ const PASSWORD_REGEX = new RegExp(
 );
 
 export const useSignForm = (): SignForm => {
+  const navigate = useNavigate();
   const { fetch } = useApi();
-  const { setToken } = useContext(AuthContext);
+  const { setToken } = useAuth();
 
   const [message, setMessage] = useState<ReactNode>();
   const [usernameError, setUsernameError] = useState<string | undefined>();
@@ -90,6 +92,14 @@ export const useSignForm = (): SignForm => {
   const [termsCheckIsValidated, setTermsCheckIsValidated] =
     useState<boolean>(false);
 
+  const handleSignResponse = useCallback((response: SignResponse) => {
+    setMessage(
+      response.status ? SIGN_RESPONSE_MESSAGES[response.status] : undefined
+    );
+    setToken(response.access_token ?? undefined);
+    response.access_token && navigate('/');
+  }, []);
+
   const handleSignIn = useCallback(
     async (username: string, password: string) => {
       const [data] = await fetch<SignResponse>(HttpMethod.POST, {
@@ -99,9 +109,7 @@ export const useSignForm = (): SignForm => {
           password,
         }),
       });
-
-      setMessage(data.status ? SIGN_RESPONSE_MESSAGES[data.status] : undefined);
-      setToken(data.access_token ?? undefined);
+      handleSignResponse(data);
     },
     []
   );
@@ -116,9 +124,7 @@ export const useSignForm = (): SignForm => {
           confirmPassword,
         }),
       });
-
-      setMessage(data.status ? SIGN_RESPONSE_MESSAGES[data.status] : undefined);
-      setToken(data.access_token ?? undefined);
+      handleSignResponse(data);
     },
     []
   );

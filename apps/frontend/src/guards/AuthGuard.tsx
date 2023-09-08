@@ -7,10 +7,10 @@ type AuthGuardType = {
 };
 
 export const AuthGuard = ({ children }: AuthGuardType) => {
-  let auth = useAuth();
+  let { isAuthenticated } = useAuth();
   let location = useLocation();
 
-  if (!auth.jwtToken) {
+  if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 

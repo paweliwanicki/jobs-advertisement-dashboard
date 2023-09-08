@@ -1,6 +1,6 @@
 export type User = {
   id: number;
   username: string;
-  createdAt: number;
-  isAdmin: boolean;
+  created_at: number;
+  is_admin: boolean;
 };

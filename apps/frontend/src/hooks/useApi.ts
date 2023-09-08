@@ -1,4 +1,5 @@
 import { useCookies } from 'react-cookie';
+import { useCallback } from 'react';
 
 type RequestOptions = {
   path: string;
@@ -120,16 +121,19 @@ const request = async (
 export const useApi = (): ApiService => {
   const [cookies, setCookies] = useCookies(['jwtToken']);
 
-  const fetch = async (method: HttpMethod, params: ExtendedRequestOptions) => {
-    return await request(method, params, cookies.jwtToken);
-  };
+  const fetch = useCallback(
+    async (method: HttpMethod, params: ExtendedRequestOptions) => {
+      return await request(method, params, cookies.jwtToken);
+    },
+    []
+  );
 
-  const refreshJwtToken = async (params: TokenRefreshParams) => {
+  const refreshJwtToken = useCallback(async (params: TokenRefreshParams) => {
     const jwtToken = await forceApiTokenRefresh(params);
     if (jwtToken) {
       setCookies('jwtToken', jwtToken);
     }
-  };
+  }, []);
 
   return {
     fetch,

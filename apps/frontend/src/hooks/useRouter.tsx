@@ -4,6 +4,7 @@ import LoginContainer from '../containers/LoginContainer/LoginContainer';
 import { Page404 } from '../404';
 import { AuthGuard } from '../guards/AuthGuard';
 import AppLayout from '../containers/AppLayout/AppLayout';
+import { UserPanel } from '../components/UserPanel/UserPanel';
 
 const history = createBrowserHistory();
 
@@ -17,7 +18,7 @@ const router = createBrowserRouter([
         path: '/admin',
         element: (
           <AuthGuard>
-            <div>admin panel</div>
+            <div style={{ color: 'black' }}>admin panel</div>
           </AuthGuard>
         ),
       },
@@ -26,8 +27,16 @@ const router = createBrowserRouter([
         element: <LoginContainer />,
       },
       {
-        path: '/userpanel',
-        element: <AuthGuard>userpanel</AuthGuard>,
+        path: '/user',
+        element: (
+          <AuthGuard>
+            <UserPanel />
+          </AuthGuard>
+        ),
+      },
+      {
+        path: '/dashboard',
+        element: <div style={{ color: 'black' }}>Dashboard</div>,
       },
     ],
   },

@@ -2,20 +2,19 @@ import classes from './NavBar.module.scss';
 import logoImage from '../../assets/logos/logo.png';
 import Switch from '../common/Switch/Switch';
 import SvgIcon from '../common/SvgIcon/SvgIcon';
-import { useContext } from 'react';
-import { ThemeContext } from '../../contexts/themeContext';
 import { Link } from 'react-router-dom';
-import { AuthContext } from '../../contexts/authContext';
+import { Tooltip } from 'react-tooltip';
+import { useAuth } from '../../hooks/useAuth';
+import { useTheme } from '../../hooks/useTheme';
 
 const NavBar = () => {
-  const { theme, setTheme } = useContext(ThemeContext);
+  const { isAuthenticated } = useAuth();
+  const { theme, setTheme } = useTheme();
   const handleChangeThemeContext = () => {
     const newTheme = theme === 'dark' ? 'light' : 'dark';
     setTheme(newTheme);
     localStorage.setItem('theme', newTheme);
   };
-
-  const { isAuthenticated } = useContext(AuthContext);
 
   return (
     <nav className={classes.navBar}>
@@ -31,7 +30,7 @@ const NavBar = () => {
             rightLabel={<SvgIcon id="icon-moon" height={18} width={18} />}
           />
           {isAuthenticated ? (
-            <Link to="/userpanel">
+            <Link to="/user">
               <SvgIcon
                 id="icon-user"
                 height={48}
@@ -45,7 +44,13 @@ const NavBar = () => {
                 id="icon-login"
                 height={48}
                 width={48}
-                classNames={classes.loginBtn}
+                elementId="icon-login"
+              />
+              <Tooltip
+                anchorSelect={`#icon-login`}
+                place="bottom-end"
+                variant="info"
+                content="Log in!"
               />
             </Link>
           )}
