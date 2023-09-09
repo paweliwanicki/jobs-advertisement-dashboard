@@ -3,15 +3,15 @@ import { createBrowserRouter } from 'react-router-dom';
 import LoginContainer from '../containers/LoginContainer/LoginContainer';
 import { Page404 } from '../404';
 import { AuthGuard } from '../guards/AuthGuard';
-import AppLayout from '../containers/AppLayout/AppLayout';
 import { UserPanel } from '../components/UserPanel/UserPanel';
+import Layout from '../containers/Layout/Layout';
 
 const history = createBrowserHistory();
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <AppLayout />,
+    element: <Layout />,
     errorElement: <Page404 />,
     children: [
       {

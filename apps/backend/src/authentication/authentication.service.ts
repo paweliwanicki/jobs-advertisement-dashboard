@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { randomBytes, scrypt as _scrypt } from 'crypto';
 import { UsersService } from '../users/users.service';
@@ -21,7 +22,6 @@ export class AuthenticationService {
 
   async userSignIn(username: string, password: string) {
     const user = await this.validateUser(username, password);
-    console.log(user);
     if (!user) {
       throw new NotFoundException({
         status: 2002,
@@ -61,10 +61,19 @@ export class AuthenticationService {
           error: AUTH_STATUS_CODES[2002],
         });
       }
-      console.log(user);
       return user;
     }
     return null;
+  }
+
+  async refreshJwtToken(userId: number, refreshToken: string) {
+    const user = await this.usersService.findOneById(userId);
+    if (
+      !user
+      // || !user.refreshToken
+    ) {
+      throw new UnauthorizedException();
+    }
   }
 
   getJwtToken(sub: number, user: User) {

@@ -1,7 +1,7 @@
 import classes from './HomePage.module.scss';
 
-const HomePage = () => {
+const Dashboard = () => {
   return <div className={classes.homepage}>HOMEPAGE</div>;
 };
 
-export default HomePage;
+export default Dashboard;

@@ -3,7 +3,7 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 
 type AuthGuardType = {
-  children?: ReactNode;
+  children: ReactNode;
 };
 
 export const AuthGuard = ({ children }: AuthGuardType) => {

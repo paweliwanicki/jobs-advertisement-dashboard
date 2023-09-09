@@ -1,24 +1,22 @@
 import { Outlet } from 'react-router-dom';
 import Footer from '../../components/Footer/Footer';
 import NavBar from '../../components/NavBar/NavBar';
-import { Theme } from '../../contexts/themeContext';
 import classes from './Layout.module.scss';
+import ThemeProvider from '../../providers/ThemeProvider';
+import { useTheme } from '../../hooks/useTheme';
 
-type LayoutProps = {
-  theme: Theme;
-  children: React.ReactNode;
-};
-
-const Layout = ({ children, theme }: LayoutProps) => {
+const Layout = () => {
+  const { theme } = useTheme();
   return (
-    <div className={`${classes.layout} theme-${theme}`}>
-      <NavBar />
-      <main>
-        <Outlet />
-        {children}
-      </main>
-      <Footer />
-    </div>
+    <ThemeProvider>
+      <div className={`${classes.layout} theme-${theme}`}>
+        <NavBar />
+        <main>
+          <Outlet />
+        </main>
+        <Footer />
+      </div>
+    </ThemeProvider>
   );
 };
 

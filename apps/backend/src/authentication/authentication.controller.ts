@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards, Param } from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
 import { SignUpUserDto } from '../users/dtos/sign-up-user.dto';
 import { CurrentUser } from '../users/decorators/current-user.decorator';
@@ -7,6 +7,8 @@ import { SignInUserDto } from '../users/dtos/sign-in-user.dto';
 import { Serialize } from '../interceptors/serialize.interceptor';
 import { UserDto } from '../users/dtos/user.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { RefreshTokenGuard } from './guards/jwt-refresh.guard';
+import { RefreshTokenDto } from './dtos/refresh-token.dto';
 
 @Controller('auth')
 export class AuthenticationController {
@@ -43,5 +45,11 @@ export class AuthenticationController {
   @Post('/signout')
   async signOutUser() {
     console.log('logout');
+  }
+
+  @UseGuards(RefreshTokenGuard)
+  @Post('/refreshToken')
+  async refreshJwtToken(@Body() body: RefreshTokenDto) {
+    const { userId, token } = body;
   }
 }
