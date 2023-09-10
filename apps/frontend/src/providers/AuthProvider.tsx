@@ -7,8 +7,14 @@ type AuthProviderProps = {
 };
 
 const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [cookies, setCookies, removeItem] = useCookies(['jwtToken']);
+  const [cookies, setCookies, removeItem] = useCookies([
+    'jwtToken',
+    'jwtRefreshToken',
+  ]);
   const [jwtToken, setJwtToken] = useState<string | undefined>(
+    cookies.jwtToken
+  );
+  const [jwtRefreshToken, setJwtRefreshToken] = useState<string | undefined>(
     cookies.jwtToken
   );
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
@@ -21,14 +27,27 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     jwtToken ? setCookies('jwtToken', jwtToken) : removeItem('jwtToken');
   };
 
+  const setRefreshToken = (jwtRefreshToken?: string) => {
+    setJwtRefreshToken(jwtRefreshToken);
+    jwtRefreshToken
+      ? setCookies('jwtRefreshToken', jwtRefreshToken)
+      : removeItem('jwtRefreshToken');
+  };
+
   useEffect(() => {
     setToken(jwtToken);
   }, [jwtToken]);
 
+  useEffect(() => {
+    setJwtRefreshToken(jwtRefreshToken);
+  }, [jwtRefreshToken]);
+
   const contextValue = useMemo(
     () => ({
       jwtToken,
+      jwtRefreshToken,
       setToken,
+      setRefreshToken,
       isAuthenticated,
     }),
     [jwtToken]

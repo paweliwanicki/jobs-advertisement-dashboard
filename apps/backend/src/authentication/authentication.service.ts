@@ -4,61 +4,62 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { randomBytes, scrypt as _scrypt } from 'crypto';
 import { UsersService } from '../users/users.service';
-import { promisify } from 'util';
 import { JwtService } from '@nestjs/jwt';
 import { AUTH_STATUS_CODES } from './response.status.codes';
 import { User } from 'src/users/user.entity';
-
-const scrypt = promisify(_scrypt);
+import { ConfigService } from '@nestjs/config';
+import { hash, genSalt, compare } from 'bcrypt';
 
 @Injectable()
 export class AuthenticationService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
+    private configService: ConfigService,
   ) {}
 
   async userSignIn(username: string, password: string) {
     const user = await this.validateUser(username, password);
     if (!user) {
       throw new NotFoundException({
-        status: 2002,
-        error: AUTH_STATUS_CODES[2002],
+        statusCode: 2002,
+        message: AUTH_STATUS_CODES[2002],
       });
     }
-    return {
-      access_token: this.getJwtToken(user.id, user),
-    };
+    const tokens = this.getJwtTokens(user.id, user);
+    this.updateUserRefreshToken(user.id, tokens.refreshToken);
+    return tokens;
   }
 
   async userSignUp(username: string, password: string) {
     const currentUser = await this.validateUser(username, password);
     if (currentUser) {
       throw new BadRequestException({
-        status: 2001,
-        error: AUTH_STATUS_CODES[2001],
+        statusCode: 2001,
+        message: AUTH_STATUS_CODES[2001],
       });
     }
-    const salt = randomBytes(8).toString('hex');
-    const hash = (await scrypt(password, salt, 32)) as Buffer;
-    const result = `${salt}.${hash.toString('hex')}`;
-    const user = await this.usersService.create(username, result);
-    return {
-      access_token: this.getJwtToken(user.id, user),
-    };
+    const salt = await genSalt(8);
+    const hashed = await hash(password, salt);
+    const user = await this.usersService.create(username, hashed);
+    const tokens = this.getJwtTokens(user.id, user);
+    this.updateUserRefreshToken(user.id, tokens.refreshToken);
+    return tokens;
   }
 
-  async validateUser(username: string, password: string): Promise<any> {
+  async userSignOut(userId: number) {
+    return this.updateUserRefreshToken(userId, null);
+  }
+
+  async validateUser(username: string, password: string) {
     const user = await this.usersService.findOneByUsername(username);
     if (user) {
-      const [salt, storedHash] = user.password.split('.');
-      const hash = (await scrypt(password, salt, 32)) as Buffer;
-      if (storedHash !== hash.toString('hex')) {
+      const checkPassword = await compare(password, user.password);
+      if (!checkPassword) {
         throw new BadRequestException({
-          status: 2002,
-          error: AUTH_STATUS_CODES[2002],
+          statusCode: 2002,
+          message: AUTH_STATUS_CODES[2002],
         });
       }
       return user;
@@ -68,24 +69,55 @@ export class AuthenticationService {
 
   async refreshJwtToken(userId: number, refreshToken: string) {
     const user = await this.usersService.findOneById(userId);
-    if (
-      !user
-      // || !user.refreshToken
-    ) {
+    const checkRefreshToken = await compare(refreshToken, user.refreshToken);
+    if (!user || !user.refreshToken || !checkRefreshToken) {
       throw new UnauthorizedException();
     }
+    const tokens = this.getJwtTokens(user.id, user);
+    return tokens;
   }
 
-  getJwtToken(sub: number, user: User) {
+  async updateUserRefreshToken(userId: number, refreshToken: string) {
+    const hashedRefreshedtoken = refreshToken
+      ? await hash(refreshToken, 8)
+      : null;
+    return this.usersService
+      .update(userId, {
+        refreshToken: hashedRefreshedtoken,
+      })
+      .then(() => true)
+      .catch(() => false);
+  }
+
+  getJwtTokens(sub: number, user: User) {
     const userDetails: Partial<User> = {
       username: user.username,
-      is_admin: user.is_admin,
-      created_at: user.created_at,
+      isAdmin: user.isAdmin,
+      createdAt: user.createdAt,
     };
-
-    return this.jwtService.sign({
-      sub,
-      ...userDetails,
-    });
+    return {
+      accessToken: this.jwtService.sign(
+        {
+          sub,
+          ...userDetails,
+        },
+        {
+          secret: this.configService.get<string>('JWT_SECRET'),
+          expiresIn: this.configService.get<string>('JWT_EXPIRATION_TIME'),
+        },
+      ),
+      refreshToken: this.jwtService.sign(
+        {
+          sub,
+          ...userDetails,
+        },
+        {
+          secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+          expiresIn: this.configService.get<string>(
+            'JWT_REFRESH_EXPIRATION_TIME',
+          ),
+        },
+      ),
+    };
   }
 }

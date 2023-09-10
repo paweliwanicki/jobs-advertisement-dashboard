@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, UseGuards, Param } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  UseGuards,
+  Req,
+  Res,
+} from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
 import { SignUpUserDto } from '../users/dtos/sign-up-user.dto';
 import { CurrentUser } from '../users/decorators/current-user.decorator';
@@ -7,8 +15,7 @@ import { SignInUserDto } from '../users/dtos/sign-in-user.dto';
 import { Serialize } from '../interceptors/serialize.interceptor';
 import { UserDto } from '../users/dtos/user.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { RefreshTokenGuard } from './guards/jwt-refresh.guard';
-import { RefreshTokenDto } from './dtos/refresh-token.dto';
+import { JwtRefreshAuthGuard } from './guards/jwt-refresh.guard';
 
 @Controller('auth')
 export class AuthenticationController {
@@ -24,32 +31,36 @@ export class AuthenticationController {
   @Post('/signup')
   async createUser(@Body() body: SignUpUserDto) {
     const { username, password } = body;
-    const access_token = await this.authenticationService.userSignUp(
+    const accessTokens = await this.authenticationService.userSignUp(
       username,
       password,
     );
-    return access_token;
+    return accessTokens;
   }
 
   @Post('/signin')
   async signInUser(@Body() body: SignInUserDto) {
     const { username, password } = body;
 
-    const access_token = await this.authenticationService.userSignIn(
+    const accessTokens = await this.authenticationService.userSignIn(
       username,
       password,
     );
-    return access_token;
+    return accessTokens;
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('/signout')
-  async signOutUser() {
-    console.log('logout');
+  async signOutUser(@CurrentUser() user: User) {
+    return this.authenticationService.userSignOut(user.id);
   }
 
-  @UseGuards(RefreshTokenGuard)
-  @Post('/refreshToken')
-  async refreshJwtToken(@Body() body: RefreshTokenDto) {
-    const { userId, token } = body;
+  @UseGuards(JwtRefreshAuthGuard)
+  @Get('/refreshToken')
+  async refreshJwtToken(@Req() request) {
+    return this.authenticationService.refreshJwtToken(
+      request.user.sub,
+      request.user.refreshToken,
+    );
   }
 }

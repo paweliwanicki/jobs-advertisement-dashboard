@@ -6,9 +6,9 @@ export class UserDto {
   @Expose()
   username: string;
   @Expose()
-  is_admin: boolean;
+  isAdmin: boolean;
   @Expose()
   lang: string;
   @Expose()
-  created_at: number;
+  createdAt: number;
 }

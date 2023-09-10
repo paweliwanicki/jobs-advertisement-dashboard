@@ -4,7 +4,7 @@ POST http://localhost:3000/api/auth/signup
 Content-Type: application/json
 
 {
-  "username": "user_4",
+  "username": "user01",
   "password": "User1pass!",
   "confirmPassword": "User1pass!"
 }
@@ -25,12 +25,10 @@ Content-Type: application/json
 POST http://localhost:3000/api/auth/signout
 
 
-### GET CURRENTLY SIGNED IN USER
-GET http://localhost:3000/api/auth/myprofile
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMyLCJpZCI6MzIsInVzZXJuYW1lIjoidXNlcjAxIiwibGFuZyI6ImVuIiwiaXNfYWRtaW4iOmZhbHNlLCJwYXNzd29yZCI6IjU4YTFjOTQwMWMxOGM5MmEuMTdkN2RmODk3OGJkN2MzMmQxMjk0YzlmNTg2Y2E3MjBkNzI2M2U0YmQ5NmQ0ZjIwNTAyZjhmODViYjhjNDJhZiIsImNyZWF0ZWRfYXQiOiIxNjk0MTA3ODI5NDk4IiwiaWF0IjoxNjk0MTE3MzA4LCJleHAiOjE2OTQxMTkxMDh9.q9Tu5yyeUMmP5gxEmfSTh2Cd2hPTTdx4sE1upcmxdPU
-
-
-
 ### GET CURRENTLY SIGNED IN USER v2
 GET http://localhost:3000/api/auth/whoami
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjksInVzZXJuYW1lIjoidXNlcl80IiwiaWF0IjoxNjkyOTA4NTQ0LCJleHAiOjE2OTI5MTIxNDR9.tviesDvqmTngm51qgyI9g79ZI9fUXdhmwfAbmyxLF84
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjU1LCJ1c2VybmFtZSI6InVzZXIwMSIsImlzQWRtaW4iOmZhbHNlLCJjcmVhdGVkQXQiOjE2OTQzNjU0MjAsImlhdCI6MTY5NDM2NjIxMSwiZXhwIjoxNjk0MzY2ODExfQ.z3ZGx_HDoioHhK9g-sBch5hWU0sK2DCPkjz8GyPgN-4
+
+### REFRESH JWT TOKEN
+GET http://localhost:3000/api/auth/refreshToken
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjU1LCJ1c2VybmFtZSI6InVzZXIwMSIsImlzQWRtaW4iOmZhbHNlLCJjcmVhdGVkQXQiOjE2OTQzNjU0MjAsImlhdCI6MTY5NDM2NjIxMSwiZXhwIjoxNjk0MzY2ODExfQ.z3ZGx_HDoioHhK9g-sBch5hWU0sK2DCPkjz8GyPgN-4

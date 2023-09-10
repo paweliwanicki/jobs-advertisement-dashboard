@@ -9,14 +9,17 @@ type InputError =
   | 'PASSWORDS_NOT_MATCH'
   | 'WRONG_USERNAME_FORMAT';
 
-type SignResponseStatusCodes = 2001 | 2002;
 type SignFormInput = 'USERNAME' | 'PASSWORD' | 'CONFIRM_PASSWORD' | 'TERMS';
 
-type SignResponse = {
-  error: string;
-  status: SignResponseStatusCodes;
-  access_token: string;
+type GenericResponse = {
+  message: string;
+  statusCode: number;
 };
+
+type SignResponse = {
+  accessToken: string;
+  refreshToken?: string;
+} & GenericResponse;
 
 type SignForm = {
   message: ReactNode;
@@ -47,6 +50,7 @@ type SignForm = {
     password: string,
     confirmPassword: string
   ) => Promise<void>;
+  handleSignOut: () => void;
 };
 
 const INPUT_ERRORS_MESSAGES: Record<InputError, string> = {
@@ -56,11 +60,6 @@ const INPUT_ERRORS_MESSAGES: Record<InputError, string> = {
   WRONG_USERNAME_FORMAT:
     'Username must be alphanumeric and total length between 6 and 12 characters!',
   PASSWORDS_NOT_MATCH: 'Password and confirm password do not match!',
-} as const;
-
-const SIGN_RESPONSE_MESSAGES: Record<SignResponseStatusCodes, string> = {
-  2001: 'Unfortunately, the username is already in use. Use a different username and try again.',
-  2002: 'The username and password you are incorrect. Check the credentials you entered and try again.',
 } as const;
 
 const USERNAME_REGEX = new RegExp(
@@ -73,7 +72,7 @@ const PASSWORD_REGEX = new RegExp(
 export const useSignForm = (): SignForm => {
   const navigate = useNavigate();
   const { fetch } = useApi();
-  const { setToken } = useAuth();
+  const { setToken, setRefreshToken } = useAuth();
 
   const [message, setMessage] = useState<ReactNode>();
   const [usernameError, setUsernameError] = useState<string | undefined>();
@@ -93,11 +92,10 @@ export const useSignForm = (): SignForm => {
     useState<boolean>(false);
 
   const handleSignResponse = useCallback((response: SignResponse) => {
-    setMessage(
-      response.status ? SIGN_RESPONSE_MESSAGES[response.status] : undefined
-    );
-    setToken(response.access_token ?? undefined);
-    response.access_token && navigate('/');
+    setMessage(response.message);
+    setToken(response.accessToken);
+    setRefreshToken(response.refreshToken);
+    response.accessToken && navigate('/');
   }, []);
 
   const handleSignIn = useCallback(
@@ -128,6 +126,18 @@ export const useSignForm = (): SignForm => {
     },
     []
   );
+
+  const handleSignOut = useCallback(() => {
+    fetch(HttpMethod.POST, {
+      path: '/api/auth/signout',
+    }).then((res) => {
+      const [status] = res;
+      if (status) {
+        setToken(undefined);
+        setRefreshToken(undefined);
+      }
+    });
+  }, []);
 
   const validateSignInForm = useCallback(
     (username: string, password: string) => {
@@ -267,5 +277,6 @@ export const useSignForm = (): SignForm => {
     validateSignUpForm,
     handleSignIn,
     handleSignUp,
+    handleSignOut,
   };
 };
