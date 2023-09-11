@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  UseGuards,
-  Req,
-  Res,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards, Req } from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
 import { SignUpUserDto } from '../users/dtos/sign-up-user.dto';
 import { CurrentUser } from '../users/decorators/current-user.decorator';

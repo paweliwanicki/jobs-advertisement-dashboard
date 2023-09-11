@@ -74,6 +74,7 @@ export class AuthenticationService {
       throw new UnauthorizedException();
     }
     const tokens = this.getJwtTokens(user.id, user);
+    this.updateUserRefreshToken(user.id, tokens.refreshToken);
     return tokens;
   }
 

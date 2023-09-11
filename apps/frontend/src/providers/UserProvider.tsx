@@ -1,26 +1,24 @@
-import jwt_decode from 'jwt-decode';
-import { useState, ReactNode, useEffect, useMemo } from 'react';
+import { useState, ReactNode, useEffect, useMemo, useCallback } from 'react';
 import { User } from '../models/User';
 import { UserContext } from '../contexts/userContext';
 import { useAuth } from '../hooks/useAuth';
+import { decodeJwtToken } from './AuthProvider';
 
 type UserProviderProps = {
   children: ReactNode;
 };
 
-const getUser = (jwtToken?: string): User | undefined => {
-  return jwtToken ? jwt_decode(jwtToken) : undefined;
-};
-
 export const UserProvider = ({ children }: UserProviderProps) => {
   const { jwtToken } = useAuth();
-  const [user, setUser] = useState<User | undefined>(() => getUser(jwtToken));
+  const [user, setUser] = useState<User | undefined>(() =>
+    decodeJwtToken(jwtToken)
+  );
 
-  const changeUser = () => {
-    const user = getUser(jwtToken);
+  const changeUser = useCallback(() => {
+    const user = decodeJwtToken(jwtToken);
     setUser(user);
     return user;
-  };
+  }, [jwtToken]);
 
   useEffect(() => {
     changeUser();
@@ -31,7 +29,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
       user,
       changeUser,
     }),
-    [user, jwtToken]
+    [jwtToken]
   );
 
   return (
