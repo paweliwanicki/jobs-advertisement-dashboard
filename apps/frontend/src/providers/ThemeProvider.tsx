@@ -1,9 +1,19 @@
 import { ReactNode, useMemo, useState } from 'react';
 import { Theme, ThemeContext } from '../contexts/themeContext';
-import { getDefaultTheme } from '../utils/utils';
 
 type ThemeProviderProps = {
   children: ReactNode;
+};
+
+const isBrowserDefaultDark = (): boolean =>
+  window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+const getDefaultTheme = (): Theme => {
+  const localStorageTheme: Theme | null = localStorage.getItem(
+    'theme'
+  ) as Theme;
+  const browserDefaultTheme: Theme = isBrowserDefaultDark() ? 'dark' : 'light';
+  return localStorageTheme || browserDefaultTheme;
 };
 
 const ThemeProvider = ({ children }: ThemeProviderProps) => {

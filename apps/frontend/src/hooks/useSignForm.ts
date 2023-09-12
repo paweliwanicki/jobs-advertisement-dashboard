@@ -1,7 +1,9 @@
 import { ReactNode, useCallback, useState } from 'react';
-import { HttpMethod, useApi as useApi } from './useApi';
+import { useApi } from './useApi';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './useAuth';
+import { RoutePath } from '../enums/RoutePath';
+import { HttpMethod } from '../enums/HttpMethods';
 
 type InputError =
   | 'EMPTY'
@@ -18,7 +20,7 @@ type GenericResponse = {
 
 type SignResponse = {
   accessToken: string;
-  refreshToken?: string;
+  refreshToken: string;
 } & GenericResponse;
 
 type SignForm = {
@@ -35,6 +37,7 @@ type SignForm = {
     confirmPasswordIsValidated: boolean;
     termsCheckIsValidated: boolean;
   };
+  isFetching: boolean;
   clearMessage: () => void;
   clearValidationAndError: (input: SignFormInput) => void;
   validateSignInForm: (username: string, password: string) => boolean;
@@ -71,7 +74,7 @@ const PASSWORD_REGEX = new RegExp(
 
 export const useSignForm = (): SignForm => {
   const navigate = useNavigate();
-  const { fetch } = useApi();
+  const { fetch, isFetching } = useApi();
   const { setToken, setRefreshToken } = useAuth();
 
   const [message, setMessage] = useState<ReactNode>();
@@ -95,7 +98,7 @@ export const useSignForm = (): SignForm => {
     setMessage(response.message);
     setToken(response.accessToken);
     setRefreshToken(response.refreshToken);
-    response.accessToken && navigate('/');
+    response.accessToken && navigate(RoutePath.DASHBOARD);
   }, []);
 
   const handleSignIn = useCallback(
@@ -259,6 +262,7 @@ export const useSignForm = (): SignForm => {
 
   return {
     message,
+    isFetching,
     errors: {
       usernameError,
       passwordError,

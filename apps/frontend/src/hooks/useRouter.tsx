@@ -1,33 +1,28 @@
 import { createBrowserHistory } from 'history';
-import { createBrowserRouter } from 'react-router-dom';
+import { Navigate, createBrowserRouter } from 'react-router-dom';
 import LoginContainer from '../containers/LoginContainer/LoginContainer';
 import { Page404 } from '../404';
 import { AuthGuard } from '../guards/AuthGuard';
 import { UserPanel } from '../components/UserPanel/UserPanel';
 import Layout from '../containers/Layout/Layout';
+import Dashboard from '../containers/Dashboard/Dashboard';
+import { RoutePath } from '../enums/RoutePath';
 
 const history = createBrowserHistory();
 
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: RoutePath.HOME,
     element: <Layout />,
     errorElement: <Page404 />,
     children: [
+      { index: true, element: <Navigate to={RoutePath.DASHBOARD} replace /> },
       {
-        path: '/admin',
-        element: (
-          <AuthGuard>
-            <div style={{ color: 'black' }}>admin panel</div>
-          </AuthGuard>
-        ),
-      },
-      {
-        path: '/login',
+        path: RoutePath.LOGIN,
         element: <LoginContainer />,
       },
       {
-        path: '/user',
+        path: RoutePath.USER,
         element: (
           <AuthGuard>
             <UserPanel />
@@ -35,8 +30,8 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: '/dashboard',
-        element: <div style={{ color: 'black' }}>Dashboard</div>,
+        path: RoutePath.DASHBOARD,
+        element: <Dashboard />,
       },
     ],
   },

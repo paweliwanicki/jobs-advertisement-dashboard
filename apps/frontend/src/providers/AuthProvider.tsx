@@ -3,6 +3,7 @@ import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { AuthContext } from '../contexts/authContext';
 import { User } from '../models/User';
+import { useApi } from '../hooks/useApi';
 
 type AuthProviderProps = {
   children: ReactNode;
@@ -13,35 +14,37 @@ export const decodeJwtToken = (jwtToken?: string): User | undefined => {
 };
 
 const AuthProvider = ({ children }: AuthProviderProps) => {
+  const { refreshJwtToken } = useApi();
+
   const [cookies, setCookies, removeItem] = useCookies([
     'jwtToken',
     'jwtRefreshToken',
   ]);
-  const [sessionTimeoutId, setSessionTimeoutId] = useState<NodeJS.Timeout>();
-  const [jwtToken, setJwtToken] = useState<string | undefined>(
-    () => cookies.jwtToken
-  );
+  const { jwtToken: token, jwtRefreshToken: refreshToken } = cookies;
+
+  const [jwtToken, setJwtToken] = useState<string | undefined>(token);
   const [jwtRefreshToken, setJwtRefreshToken] = useState<string | undefined>(
-    () => cookies.jwtToken
+    refreshToken
   );
+
+  const [timeOutId, setTimeoutId] = useState<NodeJS.Timeout>();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
     () => !!cookies.jwtToken
   );
 
   const setToken = useCallback(
-    (token?: string) => {
-      setJwtToken(token);
-      setIsAuthenticated(!!token);
-      if (token) {
-        const { exp } = jwt_decode(token) as { exp: number };
-        setSessionTime(exp);
-        setCookies('jwtToken', token, {
+    (newToken?: string) => {
+      setIsAuthenticated(!!newToken);
+      setJwtToken(newToken);
+      if (newToken) {
+        setAutoRefreshToken();
+        setCookies('jwtToken', newToken, {
           secure: true,
           sameSite: 'strict',
         });
       } else {
         removeItem('jwtToken');
-        clearTimeout(sessionTimeoutId);
+        clearTimeout(timeOutId);
       }
     },
     [jwtToken]
@@ -60,19 +63,23 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     [jwtRefreshToken]
   );
 
-  const setSessionTime = useCallback((expirationTime: number) => {
-    const now = Math.floor(new Date().getTime());
-    const timeoutId = setTimeout(() => {
-      setToken(undefined);
-      setRefreshToken(undefined);
-    }, expirationTime * 1000 - now);
-    setSessionTimeoutId(timeoutId);
-  }, []);
+  const setAutoRefreshToken = useCallback(() => {
+    if (jwtToken) {
+      const timeOutNewId = setTimeout(() => {
+        refreshJwtToken();
+        setTimeoutId(timeOutNewId);
+        console.log('timeout jwt refresh, after 8 mins and 20s');
+      }, 500000);
+    }
+  }, [jwtToken]);
 
   useEffect(() => {
     setToken(jwtToken);
-    setJwtRefreshToken(jwtRefreshToken);
-  }, [jwtToken, jwtRefreshToken]);
+  }, [jwtToken]);
+
+  useEffect(() => {
+    setRefreshToken(jwtRefreshToken);
+  }, [jwtRefreshToken]);
 
   const contextValue = useMemo(
     () => ({

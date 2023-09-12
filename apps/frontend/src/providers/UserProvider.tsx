@@ -29,7 +29,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
       user,
       changeUser,
     }),
-    [jwtToken]
+    [user]
   );
 
   return (

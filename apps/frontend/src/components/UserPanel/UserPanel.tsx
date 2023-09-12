@@ -8,16 +8,16 @@ import { useSignForm } from '../../hooks/useSignForm';
 export const UserPanel = () => {
   const { user } = useUser();
   const { refreshJwtToken } = useApi();
-
   const { handleSignOut } = useSignForm();
+
   const createdAtDate = useMemo(
     () =>
       user
-        ? new Date(user?.createdAt * 1000).toLocaleString('pl-PL', {
+        ? new Date(user.createdAt * 1000).toLocaleString('pl-PL', {
             timeZone: 'UTC',
           })
         : '',
-    []
+    [user]
   );
 
   const handleRefreshtoken = useCallback(async () => {

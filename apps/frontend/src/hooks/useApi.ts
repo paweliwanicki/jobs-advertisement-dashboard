@@ -1,5 +1,7 @@
+import { useCallback, useState } from 'react';
 import { useCookies } from 'react-cookie';
-import { useCallback } from 'react';
+import { HttpMethod } from '../enums/HttpMethods';
+import { useAuth } from './useAuth';
 
 type RequestOptions = {
   path: string;
@@ -19,15 +21,8 @@ type RefreshTokenResponse = {
   refreshToken: string;
 };
 
-export enum HttpMethod {
-  GET = 'GET',
-  POST = 'POST',
-  PUT = 'PUT',
-  PATCH = 'PATCH',
-  DELETE = 'DELETE',
-}
-
 type ApiService = {
+  isFetching: boolean;
   refreshJwtToken: () => Promise<void>;
   fetch: <T>(
     method: HttpMethod,
@@ -39,7 +34,6 @@ const forceApiTokenRefresh = async (
   jwtRefreshToken: string
 ): Promise<RefreshTokenResponse> => {
   const headers: Record<string, string> = buildHeaders(jwtRefreshToken);
-
   const refreshTokenResponse = await fetch('/api/auth/refreshToken', {
     headers,
     method: HttpMethod.GET,
@@ -73,10 +67,6 @@ const buildHeaders = (
   return headers;
 };
 
-/**
- * Generic HTTP request
- */
-
 const request = async (
   method: HttpMethod,
   params: ExtendedRequestOptions | RequestOptions,
@@ -103,11 +93,16 @@ const request = async (
 };
 
 export const useApi = (): ApiService => {
-  const [cookies, setCookies] = useCookies(['jwtToken', 'jwtRefreshToken']);
+  const [cookies] = useCookies(['jwtToken', 'jwtRefreshToken']);
+  const { setToken, setRefreshToken } = useAuth();
 
+  const [isFetching, setIsFetching] = useState<boolean>(false);
   const fetch = useCallback(
     async (method: HttpMethod, params: ExtendedRequestOptions) => {
-      return await request(method, params, cookies.jwtToken);
+      setIsFetching(true);
+      const response = await request(method, params, cookies.jwtToken);
+      setIsFetching(false);
+      return response;
     },
     []
   );
@@ -116,13 +111,12 @@ export const useApi = (): ApiService => {
     const { accessToken, refreshToken } = await forceApiTokenRefresh(
       cookies.jwtRefreshToken
     );
-    if (accessToken && refreshToken) {
-      setCookies('jwtToken', accessToken);
-      setCookies('jwtRefreshToken', refreshToken);
-    }
+    setToken(accessToken);
+    setRefreshToken(refreshToken);
   }, []);
 
   return {
+    isFetching,
     fetch,
     refreshJwtToken,
   };
