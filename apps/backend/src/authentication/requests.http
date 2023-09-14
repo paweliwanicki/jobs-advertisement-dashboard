@@ -26,9 +26,8 @@ POST http://localhost:3000/api/auth/signout
 
 
 ### GET CURRENTLY SIGNED IN USER v2
-GET http://localhost:3000/api/auth/whoami
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjU1LCJ1c2VybmFtZSI6InVzZXIwMSIsImlzQWRtaW4iOmZhbHNlLCJjcmVhdGVkQXQiOjE2OTQzNjU0MjAsImlhdCI6MTY5NDM2NjIxMSwiZXhwIjoxNjk0MzY2ODExfQ.z3ZGx_HDoioHhK9g-sBch5hWU0sK2DCPkjz8GyPgN-4
+GET http://localhost:3000/api/auth/getuser
+
 
 ### REFRESH JWT TOKEN
 GET http://localhost:3000/api/auth/refreshToken
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjU1LCJ1c2VybmFtZSI6InVzZXIwMSIsImlzQWRtaW4iOmZhbHNlLCJjcmVhdGVkQXQiOjE2OTQzNjU0MjAsImlhdCI6MTY5NDM2NjIxMSwiZXhwIjoxNjk0MzY2ODExfQ.z3ZGx_HDoioHhK9g-sBch5hWU0sK2DCPkjz8GyPgN-4

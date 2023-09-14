@@ -4,10 +4,11 @@ import Button from '../common/Button/Button';
 import classes from './UserPanel.module.scss';
 import { useApi } from '../../hooks/useApi';
 import { useSignForm } from '../../hooks/useSignForm';
+import { HttpMethod } from '../../enums/HttpMethods';
 
 export const UserPanel = () => {
   const { user } = useUser();
-  const { refreshJwtToken } = useApi();
+  const { refreshJwtToken, fetch } = useApi();
   const { handleSignOut } = useSignForm();
 
   const createdAtDate = useMemo(
@@ -24,6 +25,15 @@ export const UserPanel = () => {
     refreshJwtToken();
   }, []);
 
+  const handleGetProfile = useCallback(async () => {
+    {
+      const res = await fetch(HttpMethod.GET, {
+        path: '/api/auth/whoami',
+      });
+      console.log(res);
+    }
+  }, []);
+
   return (
     <div className={classes.userPanel}>
       <div>Registered at: {`${createdAtDate}`}</div>
@@ -33,6 +43,9 @@ export const UserPanel = () => {
 
       <Button variant="secondary" onClick={handleRefreshtoken}>
         Refresh token test
+      </Button>
+      <Button variant="secondary" onClick={handleGetProfile}>
+        Who am i
       </Button>
     </div>
   );

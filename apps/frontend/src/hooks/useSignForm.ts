@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from './useAuth';
 import { RoutePath } from '../enums/RoutePath';
 import { HttpMethod } from '../enums/HttpMethods';
+import { useUser } from './useUser';
 
 type InputError =
   | 'EMPTY'
@@ -76,6 +77,7 @@ export const useSignForm = (): SignForm => {
   const navigate = useNavigate();
   const { fetch, isFetching } = useApi();
   const { setToken, setRefreshToken } = useAuth();
+  //const { setUser } = useUser();
 
   const [message, setMessage] = useState<ReactNode>();
   const [usernameError, setUsernameError] = useState<string | undefined>();
@@ -98,6 +100,7 @@ export const useSignForm = (): SignForm => {
     setMessage(response.message);
     setToken(response.accessToken);
     setRefreshToken(response.refreshToken);
+    //setUser(response.user);
     response.accessToken && navigate(RoutePath.DASHBOARD);
   }, []);
 

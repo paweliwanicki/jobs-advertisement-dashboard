@@ -27,9 +27,16 @@ export class AuthenticationService {
         message: AUTH_STATUS_CODES[2002],
       });
     }
-    const tokens = this.getJwtTokens(user.id, user);
-    this.updateUserRefreshToken(user.id, tokens.refreshToken);
-    return tokens;
+    const accessToken = await this.getJwtToken(user.id, user);
+    const refreshToken = await this.getRefreshToken();
+
+    this.usersService.update(user.id, {
+      refreshToken,
+    });
+    return {
+      accessToken,
+      refreshToken,
+    };
   }
 
   async userSignUp(username: string, password: string) {
@@ -43,13 +50,21 @@ export class AuthenticationService {
     const salt = await genSalt(8);
     const hashed = await hash(password, salt);
     const user = await this.usersService.create(username, hashed);
-    const tokens = this.getJwtTokens(user.id, user);
-    this.updateUserRefreshToken(user.id, tokens.refreshToken);
-    return tokens;
+    const accessToken = await this.getJwtToken(user.id, user);
+    const refreshToken = await this.getRefreshToken();
+    this.usersService.update(user.id, {
+      refreshToken,
+    });
+    return {
+      accessToken,
+      refreshToken,
+    };
   }
 
   async userSignOut(userId: number) {
-    return this.updateUserRefreshToken(userId, null);
+    return this.usersService.update(userId, {
+      refreshToken: null,
+    });
   }
 
   async validateUser(username: string, password: string) {
@@ -67,58 +82,51 @@ export class AuthenticationService {
     return null;
   }
 
-  async refreshJwtToken(userId: number, refreshToken: string) {
-    const user = await this.usersService.findOneById(userId);
-    const checkRefreshToken = await compare(refreshToken, user.refreshToken);
-    if (!user || !user.refreshToken || !checkRefreshToken) {
+  async refreshJwtToken(userId: number, token: string) {
+    const user = await this.validateRefreshToken(userId, token);
+    const refreshToken = await this.getRefreshToken();
+    const accessToken = await this.getJwtToken(user.id, user);
+    this.usersService.update(user.id, {
+      refreshToken,
+    });
+    return {
+      accessToken,
+      refreshToken,
+    };
+  }
+
+  async validateRefreshToken(
+    userId: number,
+    refreshToken: string,
+  ): Promise<User> {
+    const user = await this.usersService.findOne({ id: userId, refreshToken });
+    if (!user) {
       throw new UnauthorizedException();
     }
-    const tokens = this.getJwtTokens(user.id, user);
-    this.updateUserRefreshToken(user.id, tokens.refreshToken);
-    return tokens;
+    return user;
   }
 
-  async updateUserRefreshToken(userId: number, refreshToken: string) {
-    const hashedRefreshedtoken = refreshToken
-      ? await hash(refreshToken, 8)
-      : null;
-    return this.usersService
-      .update(userId, {
-        refreshToken: hashedRefreshedtoken,
-      })
-      .then(() => true)
-      .catch(() => false);
+  async getRefreshToken() {
+    const refreshToken = await genSalt(16);
+    return refreshToken;
   }
 
-  getJwtTokens(sub: number, user: User) {
+  async getJwtToken(sub: number, user: User) {
     const userDetails: Partial<User> = {
       username: user.username,
       isAdmin: user.isAdmin,
       createdAt: user.createdAt,
     };
-    return {
-      accessToken: this.jwtService.sign(
-        {
-          sub,
-          ...userDetails,
-        },
-        {
-          secret: this.configService.get<string>('JWT_SECRET'),
-          expiresIn: this.configService.get<string>('JWT_EXPIRATION_TIME'),
-        },
-      ),
-      refreshToken: this.jwtService.sign(
-        {
-          sub,
-          ...userDetails,
-        },
-        {
-          secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
-          expiresIn: this.configService.get<string>(
-            'JWT_REFRESH_EXPIRATION_TIME',
-          ),
-        },
-      ),
-    };
+
+    return await this.jwtService.signAsync(
+      {
+        sub,
+        ...userDetails,
+      },
+      {
+        secret: this.configService.get<string>('JWT_SECRET'),
+        expiresIn: this.configService.get<string>('JWT_EXPIRATION_TIME'),
+      },
+    );
   }
 }
