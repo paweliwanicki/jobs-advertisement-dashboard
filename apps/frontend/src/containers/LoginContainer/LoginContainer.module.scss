@@ -42,6 +42,14 @@
     }
   }
 
+  form {
+    width: 100%;
+
+    button[type='submit'] {
+      display: block;
+      margin-left: auto;
+    }
+  }
   .formChangeBox {
     display: flex;
     flex-flow: column;

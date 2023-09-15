@@ -1,10 +1,10 @@
 import { ReactNode, useCallback, useState } from 'react';
 import { useApi } from './useApi';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from './useAuth';
 import { RoutePath } from '../enums/RoutePath';
 import { HttpMethod } from '../enums/HttpMethods';
 import { useUser } from './useUser';
+import { User } from '../models/User';
 
 type InputError =
   | 'EMPTY'
@@ -19,10 +19,7 @@ type GenericResponse = {
   statusCode: number;
 };
 
-type SignResponse = {
-  accessToken: string;
-  refreshToken: string;
-} & GenericResponse;
+type SignResponse = User & GenericResponse;
 
 type SignForm = {
   message: ReactNode;
@@ -76,8 +73,7 @@ const PASSWORD_REGEX = new RegExp(
 export const useSignForm = (): SignForm => {
   const navigate = useNavigate();
   const { fetch, isFetching } = useApi();
-  const { setToken, setRefreshToken } = useAuth();
-  //const { setUser } = useUser();
+  const { changeUser } = useUser();
 
   const [message, setMessage] = useState<ReactNode>();
   const [usernameError, setUsernameError] = useState<string | undefined>();
@@ -97,30 +93,29 @@ export const useSignForm = (): SignForm => {
     useState<boolean>(false);
 
   const handleSignResponse = useCallback((response: SignResponse) => {
-    setMessage(response.message);
-    setToken(response.accessToken);
-    setRefreshToken(response.refreshToken);
-    //setUser(response.user);
-    response.accessToken && navigate(RoutePath.DASHBOARD);
+    if (response.username) {
+      changeUser(response);
+      navigate(RoutePath.DASHBOARD);
+    }
   }, []);
 
   const handleSignIn = useCallback(
     async (username: string, password: string) => {
-      const [data] = await fetch<SignResponse>(HttpMethod.POST, {
+      const [response] = await fetch<SignResponse>(HttpMethod.POST, {
         path: '/api/auth/signin',
         payload: JSON.stringify({
           username,
           password,
         }),
       });
-      handleSignResponse(data);
+      handleSignResponse(response);
     },
     []
   );
 
   const handleSignUp = useCallback(
     async (username: string, password: string, confirmPassword: string) => {
-      const [data] = await fetch<SignResponse>(HttpMethod.POST, {
+      const [response] = await fetch<SignResponse>(HttpMethod.POST, {
         path: '/api/auth/signup',
         payload: JSON.stringify({
           username,
@@ -128,21 +123,19 @@ export const useSignForm = (): SignForm => {
           confirmPassword,
         }),
       });
-      handleSignResponse(data);
+
+      handleSignResponse(response);
     },
     []
   );
 
-  const handleSignOut = useCallback(() => {
-    fetch(HttpMethod.POST, {
+  const handleSignOut = useCallback(async () => {
+    const [response] = await fetch<SignResponse>(HttpMethod.POST, {
       path: '/api/auth/signout',
-    }).then((res) => {
-      const [status] = res;
-      if (status) {
-        setToken(undefined);
-        setRefreshToken(undefined);
-      }
     });
+    if (response.statusCode === 200) {
+      changeUser(undefined);
+    }
   }, []);
 
   const validateSignInForm = useCallback(

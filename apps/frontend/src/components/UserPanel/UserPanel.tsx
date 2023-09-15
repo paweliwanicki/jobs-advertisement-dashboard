@@ -8,7 +8,7 @@ import { HttpMethod } from '../../enums/HttpMethods';
 
 export const UserPanel = () => {
   const { user } = useUser();
-  const { refreshJwtToken, fetch } = useApi();
+  const { fetch } = useApi();
   const { handleSignOut } = useSignForm();
 
   const createdAtDate = useMemo(
@@ -22,16 +22,9 @@ export const UserPanel = () => {
   );
 
   const handleRefreshtoken = useCallback(async () => {
-    refreshJwtToken();
-  }, []);
-
-  const handleGetProfile = useCallback(async () => {
-    {
-      const res = await fetch(HttpMethod.GET, {
-        path: '/api/auth/whoami',
-      });
-      console.log(res);
-    }
+    await fetch(HttpMethod.GET, {
+      path: '/api/auth/refreshToken',
+    });
   }, []);
 
   return (
@@ -43,9 +36,6 @@ export const UserPanel = () => {
 
       <Button variant="secondary" onClick={handleRefreshtoken}>
         Refresh token test
-      </Button>
-      <Button variant="secondary" onClick={handleGetProfile}>
-        Who am i
       </Button>
     </div>
   );

@@ -9,6 +9,7 @@ import {
 import { Tooltip } from 'react-tooltip';
 import SvgIcon from '../SvgIcon/SvgIcon';
 import { useMotionAnimate } from 'motion-hooks';
+import { KeyboardEvent } from 'react';
 
 type InputTypes = 'text' | 'number' | 'password' | 'email';
 type InputSize = 'small' | 'medium' | 'large';
@@ -26,6 +27,7 @@ type InputProps = {
   placeholder?: string;
   size?: InputSize;
   onChange: (val: string) => void;
+  onKeyDown?: (event: KeyboardEvent<HTMLInputElement>) => void;
 };
 
 const Input = ({
@@ -41,6 +43,7 @@ const Input = ({
   placeholder,
   size = 'medium',
   onChange,
+  onKeyDown,
 }: InputProps) => {
   const validationIconAnimation = useMotionAnimate(
     `.${classes.validationIcon}`,
@@ -95,6 +98,7 @@ const Input = ({
           name={id}
           value={value}
           onChange={handleInputOnChange}
+          onKeyDown={onKeyDown}
           placeholder={placeholder}
           className={`${classes[size]} ${icon ? classes.withIcon : ''}`}
         />

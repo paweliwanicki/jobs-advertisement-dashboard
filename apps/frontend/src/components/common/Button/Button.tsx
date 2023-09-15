@@ -8,7 +8,7 @@ type ButtonProps = {
   variant: ButtonVariant;
   type?: ButtonType;
   classNames?: string;
-  onClick: () => void;
+  onClick?: () => void;
 };
 
 const Button = ({

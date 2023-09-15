@@ -70,7 +70,6 @@ export class AuthenticationController {
       sameSite: 'lax',
       expires: new Date(Date.now() + 1 * 24 * 30 * 1000),
     });
-
     return user;
   }
 
@@ -78,7 +77,9 @@ export class AuthenticationController {
   @Post('/signout')
   async signOutUser(@CurrentUser() user: User, @Res() response: Response) {
     await this.authenticationService.userSignOut(user.id);
-    response.clearCookie('auth-tokens').send({ message: 'ok' });
+    response
+      .clearCookie('auth-tokens')
+      .send({ statusCode: 200, message: 'ok' });
   }
 
   @UseGuards(JwtRefreshAuthGuard)
@@ -99,6 +100,6 @@ export class AuthenticationController {
         sameSite: 'lax',
         expires: new Date(Date.now() + 1 * 24 * 30 * 1000),
       })
-      .send({ message: 'ok' });
+      .send({ statusCode: 200, message: 'ok' });
   }
 }

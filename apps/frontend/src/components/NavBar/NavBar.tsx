@@ -4,11 +4,11 @@ import Switch from '../common/Switch/Switch';
 import SvgIcon from '../common/SvgIcon/SvgIcon';
 import { Link } from 'react-router-dom';
 import { Tooltip } from 'react-tooltip';
-import { useAuth } from '../../hooks/useAuth';
 import { useTheme } from '../../hooks/useTheme';
+import { useUser } from '../../hooks/useUser';
 
 const NavBar = () => {
-  const { isAuthenticated } = useAuth();
+  const { user } = useUser();
   const { theme, setTheme } = useTheme();
   const handleChangeThemeContext = () => {
     const newTheme = theme === 'dark' ? 'light' : 'dark';
@@ -29,7 +29,7 @@ const NavBar = () => {
             leftLabel={<SvgIcon id="icon-sun" height={22} width={22} />}
             rightLabel={<SvgIcon id="icon-moon" height={18} width={18} />}
           />
-          {isAuthenticated ? (
+          {user ? (
             <Link to="/user">
               <SvgIcon
                 id="icon-user"

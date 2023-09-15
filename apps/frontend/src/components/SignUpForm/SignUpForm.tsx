@@ -4,6 +4,7 @@ import {
   useCallback,
   useState,
   useEffect,
+  FormEvent,
 } from 'react';
 import Input from '../common/Input/Input';
 import classes from './SignUpForm.module.scss';
@@ -106,27 +107,31 @@ const SignUpForm = ({ onSubmit }: SignUpFormProps) => {
     [termsCheckError, clearValidationAndError]
   );
 
-  const handleFormOnSubmit = useCallback(() => {
-    const isValid = validateSignUpForm(
+  const handleFormOnSubmit = useCallback(
+    (event: FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      const isValid = validateSignUpForm(
+        username,
+        password,
+        confirmPassword,
+        termsChecked
+      );
+
+      if (!isValid) {
+        return;
+      }
+
+      onSubmit(username, password, confirmPassword);
+    },
+    [
       username,
       password,
       confirmPassword,
-      termsChecked
-    );
-
-    if (!isValid) {
-      return;
-    }
-
-    onSubmit(username, password, confirmPassword);
-  }, [
-    username,
-    password,
-    confirmPassword,
-    termsChecked,
-    validateSignUpForm,
-    onSubmit,
-  ]);
+      termsChecked,
+      validateSignUpForm,
+      onSubmit,
+    ]
+  );
 
   const showTermsAndConditions = useCallback(() => {
     setModalContent(TERMS_CONDITION);
@@ -155,100 +160,101 @@ const SignUpForm = ({ onSubmit }: SignUpFormProps) => {
         Don't have an account yet? Create a new account and enjoy browsing the
         many fake jobs &#128526;
       </h4>
-      <Input
-        type="text"
-        id="username"
-        label={
-          <>
-            <SvgIcon id="icon-info" elementId="username-info-icon" />
-            <span>
-              Username<span className={classes.required}>*</span>
-            </span>
-            <Tooltip
-              anchorSelect="#username-info-icon"
-              place="bottom-start"
-              variant="info"
-              content="Username must be alphanumeric, so it requires at least one letter and at least one number.  The total length should be between 6 and 12 characters."
-            />
-          </>
-        }
-        errorText={usernameError}
-        hasError={!!usernameError}
-        onChange={handleUsernameOnChange}
-        placeholder="Your new username"
-        isValidated={usernameIsValidated}
-      />
-
-      <Input
-        type="password"
-        id="password"
-        label={
-          <>
-            <SvgIcon id="icon-info" elementId="password-info-icon" />
-            <span>
-              Password<span className={classes.required}>*</span>
-            </span>
-            <Tooltip
-              anchorSelect="#password-info-icon"
-              place="bottom-start"
-              variant="info"
-              content="Password should contain at least one uppercase and lowercase letter, one number, one special character, and a total length of at least 8 characters."
-            />
-          </>
-        }
-        errorText={passwordError}
-        hasError={!!passwordError}
-        onChange={handlePasswordOnChange}
-        placeholder="Your password"
-        isValidated={passwordIsValidated}
-      />
-
-      <Input
-        type="password"
-        id="confirm-password"
-        label={
-          <>
-            <SvgIcon id="icon-info" elementId="confirm-password-info-icon" />
-            <span>
-              Confirm password<span className={classes.required}>*</span>
-            </span>
-            <Tooltip
-              anchorSelect="#confirm-password-info-icon"
-              place="bottom-start"
-              variant="info"
-              content="Password and confirmation password must be equal"
-            />
-          </>
-        }
-        errorText={confirmPasswordError}
-        hasError={!!confirmPasswordError}
-        onChange={handleConfirmPasswordOnChange}
-        placeholder="Confirm your password"
-        isValidated={confirmPasswordIsValidated}
-      />
-
-      <div className={classes.termsBox}>
-        <Checkbox
-          onChange={handleOnCheckboxChange}
-          isChecked={termsChecked}
-          hasError={!!termsCheckError}
-          size="medium"
-          errorText="You must agree conditions and terms!"
-          errorTooltip
+      <form noValidate onSubmit={handleFormOnSubmit}>
+        <Input
+          type="text"
+          id="username"
+          label={
+            <>
+              <SvgIcon id="icon-info" elementId="username-info-icon" />
+              <span>
+                Username<span className={classes.required}>*</span>
+              </span>
+              <Tooltip
+                anchorSelect="#username-info-icon"
+                place="bottom-start"
+                variant="info"
+                content="Username must be alphanumeric, so it requires at least one letter and at least one number.  The total length should be between 6 and 12 characters."
+              />
+            </>
+          }
+          errorText={usernameError}
+          hasError={!!usernameError}
+          onChange={handleUsernameOnChange}
+          placeholder="Your new username"
+          isValidated={usernameIsValidated}
         />
-        <p>
-          I agree to the
-          <span onClick={showTermsAndConditions}> Terms and Conditions </span>
-          and
-          <span onClick={showPrivacyStatement}> Privacy Statement</span>
-          <span className={classes.required}>*</span>
-        </p>
-      </div>
 
-      <Button type="button" variant="secondary" onClick={handleFormOnSubmit}>
-        Sign Up
-      </Button>
+        <Input
+          type="password"
+          id="password"
+          label={
+            <>
+              <SvgIcon id="icon-info" elementId="password-info-icon" />
+              <span>
+                Password<span className={classes.required}>*</span>
+              </span>
+              <Tooltip
+                anchorSelect="#password-info-icon"
+                place="bottom-start"
+                variant="info"
+                content="Password should contain at least one uppercase and lowercase letter, one number, one special character, and a total length of at least 8 characters."
+              />
+            </>
+          }
+          errorText={passwordError}
+          hasError={!!passwordError}
+          onChange={handlePasswordOnChange}
+          placeholder="Your password"
+          isValidated={passwordIsValidated}
+        />
 
+        <Input
+          type="password"
+          id="confirm-password"
+          label={
+            <>
+              <SvgIcon id="icon-info" elementId="confirm-password-info-icon" />
+              <span>
+                Confirm password<span className={classes.required}>*</span>
+              </span>
+              <Tooltip
+                anchorSelect="#confirm-password-info-icon"
+                place="bottom-start"
+                variant="info"
+                content="Password and confirmation password must be equal"
+              />
+            </>
+          }
+          errorText={confirmPasswordError}
+          hasError={!!confirmPasswordError}
+          onChange={handleConfirmPasswordOnChange}
+          placeholder="Confirm your password"
+          isValidated={confirmPasswordIsValidated}
+        />
+
+        <div className={classes.termsBox}>
+          <Checkbox
+            onChange={handleOnCheckboxChange}
+            isChecked={termsChecked}
+            hasError={!!termsCheckError}
+            size="medium"
+            errorText="You must agree conditions and terms!"
+            errorTooltip
+          />
+          <p>
+            I agree to the
+            <span onClick={showTermsAndConditions}> Terms and Conditions </span>
+            and
+            <span onClick={showPrivacyStatement}> Privacy Statement</span>
+            <span className={classes.required}>*</span>
+          </p>
+        </div>
+
+        <Button type="submit" variant="secondary">
+          Sign Up
+        </Button>
+      </form>
       <Modal isOpen={showModal} onClose={closeModal}>
         {modalContent}
       </Modal>
