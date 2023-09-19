@@ -4,6 +4,7 @@ type ButtonType = 'button' | 'submit';
 type ButtonVariant = 'primary' | 'secondary';
 
 type ButtonProps = {
+  id?: string;
   children: React.ReactNode;
   variant: ButtonVariant;
   type?: ButtonType;
@@ -12,6 +13,7 @@ type ButtonProps = {
 };
 
 const Button = ({
+  id,
   children,
   variant,
   classNames = '',
@@ -23,6 +25,7 @@ const Button = ({
       className={`${classes.button} ${classes[variant]} ${classNames}`}
       onClick={onClick}
       type={type}
+      id={id}
     >
       {children}
     </button>

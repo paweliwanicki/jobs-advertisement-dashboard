@@ -4,6 +4,7 @@ import classes from './Checkbox.module.scss';
 type CheckboxSize = 'medium' | 'large';
 
 type CheckboxProps = {
+  id: string;
   isChecked: boolean;
   label?: React.ReactNode;
   size?: CheckboxSize;
@@ -14,6 +15,7 @@ type CheckboxProps = {
 };
 
 const Checkbox = ({
+  id,
   isChecked,
   label,
   hasError,
@@ -26,7 +28,12 @@ const Checkbox = ({
   return (
     <label className={`${classes.checkbox}`}>
       <div className={`${classes.checkboxContainer} ${classes[size]}`}>
-        <input type="checkbox" onChange={onChange} checked={isChecked} />
+        <input
+          type="checkbox"
+          onChange={onChange}
+          checked={isChecked}
+          id={id}
+        />
         <span
           className={`${classes.checkmark} ${classes[size]} ${
             hasError ? classes.error : ''

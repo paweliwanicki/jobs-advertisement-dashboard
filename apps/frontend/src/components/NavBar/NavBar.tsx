@@ -24,6 +24,7 @@ const NavBar = () => {
         </Link>
         <div className={classes.userMenu}>
           <Switch
+            id="theme-switch"
             checked={theme === 'dark'}
             onChange={handleChangeThemeContext}
             leftLabel={<SvgIcon id="icon-sun" height={22} width={22} />}

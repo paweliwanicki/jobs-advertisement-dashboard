@@ -20,12 +20,14 @@ type InputProps = {
   label: ReactNode;
   isValidated?: boolean;
   hasError?: boolean;
+  autocomplete?: boolean;
   icon?: ReactNode;
   value?: string;
   errorText?: string;
   validText?: string;
   placeholder?: string;
   size?: InputSize;
+  autoComplete?: string;
   onChange: (val: string) => void;
   onKeyDown?: (event: KeyboardEvent<HTMLInputElement>) => void;
 };
@@ -41,6 +43,7 @@ const Input = ({
   errorText,
   validText,
   placeholder,
+  autoComplete,
   size = 'medium',
   onChange,
   onKeyDown,
@@ -94,6 +97,7 @@ const Input = ({
       <div className={inputBoxClassNames}>
         {icon}
         <input
+          id={id}
           type={inputType}
           name={id}
           value={value}
@@ -101,6 +105,7 @@ const Input = ({
           onKeyDown={onKeyDown}
           placeholder={placeholder}
           className={`${classes[size]} ${icon ? classes.withIcon : ''}`}
+          autoComplete={autoComplete}
         />
 
         <div

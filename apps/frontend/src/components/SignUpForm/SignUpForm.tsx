@@ -183,6 +183,7 @@ const SignUpForm = ({ onSubmit }: SignUpFormProps) => {
           onChange={handleUsernameOnChange}
           placeholder="Your new username"
           isValidated={usernameIsValidated}
+          autoComplete="on"
         />
 
         <Input
@@ -238,6 +239,7 @@ const SignUpForm = ({ onSubmit }: SignUpFormProps) => {
             onChange={handleOnCheckboxChange}
             isChecked={termsChecked}
             hasError={!!termsCheckError}
+            id="checkbox-terms"
             size="medium"
             errorText="You must agree conditions and terms!"
             errorTooltip

@@ -88,6 +88,7 @@ const SignInForm = ({ onSubmit }: SignInFormProps) => {
           onChange={handleUsernameOnChange}
           placeholder="Your username"
           isValidated={usernameIsValidated}
+          autoComplete="on"
         />
 
         <Input
@@ -107,6 +108,7 @@ const SignInForm = ({ onSubmit }: SignInFormProps) => {
             isChecked={rememberMeIsChecked}
             size="medium"
             label="Remember me"
+            id="checkbox-rememeber"
           />
         </div>
 

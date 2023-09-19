@@ -30,7 +30,7 @@ export class AuthenticationService {
     const accessToken = await this.getJwtToken(user.id, user);
     const refreshToken = await this.getRefreshToken();
 
-    this.usersService.update(user.id, {
+    await this.usersService.update(user.id, {
       refreshToken,
     });
     return {
@@ -52,7 +52,7 @@ export class AuthenticationService {
     const user = await this.usersService.create(username, hashed);
     const accessToken = await this.getJwtToken(user.id, user);
     const refreshToken = await this.getRefreshToken();
-    this.usersService.update(user.id, {
+    await this.usersService.update(user.id, {
       refreshToken,
     });
     return {
@@ -86,7 +86,7 @@ export class AuthenticationService {
     const user = await this.validateRefreshToken(userId, token);
     const refreshToken = await this.getRefreshToken();
     const accessToken = await this.getJwtToken(user.id, user);
-    this.usersService.update(user.id, {
+    await this.usersService.update(user.id, {
       refreshToken,
     });
     return {
