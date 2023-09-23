@@ -18,6 +18,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { JwtRefreshAuthGuard } from './guards/jwt-refresh.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { Response } from 'express';
+import { setJwtTokensCookies } from './utils/utils';
 
 @Serialize(UserDto)
 @Controller('auth')
@@ -35,19 +36,12 @@ export class AuthenticationController {
   async createUser(
     @Body() body: SignUpUserDto,
     @Res({ passthrough: true }) response: Response,
-    @CurrentUser() user: UserDto,
   ) {
     const { username, password } = body;
-    const tokens = await this.authenticationService.userSignUp(
-      username,
-      password,
-    );
-    response.cookie('auth-tokens', tokens, {
-      httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
-      expires: new Date(Date.now() + 1 * 24 * 30 * 1000),
-    });
+    const { user, accessToken, refreshToken } =
+      await this.authenticationService.userSignUp(username, password);
+
+    setJwtTokensCookies({ accessToken, refreshToken }, response);
     return user;
   }
 
@@ -56,20 +50,12 @@ export class AuthenticationController {
   async signInUser(
     @Body() body: SignInUserDto,
     @Res({ passthrough: true }) response: Response,
-    @CurrentUser() user: UserDto,
   ) {
     const { username, password } = body;
 
-    const tokens = await this.authenticationService.userSignIn(
-      username,
-      password,
-    );
-    response.cookie('auth-tokens', tokens, {
-      httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
-      expires: new Date(Date.now() + 1 * 24 * 30 * 1000),
-    });
+    const { user, accessToken, refreshToken } =
+      await this.authenticationService.userSignIn(username, password);
+    setJwtTokensCookies({ accessToken, refreshToken }, response);
     return user;
   }
 
@@ -78,7 +64,8 @@ export class AuthenticationController {
   async signOutUser(@CurrentUser() user: User, @Res() response: Response) {
     await this.authenticationService.userSignOut(user.id);
     response
-      .clearCookie('auth-tokens')
+      .clearCookie('jwtToken')
+      .clearCookie('refreshToken')
       .send({ statusCode: 200, message: 'ok' });
   }
 
@@ -87,19 +74,13 @@ export class AuthenticationController {
   async refreshJwtToken(
     @Req() request,
     @Res({ passthrough: true }) response: Response,
+    @CurrentUser() user: User,
   ) {
     const tokens = await this.authenticationService.refreshJwtToken(
-      request.user.sub,
       request.user.refreshToken,
     );
 
-    response
-      .cookie('auth-tokens', tokens, {
-        httpOnly: true,
-        secure: false,
-        sameSite: 'lax',
-        expires: new Date(Date.now() + 1 * 24 * 30 * 1000),
-      })
-      .send({ statusCode: 200, message: 'ok' });
+    setJwtTokensCookies(tokens, response);
+    return user;
   }
 }

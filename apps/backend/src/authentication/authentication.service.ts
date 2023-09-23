@@ -2,10 +2,9 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
-import { JwtService } from '@nestjs/jwt';
+import { JwtService, JwtVerifyOptions } from '@nestjs/jwt';
 import { AUTH_STATUS_CODES } from './response.status.codes';
 import { User } from 'src/users/user.entity';
 import { ConfigService } from '@nestjs/config';
@@ -28,12 +27,13 @@ export class AuthenticationService {
       });
     }
     const accessToken = await this.getJwtToken(user.id, user);
-    const refreshToken = await this.getRefreshToken();
+    const refreshToken = await this.getRefreshToken(user.id);
 
     await this.usersService.update(user.id, {
       refreshToken,
     });
     return {
+      user,
       accessToken,
       refreshToken,
     };
@@ -51,11 +51,12 @@ export class AuthenticationService {
     const hashed = await hash(password, salt);
     const user = await this.usersService.create(username, hashed);
     const accessToken = await this.getJwtToken(user.id, user);
-    const refreshToken = await this.getRefreshToken();
+    const refreshToken = await this.getRefreshToken(user.id);
     await this.usersService.update(user.id, {
       refreshToken,
     });
     return {
+      user,
       accessToken,
       refreshToken,
     };
@@ -82,33 +83,31 @@ export class AuthenticationService {
     return null;
   }
 
-  async refreshJwtToken(userId: number, token: string) {
-    const user = await this.validateRefreshToken(userId, token);
-    const refreshToken = await this.getRefreshToken();
-    const accessToken = await this.getJwtToken(user.id, user);
+  async refreshJwtToken(refreshToken: string) {
+    const user = await this.usersService.findOne({ refreshToken });
+    const newRefreshToken = await this.getRefreshToken(user.id);
+    const newAccessToken = await this.getJwtToken(user.id, user);
     await this.usersService.update(user.id, {
-      refreshToken,
+      refreshToken: newRefreshToken,
     });
     return {
-      accessToken,
-      refreshToken,
+      newAccessToken,
+      newRefreshToken,
     };
   }
 
-  async validateRefreshToken(
-    userId: number,
-    refreshToken: string,
-  ): Promise<User> {
-    const user = await this.usersService.findOne({ id: userId, refreshToken });
-    if (!user) {
-      throw new UnauthorizedException();
-    }
-    return user;
-  }
-
-  async getRefreshToken() {
-    const refreshToken = await genSalt(16);
-    return refreshToken;
+  async getRefreshToken(sub: number) {
+    return await this.jwtService.signAsync(
+      {
+        sub,
+      },
+      {
+        secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+        expiresIn: this.configService.get<string>(
+          'JWT_REFRESH_EXPIRATION_TIME',
+        ),
+      },
+    );
   }
 
   async getJwtToken(sub: number, user: User) {
@@ -128,5 +127,9 @@ export class AuthenticationService {
         expiresIn: this.configService.get<string>('JWT_EXPIRATION_TIME'),
       },
     );
+  }
+
+  validateToken(token: string, options?: JwtVerifyOptions) {
+    return this.jwtService.verify(token, options);
   }
 }
