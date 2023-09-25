@@ -4,6 +4,7 @@ import {
   useCallback,
   useState,
   useEffect,
+  FormEvent,
 } from 'react';
 import Input from '../common/Input/Input';
 import classes from './SignUpForm.module.scss';
@@ -13,8 +14,8 @@ import Checkbox from '../common/Checkbox/Checkbox';
 import Modal from '../common/Modal/Modal';
 import SvgIcon from '../common/SvgIcon/SvgIcon';
 import { useSignForm } from '../../hooks/useSignForm';
-import { SignForm } from '../../containers/LoginContainer/LoginContainer';
 import { useMotionAnimate } from 'motion-hooks';
+import PasswordInput from '../common/PasswordInput/PasswordInput';
 
 // move terms and privacy to db, fetch them on demand and useMemo
 const TERMS_CONDITION: ReactNode = (
@@ -34,7 +35,15 @@ const PRIVACY_STATEMENT: ReactNode = (
   </>
 );
 
-const SignUpForm = ({ onSubmit }: SignForm) => {
+type SignUpFormProps = {
+  onSubmit: (
+    username: string,
+    password: string,
+    confirmPassword: string
+  ) => void;
+};
+
+const SignUpForm = ({ onSubmit }: SignUpFormProps) => {
   const { play } = useMotionAnimate(
     `.${classes.signUpForm}`,
     { opacity: 1 },
@@ -99,27 +108,31 @@ const SignUpForm = ({ onSubmit }: SignForm) => {
     [termsCheckError, clearValidationAndError]
   );
 
-  const handleFormOnSubmit = useCallback(() => {
-    const isValid = validateSignUpForm(
+  const handleFormOnSubmit = useCallback(
+    (event: FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      const isValid = validateSignUpForm(
+        username,
+        password,
+        confirmPassword,
+        termsChecked
+      );
+
+      if (!isValid) {
+        return;
+      }
+
+      onSubmit(username, password, confirmPassword);
+    },
+    [
       username,
       password,
       confirmPassword,
-      termsChecked
-    );
-
-    if (!isValid) {
-      return;
-    }
-
-    onSubmit(username, password);
-  }, [
-    username,
-    password,
-    confirmPassword,
-    termsChecked,
-    validateSignUpForm,
-    onSubmit,
-  ]);
+      termsChecked,
+      validateSignUpForm,
+      onSubmit,
+    ]
+  );
 
   const showTermsAndConditions = useCallback(() => {
     setModalContent(TERMS_CONDITION);
@@ -148,98 +161,87 @@ const SignUpForm = ({ onSubmit }: SignForm) => {
         Don't have an account yet? Create a new account and enjoy browsing the
         many fake jobs &#128526;
       </h4>
-      <Input
-        type="text"
-        id="username"
-        label={
-          <>
-            <SvgIcon id="icon-info" elementId="username-info-icon" />
-            <span>
-              Username<span className={classes.required}>*</span>
-            </span>
-            <Tooltip
-              anchorSelect="#username-info-icon"
-              place="bottom-start"
-              variant="info"
-              content="Username must be alphanumeric, so it requires at least one letter and at least one number.  The total length should be between 6 and 12 characters."
-            />
-          </>
-        }
-        errorText={usernameError}
-        hasError={!!usernameError}
-        onChange={handleUsernameOnChange}
-        placeholder="Your new username"
-        isValidated={usernameIsValidated}
-      />
-
-      <Input
-        type="password"
-        id="password"
-        label={
-          <>
-            <SvgIcon id="icon-info" elementId="password-info-icon" />
-            <span>
-              Password<span className={classes.required}>*</span>
-            </span>
-            <Tooltip
-              anchorSelect="#password-info-icon"
-              place="bottom-start"
-              variant="info"
-              content="Password should contain at least one uppercase and lowercase letter, one number, one special character, and a total length of at least 8 characters."
-            />
-          </>
-        }
-        errorText={passwordError}
-        hasError={!!passwordError}
-        onChange={handlePasswordOnChange}
-        placeholder="Your password"
-        isValidated={passwordIsValidated}
-      />
-
-      <Input
-        type="password"
-        id="confirm-password"
-        label={
-          <>
-            <SvgIcon id="icon-info" elementId="confirm-password-info-icon" />
-            <span>
-              Confirm password<span className={classes.required}>*</span>
-            </span>
-            <Tooltip
-              anchorSelect="#confirm-password-info-icon"
-              place="bottom-start"
-              variant="info"
-              content="Password and confirmation password must be equal"
-            />
-          </>
-        }
-        errorText={confirmPasswordError}
-        hasError={!!confirmPasswordError}
-        onChange={handleConfirmPasswordOnChange}
-        placeholder="Confirm your password"
-        isValidated={confirmPasswordIsValidated}
-      />
-
-      <div className={classes.termsBox}>
-        <Checkbox
-          onChange={handleOnCheckboxChange}
-          isChecked={termsChecked}
-          hasError={Boolean(termsCheckError)}
-          size="medium"
+      <form noValidate onSubmit={handleFormOnSubmit}>
+        <Input
+          type="text"
+          id="username"
+          label={
+            <>
+              <SvgIcon id="icon-info" elementId="username-info-icon" />
+              <span>
+                Username<span className={classes.required}>*</span>
+              </span>
+              <Tooltip
+                anchorSelect="#username-info-icon"
+                place="bottom-start"
+                variant="info"
+                content="Username must be alphanumeric, so it requires at least one letter and at least one number.  The total length should be between 6 and 12 characters."
+              />
+            </>
+          }
+          errorText={usernameError}
+          hasError={!!usernameError}
+          onChange={handleUsernameOnChange}
+          placeholder="Your new username"
+          isValidated={usernameIsValidated}
+          autoComplete="on"
         />
-        <p>
-          I agree to the
-          <span onClick={showTermsAndConditions}> Terms and Conditions </span>
-          and
-          <span onClick={showPrivacyStatement}> Privacy Statement</span>
-          <span className={classes.required}>*</span>
-        </p>
-      </div>
 
-      <Button type="button" variant="secondary" onClick={handleFormOnSubmit}>
-        Sign Up
-      </Button>
+        <PasswordInput
+          id="password"
+          errorText={passwordError}
+          hasError={!!passwordError}
+          onChange={handlePasswordOnChange}
+          placeholder="Your password"
+          isValidated={passwordIsValidated}
+        />
 
+        <PasswordInput
+          id="confirm-password"
+          errorText={confirmPasswordError}
+          hasError={!!confirmPasswordError}
+          onChange={handleConfirmPasswordOnChange}
+          placeholder="Confirm your password"
+          isValidated={confirmPasswordIsValidated}
+          label={
+            <>
+              <SvgIcon id="icon-info" elementId="confirm-password-info-icon" />
+              <span>
+                Confirm password<span className={classes.required}>*</span>
+              </span>
+              <Tooltip
+                anchorSelect="#confirm-password-info-icon"
+                place="bottom-start"
+                variant="info"
+                content="Password and confirmation password must be equal"
+              />
+            </>
+          }
+        />
+
+        <div className={classes.termsBox}>
+          <Checkbox
+            onChange={handleOnCheckboxChange}
+            isChecked={termsChecked}
+            hasError={!!termsCheckError}
+            id="checkbox-terms"
+            size="medium"
+            errorText="You must agree conditions and terms!"
+            errorTooltip
+          />
+          <p>
+            I agree to the
+            <span onClick={showTermsAndConditions}> Terms and Conditions </span>
+            and
+            <span onClick={showPrivacyStatement}> Privacy Statement</span>
+            <span className={classes.required}>*</span>
+          </p>
+        </div>
+
+        <Button type="submit" variant="secondary">
+          Sign Up
+        </Button>
+      </form>
       <Modal isOpen={showModal} onClose={closeModal}>
         {modalContent}
       </Modal>

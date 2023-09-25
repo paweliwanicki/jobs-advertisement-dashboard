@@ -3,12 +3,9 @@ import SignUpForm from '../../components/SignUpForm/SignUpForm';
 import classes from './LoginContainer.module.scss';
 import SignInForm from '../../components/SignInForm/SignInForm';
 import { useSignForm } from '../../hooks/useSignForm';
+import { LoadingSpinner } from '../../components/common/LoadingSpinner/LoadingSpinner';
 
 type Form = 'SIGN_UP' | 'SIGN_IN';
-
-export type SignForm = {
-  onSubmit: (username: string, password: string) => void;
-};
 
 const FORM_CHANGE_TEXT: Record<Form, Record<string, string>> = {
   SIGN_UP: {
@@ -22,25 +19,24 @@ const FORM_CHANGE_TEXT: Record<Form, Record<string, string>> = {
 } as const;
 
 const LoginContainer = () => {
-  const { message, handleSignIn, handleSignUp, clearMessage } = useSignForm();
+  const { message, handleSignIn, isFetching, handleSignUp, clearMessage } =
+    useSignForm();
 
   const [activeForm, setActiveForm] = useState<Form>('SIGN_IN');
 
-  const handleSignInOnSubmit = (username: string, password: string) => {
-    handleSignIn(username, password)
-      .then((res) => console.log(res))
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+  const handleSignInOnSubmit = useCallback(
+    (username: string, password: string) => {
+      handleSignIn(username, password);
+    },
+    []
+  );
 
-  const handleSignUpOnSubmit = (username: string, password: string) => {
-    handleSignUp(username, password)
-      .then((res) => console.log(res))
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+  const handleSignUpOnSubmit = useCallback(
+    (username: string, password: string, confirmPassword: string) => {
+      handleSignUp(username, password, confirmPassword);
+    },
+    []
+  );
 
   const handleChangeSignForm = useCallback(() => {
     setActiveForm(activeForm === 'SIGN_IN' ? 'SIGN_UP' : 'SIGN_IN');
@@ -49,6 +45,7 @@ const LoginContainer = () => {
 
   return (
     <div className={classes.loginContainer}>
+      {isFetching && <LoadingSpinner />}
       {activeForm === 'SIGN_UP' ? (
         <SignUpForm onSubmit={handleSignUpOnSubmit} />
       ) : (

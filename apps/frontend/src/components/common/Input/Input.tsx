@@ -1,36 +1,34 @@
 import classes from './Input.module.scss';
-import {
-  ReactNode,
-  useState,
-  useCallback,
-  useEffect,
-  ChangeEvent,
-} from 'react';
+import { ReactNode, useCallback, useEffect, ChangeEvent } from 'react';
 import { Tooltip } from 'react-tooltip';
 import SvgIcon from '../SvgIcon/SvgIcon';
 import { useMotionAnimate } from 'motion-hooks';
+import { KeyboardEvent } from 'react';
 
 type InputTypes = 'text' | 'number' | 'password' | 'email';
 type InputSize = 'small' | 'medium' | 'large';
 
-type InputProps = {
+export type InputProps = {
   id: string;
-  type: InputTypes;
-  label: ReactNode;
+  label?: ReactNode;
+  type?: InputTypes;
   isValidated?: boolean;
   hasError?: boolean;
+  autocomplete?: boolean;
   icon?: ReactNode;
   value?: string;
   errorText?: string;
   validText?: string;
   placeholder?: string;
   size?: InputSize;
+  autoComplete?: string;
+  children?: ReactNode;
   onChange: (val: string) => void;
+  onKeyDown?: (event: KeyboardEvent<HTMLInputElement>) => void;
 };
 
 const Input = ({
   id,
-  type,
   label,
   isValidated,
   hasError,
@@ -39,8 +37,12 @@ const Input = ({
   errorText,
   validText,
   placeholder,
+  autoComplete,
+  children,
   size = 'medium',
+  type = 'text',
   onChange,
+  onKeyDown,
 }: InputProps) => {
   const validationIconAnimation = useMotionAnimate(
     `.${classes.validationIcon}`,
@@ -51,8 +53,6 @@ const Input = ({
     }
   );
 
-  const [inputType, setInputType] = useState<InputTypes>(type);
-
   let validClassName = '';
   let inputBoxClassNames = `${classes.inputBox}`;
 
@@ -62,14 +62,6 @@ const Input = ({
     validClassName = !hasError ? classes.valid : classes.error;
     inputBoxClassNames = `${inputBoxClassNames} ${validClassName}`;
   }
-
-  const handleShowPassword = useCallback(() => {
-    setInputType('text');
-  }, []);
-
-  const handleHidePassword = useCallback(() => {
-    setInputType('password');
-  }, []);
 
   const handleInputOnChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -91,38 +83,23 @@ const Input = ({
       <div className={inputBoxClassNames}>
         {icon}
         <input
-          type={inputType}
+          id={id}
+          type={type}
           name={id}
           value={value}
           onChange={handleInputOnChange}
+          onKeyDown={onKeyDown}
           placeholder={placeholder}
           className={`${classes[size]} ${icon ? classes.withIcon : ''}`}
+          autoComplete={autoComplete}
         />
 
         <div
           className={`${classes.iconsBox} 
-          ${classes[inputType]}
+          ${classes[type]}
           ${isValidated ? classes.isValidated : ''}`}
         >
-          {type === 'password' && (
-            <>
-              <SvgIcon
-                classNames={`${showValidationInfo ? validClassName : ''} `}
-                id={inputType === 'text' ? 'icon-eye' : 'icon-eye-crossed'}
-                elementId={`show-password-icon-${id}`}
-                width={24}
-                height={24}
-                onMouseDown={handleShowPassword}
-                onMouseUp={handleHidePassword}
-              />
-              <Tooltip
-                anchorSelect={`#show-password-icon-${id}`}
-                place="bottom-end"
-                content="Show password"
-                className={classes.showPasswordTooltip}
-              />
-            </>
-          )}
+          {children}
           {showValidationInfo && (
             <>
               <SvgIcon

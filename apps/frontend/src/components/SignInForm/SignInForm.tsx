@@ -4,10 +4,14 @@ import { ChangeEvent, useCallback, useState, useEffect } from 'react';
 import Button from '../common/Button/Button';
 import Checkbox from '../common/Checkbox/Checkbox';
 import { useSignForm } from '../../hooks/useSignForm';
-import { SignForm } from '../../containers/LoginContainer/LoginContainer';
 import { useMotionAnimate } from 'motion-hooks';
+import PasswordInput from '../common/PasswordInput/PasswordInput';
 
-const SignInForm = ({ onSubmit }: SignForm) => {
+type SignInFormProps = {
+  onSubmit: (username: string, password: string) => void;
+};
+
+const SignInForm = ({ onSubmit }: SignInFormProps) => {
   const { play } = useMotionAnimate(
     `.${classes.signInForm}`,
     { opacity: 1 },
@@ -51,13 +55,18 @@ const SignInForm = ({ onSubmit }: SignForm) => {
     []
   );
 
-  const handleFormOnSubmit = useCallback(() => {
-    const isValid = validateSignInForm(username, password);
-    if (!isValid) {
-      return;
-    }
-    onSubmit(username, password);
-  }, [username, password, validateSignInForm, onSubmit]);
+  const handleFormOnSubmit = useCallback(
+    (e: any) => {
+      console.log(e);
+      e.preventDefault();
+      const isValid = validateSignInForm(username, password);
+      if (!isValid) {
+        return;
+      }
+      onSubmit(username, password);
+    },
+    [username, password, validateSignInForm, onSubmit]
+  );
 
   useEffect(() => {
     void play();
@@ -70,40 +79,42 @@ const SignInForm = ({ onSubmit }: SignForm) => {
       <h4>
         Please log in to the application using your username and password.
       </h4>
-      <Input
-        type="text"
-        id="username"
-        label="Username"
-        errorText={usernameError}
-        hasError={!!usernameError}
-        onChange={handleUsernameOnChange}
-        placeholder="Your username"
-        isValidated={usernameIsValidated}
-      />
-
-      <Input
-        type="password"
-        id="password"
-        label="Password"
-        errorText={passwordError}
-        hasError={!!passwordError}
-        onChange={handlePasswordOnChange}
-        placeholder="Your password"
-        isValidated={passwordIsValidated}
-      />
-
-      <div className={classes.rememberMeBox}>
-        <Checkbox
-          onChange={handleOnCheckboxChange}
-          isChecked={rememberMeIsChecked}
-          size="medium"
-          label="Remember me"
+      <form noValidate onSubmit={handleFormOnSubmit}>
+        <Input
+          type="text"
+          id="username"
+          label="Username"
+          errorText={usernameError}
+          hasError={!!usernameError}
+          onChange={handleUsernameOnChange}
+          placeholder="Your username"
+          isValidated={usernameIsValidated}
+          autoComplete="on"
         />
-      </div>
 
-      <Button type="button" variant="secondary" onClick={handleFormOnSubmit}>
-        Sign In
-      </Button>
+        <PasswordInput
+          id="password"
+          errorText={passwordError}
+          hasError={!!passwordError}
+          onChange={handlePasswordOnChange}
+          placeholder="Your password"
+          isValidated={passwordIsValidated}
+        />
+
+        <div className={classes.rememberMeBox}>
+          <Checkbox
+            onChange={handleOnCheckboxChange}
+            isChecked={rememberMeIsChecked}
+            size="medium"
+            label="Remember me"
+            id="checkbox-rememeber"
+          />
+        </div>
+
+        <Button type="submit" variant="secondary">
+          Sign In
+        </Button>
+      </form>
     </div>
   );
 };

@@ -23,9 +23,12 @@
     min-height: 45px;
     margin-bottom: 10px;
     width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
     > p {
-      color: variables.$orange;
+      color: variables.$error;
       line-height: normal;
       text-align: left;
       font-size: 14px;
@@ -33,9 +36,20 @@
       display: inline-flex;
       gap: 10px;
       text-align: justify;
+      border-radius: 6px;
+      padding: 3px 5px;
+      background-color: #ffffff73;
     }
   }
 
+  form {
+    width: 100%;
+
+    button[type='submit'] {
+      display: block;
+      margin-left: auto;
+    }
+  }
   .formChangeBox {
     display: flex;
     flex-flow: column;

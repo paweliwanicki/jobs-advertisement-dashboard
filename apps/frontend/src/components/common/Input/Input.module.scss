@@ -56,6 +56,21 @@
       border-top-left-radius: inherit;
       border-bottom-left-radius: inherit;
 
+      &:-webkit-autofill,
+      &:-webkit-autofill:hover,
+      &:-webkit-autofill:focus {
+        border: inherit;
+        -webkit-text-fill-color: inherit;
+        -webkit-box-shadow: 0 0 0px 1px inset;
+        @include themeVariables.themify(themeVariables.$themes) {
+          -webkit-box-shadow: 0 0 0px 40px
+            themeVariables.themed('input-background') inset !important;
+          -webkit-text-fill-color: themeVariables.themed(
+            'input-color'
+          ) !important;
+        }
+      }
+
       &.withIcon {
         padding-left: 72px;
       }
@@ -102,10 +117,6 @@
 
       .validationIcon {
         opacity: 0;
-      }
-
-      .showPasswordTooltip {
-        width: auto;
       }
     }
   }

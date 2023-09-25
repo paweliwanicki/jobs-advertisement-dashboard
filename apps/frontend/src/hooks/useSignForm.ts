@@ -1,5 +1,10 @@
 import { ReactNode, useCallback, useState } from 'react';
-import { ApiService } from '../utils/ApiService';
+import { useApi } from './useApi';
+import { useNavigate } from 'react-router-dom';
+import { RoutePath } from '../enums/RoutePath';
+import { HttpMethod } from '../enums/HttpMethods';
+import { useUser } from './useUser';
+import { User } from '../models/User';
 
 type InputError =
   | 'EMPTY'
@@ -7,8 +12,14 @@ type InputError =
   | 'PASSWORDS_NOT_MATCH'
   | 'WRONG_USERNAME_FORMAT';
 
-type SignResponseMessage = 'WRONG_CREDENTIALS' | 'USERNAME_IN_USE';
 type SignFormInput = 'USERNAME' | 'PASSWORD' | 'CONFIRM_PASSWORD' | 'TERMS';
+
+type GenericResponse = {
+  message: string;
+  statusCode: number;
+};
+
+type SignResponse = User & GenericResponse;
 
 type SignForm = {
   message: ReactNode;
@@ -24,6 +35,7 @@ type SignForm = {
     confirmPasswordIsValidated: boolean;
     termsCheckIsValidated: boolean;
   };
+  isFetching: boolean;
   clearMessage: () => void;
   clearValidationAndError: (input: SignFormInput) => void;
   validateSignInForm: (username: string, password: string) => boolean;
@@ -34,7 +46,12 @@ type SignForm = {
     termsChecked: boolean
   ) => boolean;
   handleSignIn: (username: string, password: string) => Promise<void>;
-  handleSignUp: (username: string, password: string) => Promise<void>;
+  handleSignUp: (
+    username: string,
+    password: string,
+    confirmPassword: string
+  ) => Promise<void>;
+  handleSignOut: () => void;
 };
 
 const INPUT_ERRORS_MESSAGES: Record<InputError, string> = {
@@ -46,13 +63,6 @@ const INPUT_ERRORS_MESSAGES: Record<InputError, string> = {
   PASSWORDS_NOT_MATCH: 'Password and confirm password do not match!',
 } as const;
 
-const SIGN_RESPONSE_MESSAGES: Record<SignResponseMessage, string> = {
-  WRONG_CREDENTIALS:
-    'You typed wrong username or password! Please check your credentials and try to sign in again.',
-  USERNAME_IN_USE:
-    'Unfortunately, the username is already in use. Use a different username and try again.',
-} as const;
-
 const USERNAME_REGEX = new RegExp(
   '^(?=(.*[a-z]){1,})(?=(.*[0-9]){1,}).{6,12}$'
 );
@@ -61,6 +71,10 @@ const PASSWORD_REGEX = new RegExp(
 );
 
 export const useSignForm = (): SignForm => {
+  const navigate = useNavigate();
+  const { fetch, isFetching } = useApi();
+  const { changeUser } = useUser();
+
   const [message, setMessage] = useState<ReactNode>();
   const [usernameError, setUsernameError] = useState<string | undefined>();
   const [passwordError, setPasswordError] = useState<string | undefined>();
@@ -78,42 +92,54 @@ export const useSignForm = (): SignForm => {
   const [termsCheckIsValidated, setTermsCheckIsValidated] =
     useState<boolean>(false);
 
+  const handleSignResponse = useCallback((response: SignResponse) => {
+    if (response.username) {
+      changeUser(response);
+      navigate(RoutePath.DASHBOARD);
+    }
+    if (response.message) {
+      setMessage(response.message);
+    }
+  }, []);
+
   const handleSignIn = useCallback(
     async (username: string, password: string) => {
-      const response = await ApiService.post<{
-        username: string;
-        password: string;
-      }>({
+      const [response] = await fetch<SignResponse>(HttpMethod.POST, {
         path: '/api/auth/signin',
         payload: JSON.stringify({
           username,
           password,
         }),
       });
-      console.log(response);
-      setMessage(SIGN_RESPONSE_MESSAGES.WRONG_CREDENTIALS);
+      handleSignResponse(response);
     },
     []
   );
 
   const handleSignUp = useCallback(
-    async (username: string, password: string) => {
-      const response = await ApiService.post<{
-        username: string;
-        password: string;
-      }>({
+    async (username: string, password: string, confirmPassword: string) => {
+      const [response] = await fetch<SignResponse>(HttpMethod.POST, {
         path: '/api/auth/signup',
         payload: JSON.stringify({
           username,
           password,
+          confirmPassword,
         }),
       });
 
-      setMessage(SIGN_RESPONSE_MESSAGES.USERNAME_IN_USE);
-      console.log(response);
+      handleSignResponse(response);
     },
     []
   );
+
+  const handleSignOut = useCallback(async () => {
+    const [response] = await fetch<SignResponse>(HttpMethod.POST, {
+      path: '/api/auth/signout',
+    });
+    if (response.statusCode === 200) {
+      changeUser(undefined);
+    }
+  }, []);
 
   const validateSignInForm = useCallback(
     (username: string, password: string) => {
@@ -235,6 +261,7 @@ export const useSignForm = (): SignForm => {
 
   return {
     message,
+    isFetching,
     errors: {
       usernameError,
       passwordError,
@@ -253,5 +280,6 @@ export const useSignForm = (): SignForm => {
     validateSignUpForm,
     handleSignIn,
     handleSignUp,
+    handleSignOut,
   };
 };
