@@ -21,21 +21,21 @@ export const UserPanel = () => {
     [user]
   );
 
-  const handleRefreshtoken = useCallback(async () => {
+  const handleGetProfile = useCallback(async () => {
     await fetch(HttpMethod.GET, {
-      path: '/api/auth/refreshToken',
+      path: '/api/auth/getuser',
     });
   }, []);
 
   return (
     <div className={classes.userPanel}>
       <div>Registered at: {`${createdAtDate}`}</div>
-      <Button variant="primary" onClick={handleSignOut}>
+      <Button variant="secondary" onClick={handleSignOut}>
         Sign off
       </Button>
 
-      <Button variant="secondary" onClick={handleRefreshtoken}>
-        Refresh token test
+      <Button variant="primary" onClick={handleGetProfile}>
+        Get profile
       </Button>
     </div>
   );

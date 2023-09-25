@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  UseGuards,
-  Req,
-  Res,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards, Res } from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
 import { SignUpUserDto } from '../users/dtos/sign-up-user.dto';
 import { CurrentUser } from '../users/decorators/current-user.decorator';
@@ -15,7 +7,6 @@ import { SignInUserDto } from '../users/dtos/sign-in-user.dto';
 import { Serialize } from '../interceptors/serialize.interceptor';
 import { UserDto } from '../users/dtos/user.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { JwtRefreshAuthGuard } from './guards/jwt-refresh.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { Response } from 'express';
 import { setJwtTokensCookies } from './utils/utils';
@@ -41,7 +32,7 @@ export class AuthenticationController {
     const { user, accessToken, refreshToken } =
       await this.authenticationService.userSignUp(username, password);
 
-    setJwtTokensCookies({ accessToken, refreshToken }, response);
+    setJwtTokensCookies(accessToken, refreshToken, response);
     return user;
   }
 
@@ -55,7 +46,7 @@ export class AuthenticationController {
 
     const { user, accessToken, refreshToken } =
       await this.authenticationService.userSignIn(username, password);
-    setJwtTokensCookies({ accessToken, refreshToken }, response);
+    setJwtTokensCookies(accessToken, refreshToken, response);
     return user;
   }
 
@@ -67,20 +58,5 @@ export class AuthenticationController {
       .clearCookie('jwtToken')
       .clearCookie('refreshToken')
       .send({ statusCode: 200, message: 'ok' });
-  }
-
-  @UseGuards(JwtRefreshAuthGuard)
-  @Get('/refreshToken')
-  async refreshJwtToken(
-    @Req() request,
-    @Res({ passthrough: true }) response: Response,
-    @CurrentUser() user: User,
-  ) {
-    const tokens = await this.authenticationService.refreshJwtToken(
-      request.user.refreshToken,
-    );
-
-    setJwtTokensCookies(tokens, response);
-    return user;
   }
 }

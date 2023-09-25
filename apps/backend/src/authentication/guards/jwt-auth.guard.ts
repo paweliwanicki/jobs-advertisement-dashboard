@@ -12,6 +12,7 @@ import { ExtractJwt } from 'passport-jwt';
 import { JwtCookieExtractor } from '../extractors/jwt-token-cookie.extractor';
 import type { Request, Response } from 'express';
 import { setJwtTokensCookies } from '../utils/utils';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
@@ -19,6 +20,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   constructor(
     private reflector: Reflector,
     private authService: AuthenticationService,
+    private configService: ConfigService,
   ) {
     super();
   }
@@ -39,12 +41,11 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       if (!token) throw new UnauthorizedException('Access token is not set');
       const isValidAccessToken = this.authService.validateToken(token);
       if (isValidAccessToken) return this.activate(context);
-
-      return this.activate(context);
     } catch (err) {
       this.logger.error(err.message);
       if (err.message === 'jwt expired') {
         await this.handleRefreshToken(request, response);
+        return this.activate(context);
       }
       return false;
     }
@@ -59,16 +60,19 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
     if (!refreshToken)
       throw new UnauthorizedException('Refresh token is not set');
-    const isValidRefreshToken = this.authService.validateToken(refreshToken);
+    const isValidRefreshToken = this.authService.validateToken(refreshToken, {
+      secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+    });
     if (!isValidRefreshToken)
       throw new UnauthorizedException('Refresh token is not valid');
-    const tokens = await this.authService.refreshJwtToken(refreshToken);
+    const { newAccessToken, newRefreshToken } =
+      await this.authService.refreshJwtToken(refreshToken);
 
-    request.cookies['jwtToken'] = tokens.newAccessToken;
-    request.cookies['refreshToken'] = tokens.newRefreshToken;
-    setJwtTokensCookies(tokens, response);
+    request.cookies['jwtToken'] = newAccessToken;
+    request.cookies['refreshToken'] = newRefreshToken;
+    setJwtTokensCookies(newAccessToken, newRefreshToken, response);
 
-    return tokens;
+    return { newAccessToken, newRefreshToken };
   }
 
   handleRequest(err, user) {

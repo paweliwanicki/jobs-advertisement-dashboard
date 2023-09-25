@@ -15,6 +15,7 @@ import Modal from '../common/Modal/Modal';
 import SvgIcon from '../common/SvgIcon/SvgIcon';
 import { useSignForm } from '../../hooks/useSignForm';
 import { useMotionAnimate } from 'motion-hooks';
+import PasswordInput from '../common/PasswordInput/PasswordInput';
 
 // move terms and privacy to db, fetch them on demand and useMemo
 const TERMS_CONDITION: ReactNode = (
@@ -186,23 +187,8 @@ const SignUpForm = ({ onSubmit }: SignUpFormProps) => {
           autoComplete="on"
         />
 
-        <Input
-          type="password"
+        <PasswordInput
           id="password"
-          label={
-            <>
-              <SvgIcon id="icon-info" elementId="password-info-icon" />
-              <span>
-                Password<span className={classes.required}>*</span>
-              </span>
-              <Tooltip
-                anchorSelect="#password-info-icon"
-                place="bottom-start"
-                variant="info"
-                content="Password should contain at least one uppercase and lowercase letter, one number, one special character, and a total length of at least 8 characters."
-              />
-            </>
-          }
           errorText={passwordError}
           hasError={!!passwordError}
           onChange={handlePasswordOnChange}
@@ -210,9 +196,13 @@ const SignUpForm = ({ onSubmit }: SignUpFormProps) => {
           isValidated={passwordIsValidated}
         />
 
-        <Input
-          type="password"
+        <PasswordInput
           id="confirm-password"
+          errorText={confirmPasswordError}
+          hasError={!!confirmPasswordError}
+          onChange={handleConfirmPasswordOnChange}
+          placeholder="Confirm your password"
+          isValidated={confirmPasswordIsValidated}
           label={
             <>
               <SvgIcon id="icon-info" elementId="confirm-password-info-icon" />
@@ -227,11 +217,6 @@ const SignUpForm = ({ onSubmit }: SignUpFormProps) => {
               />
             </>
           }
-          errorText={confirmPasswordError}
-          hasError={!!confirmPasswordError}
-          onChange={handleConfirmPasswordOnChange}
-          placeholder="Confirm your password"
-          isValidated={confirmPasswordIsValidated}
         />
 
         <div className={classes.termsBox}>

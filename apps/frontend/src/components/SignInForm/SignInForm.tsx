@@ -5,6 +5,7 @@ import Button from '../common/Button/Button';
 import Checkbox from '../common/Checkbox/Checkbox';
 import { useSignForm } from '../../hooks/useSignForm';
 import { useMotionAnimate } from 'motion-hooks';
+import PasswordInput from '../common/PasswordInput/PasswordInput';
 
 type SignInFormProps = {
   onSubmit: (username: string, password: string) => void;
@@ -91,10 +92,8 @@ const SignInForm = ({ onSubmit }: SignInFormProps) => {
           autoComplete="on"
         />
 
-        <Input
-          type="password"
+        <PasswordInput
           id="password"
-          label="Password"
           errorText={passwordError}
           hasError={!!passwordError}
           onChange={handlePasswordOnChange}

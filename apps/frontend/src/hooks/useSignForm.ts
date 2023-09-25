@@ -97,6 +97,9 @@ export const useSignForm = (): SignForm => {
       changeUser(response);
       navigate(RoutePath.DASHBOARD);
     }
+    if (response.message) {
+      setMessage(response.message);
+    }
   }, []);
 
   const handleSignIn = useCallback(
