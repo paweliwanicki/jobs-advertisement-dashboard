@@ -1,11 +1,7 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService, JwtVerifyOptions } from '@nestjs/jwt';
-import { AUTH_STATUS_CODES } from './response.status.codes';
+import { AUTH_EXCEPTION_MESSAGES } from './auth-exception.messages';
 import { User } from 'src/users/user.entity';
 import { ConfigService } from '@nestjs/config';
 import { hash, genSalt, compare } from 'bcrypt';
@@ -20,12 +16,6 @@ export class AuthenticationService {
 
   async userSignIn(username: string, password: string) {
     const user = await this.validateUser(username, password);
-    if (!user) {
-      throw new NotFoundException({
-        statusCode: 2002,
-        message: AUTH_STATUS_CODES[2002],
-      });
-    }
     const accessToken = await this.getJwtToken(user.id, user);
     const refreshToken = await this.getRefreshToken(user.id);
 
@@ -43,8 +33,8 @@ export class AuthenticationService {
     const currentUser = await this.validateUser(username, password);
     if (currentUser) {
       throw new BadRequestException({
-        statusCode: 2001,
-        message: AUTH_STATUS_CODES[2001],
+        status: 404,
+        message: AUTH_EXCEPTION_MESSAGES.USER_IS_IN_USE,
       });
     }
     const salt = await genSalt(8);
@@ -72,15 +62,12 @@ export class AuthenticationService {
     const user = await this.usersService.findOneByUsername(username);
     if (user) {
       const checkPassword = await compare(password, user.password);
-      if (!checkPassword) {
-        throw new BadRequestException({
-          statusCode: 2002,
-          message: AUTH_STATUS_CODES[2002],
-        });
-      }
-      return user;
+      if (checkPassword) return user;
     }
-    return null;
+    throw new BadRequestException({
+      status: 404,
+      message: AUTH_EXCEPTION_MESSAGES.WRONG_CREDENTIALS,
+    });
   }
 
   async refreshJwtToken(refreshToken: string) {

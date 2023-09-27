@@ -12,7 +12,7 @@ import { UsersService } from './users.service';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { Serialize } from '../interceptors/serialize.interceptor';
 import { UserDto } from './dtos/user.dto';
-import { AUTH_STATUS_CODES } from 'src/authentication/response.status.codes';
+import { AUTH_EXCEPTION_MESSAGES } from 'src/authentication/auth-exception.messages';
 
 @Controller('users')
 @Serialize(UserDto)
@@ -23,7 +23,7 @@ export class UsersController {
   async findUser(@Param('id') id: string) {
     const user = await this.usersService.findOneById(parseInt(id));
     if (!user) {
-      throw new NotFoundException(AUTH_STATUS_CODES[2000]);
+      throw new NotFoundException(AUTH_EXCEPTION_MESSAGES.NOT_FOUND);
     }
     return user;
   }

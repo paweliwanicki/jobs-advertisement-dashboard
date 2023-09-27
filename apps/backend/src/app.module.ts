@@ -7,6 +7,9 @@ import { ValidationPipe } from '@nestjs/common';
 import { APP_PIPE } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { User } from './users/user.entity';
+import { OffersModule } from './offers/offers.module';
+import { UsersModule } from './users/users.module';
+import { Offer } from './offers/offer.entity';
 
 @Module({
   imports: [
@@ -25,10 +28,12 @@ import { User } from './users/user.entity';
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
         synchronize: configService.get<boolean>('SYNCHRONIZE'),
-        entities: [User],
+        entities: [User, Offer],
       }),
     }),
     AuthenticationModule,
+    UsersModule,
+    OffersModule,
   ],
   controllers: [AppController],
   providers: [
