@@ -15,10 +15,12 @@ POST http://localhost:3000/api/offers/
 Content-Type: application/json
 
 {
-  "title": "Senior devops",
+  "title": "Senior devops dsadwadsadsa sasdsdaad ssdsad",
   "description": "TU BEDZIE MEGA DLUGI TEKTS Z TEXT EDITORA W HTMLU ZAPEWNE",
   "workTime": "Full-time",
-  "location": "Remote"
+  "location": "Remote",
+  "country": "DLIUUUGUGUUGUGUGUGUGUGUUG",
+  "company": "NONODASDAW"
 }
 
 

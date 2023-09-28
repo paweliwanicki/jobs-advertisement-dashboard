@@ -16,4 +16,12 @@ export class UpdateOfferDto {
   @IsString()
   @IsNotEmpty()
   workTime: string;
+
+  @IsString()
+  @IsNotEmpty()
+  company: string;
+
+  @IsString()
+  @IsNotEmpty()
+  country: string;
 }

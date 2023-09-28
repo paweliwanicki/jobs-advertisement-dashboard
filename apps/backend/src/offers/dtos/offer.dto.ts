@@ -12,6 +12,10 @@ export class OfferDto {
   @Expose()
   workTime: string;
   @Expose()
+  company: string;
+  @Expose()
+  country: string;
+  @Expose()
   createdAt: number;
   @Expose()
   createdBy: number;
