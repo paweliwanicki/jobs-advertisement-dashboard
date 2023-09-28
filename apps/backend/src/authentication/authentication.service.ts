@@ -16,8 +16,10 @@ export class AuthenticationService {
 
   async userSignIn(username: string, password: string) {
     const user = await this.validateUser(username, password);
-    const accessToken = await this.getJwtToken(user.id, user);
-    const refreshToken = await this.getRefreshToken(user.id);
+    const [accessToken, refreshToken] = await Promise.all([
+      this.getJwtToken(user.id, user),
+      this.getRefreshToken(user.id),
+    ]);
 
     await this.usersService.update(user.id, {
       refreshToken,
@@ -40,8 +42,12 @@ export class AuthenticationService {
     const salt = await genSalt(8);
     const hashed = await hash(password, salt);
     const user = await this.usersService.create(username, hashed);
-    const accessToken = await this.getJwtToken(user.id, user);
-    const refreshToken = await this.getRefreshToken(user.id);
+
+    const [accessToken, refreshToken] = await Promise.all([
+      this.getJwtToken(user.id, user),
+      this.getRefreshToken(user.id),
+    ]);
+
     await this.usersService.update(user.id, {
       refreshToken,
     });
@@ -72,8 +78,10 @@ export class AuthenticationService {
 
   async refreshJwtToken(refreshToken: string) {
     const user = await this.usersService.findOne({ refreshToken });
-    const newRefreshToken = await this.getRefreshToken(user.id);
-    const newAccessToken = await this.getJwtToken(user.id, user);
+    const [newAccessToken, newRefreshToken] = await Promise.all([
+      this.getJwtToken(user.id, user),
+      this.getRefreshToken(user.id),
+    ]);
     await this.usersService.update(user.id, {
       refreshToken: newRefreshToken,
     });

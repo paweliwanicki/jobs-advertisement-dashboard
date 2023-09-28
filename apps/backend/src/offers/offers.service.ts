@@ -7,24 +7,26 @@ import { OFFER_EXCEPTION_MESSAGES } from './offer-exception.messages';
 
 @Injectable()
 export class OffersService {
-  constructor(@InjectRepository(Offer) private repo: Repository<Offer>) {}
+  constructor(
+    @InjectRepository(Offer) private offerRepository: Repository<Offer>,
+  ) {}
 
   create(offer: UpdateOfferDto) {
-    const newOffer = this.repo.create(offer);
-    return this.repo.save(newOffer);
+    const newOffer = this.offerRepository.create(offer);
+    return this.offerRepository.save(newOffer);
   }
 
   findOneById(id: number) {
     if (!id) return null;
-    return this.repo.findOneBy({ id });
+    return this.offerRepository.findOneBy({ id });
   }
 
   findByUserId(createdBy: number) {
-    return this.repo.find({ where: { createdBy } });
+    return this.offerRepository.find({ where: { createdBy } });
   }
 
   findOne(where: any) {
-    return this.repo.findOne({ where: { ...where } });
+    return this.offerRepository.findOne({ where: { ...where } });
   }
 
   async update(id: number, attrs: Partial<Offer>) {
@@ -33,7 +35,7 @@ export class OffersService {
       throw new NotFoundException(OFFER_EXCEPTION_MESSAGES.NOT_FOUND);
     }
     Object.assign(offer, attrs);
-    return this.repo.save(offer);
+    return this.offerRepository.save(offer);
   }
 
   async remove(id: number) {
@@ -41,6 +43,6 @@ export class OffersService {
     if (!offer) {
       throw new NotFoundException(OFFER_EXCEPTION_MESSAGES.NOT_FOUND);
     }
-    return this.repo.remove(offer);
+    return this.offerRepository.remove(offer);
   }
 }

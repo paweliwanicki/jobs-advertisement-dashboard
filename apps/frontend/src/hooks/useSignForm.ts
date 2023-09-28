@@ -1,18 +1,18 @@
-import { ReactNode, useCallback, useState } from 'react';
-import { useApi } from './useApi';
-import { useNavigate } from 'react-router-dom';
-import { RoutePath } from '../enums/RoutePath';
-import { HttpMethod } from '../enums/HttpMethods';
-import { useUser } from './useUser';
-import { User } from '../models/User';
+import { ReactNode, useCallback, useState, useMemo } from "react";
+import { useApi } from "./useApi";
+import { useNavigate } from "react-router-dom";
+import { RoutePath } from "../enums/RoutePath";
+import { HttpMethod } from "../enums/HttpMethods";
+import { useUser } from "./useUser";
+import { User } from "../models/User";
 
 type InputError =
-  | 'EMPTY'
-  | 'WRONG_PASSWORD_FORMAT'
-  | 'PASSWORDS_NOT_MATCH'
-  | 'WRONG_USERNAME_FORMAT';
+  | "EMPTY"
+  | "WRONG_PASSWORD_FORMAT"
+  | "PASSWORDS_NOT_MATCH"
+  | "WRONG_USERNAME_FORMAT";
 
-type SignFormInput = 'USERNAME' | 'PASSWORD' | 'CONFIRM_PASSWORD' | 'TERMS';
+type SignFormInput = "USERNAME" | "PASSWORD" | "CONFIRM_PASSWORD" | "TERMS";
 
 type GenericResponse = {
   message: string;
@@ -55,19 +55,19 @@ type SignForm = {
 };
 
 const INPUT_ERRORS_MESSAGES: Record<InputError, string> = {
-  EMPTY: 'Can not be empty!',
+  EMPTY: "Can not be empty!",
   WRONG_PASSWORD_FORMAT:
-    'Password does not meet requirements! Please check the requirements in the password hint.',
+    "Password does not meet requirements! Please check the requirements in the password hint.",
   WRONG_USERNAME_FORMAT:
-    'Username must be alphanumeric and total length between 6 and 12 characters!',
-  PASSWORDS_NOT_MATCH: 'Password and confirm password do not match!',
+    "Username must be alphanumeric and total length between 6 and 12 characters!",
+  PASSWORDS_NOT_MATCH: "Password and confirm password do not match!",
 } as const;
 
 const USERNAME_REGEX = new RegExp(
-  '^(?=(.*[a-z]){1,})(?=(.*[0-9]){1,}).{6,12}$'
+  "^(?=(.*[a-z]){1,})(?=(.*[0-9]){1,}).{6,12}$"
 );
 const PASSWORD_REGEX = new RegExp(
-  '^(?=(.*[a-z]){1,})(?=(.*[A-Z]){1,})(?=(.*[0-9]){1,})(?=(.*[!@#$%^&*()\\-__+.]){1,}).{8,}$'
+  "^(?=(.*[a-z]){1,})(?=(.*[A-Z]){1,})(?=(.*[0-9]){1,})(?=(.*[!@#$%^&*()\\-__+.]){1,}).{8,}$"
 );
 
 export const useSignForm = (): SignForm => {
@@ -105,7 +105,7 @@ export const useSignForm = (): SignForm => {
   const handleSignIn = useCallback(
     async (username: string, password: string) => {
       const [response] = await fetch<SignResponse>(HttpMethod.POST, {
-        path: '/api/auth/signin',
+        path: "/api/auth/signin",
         payload: JSON.stringify({
           username,
           password,
@@ -119,7 +119,7 @@ export const useSignForm = (): SignForm => {
   const handleSignUp = useCallback(
     async (username: string, password: string, confirmPassword: string) => {
       const [response] = await fetch<SignResponse>(HttpMethod.POST, {
-        path: '/api/auth/signup',
+        path: "/api/auth/signup",
         payload: JSON.stringify({
           username,
           password,
@@ -134,7 +134,7 @@ export const useSignForm = (): SignForm => {
 
   const handleSignOut = useCallback(async () => {
     const [response] = await fetch<SignResponse>(HttpMethod.POST, {
-      path: '/api/auth/signout',
+      path: "/api/auth/signout",
     });
     if (response.statusCode === 200) {
       changeUser(undefined);
@@ -145,12 +145,12 @@ export const useSignForm = (): SignForm => {
     (username: string, password: string) => {
       let isValid = true;
 
-      if (username === '') {
+      if (username === "") {
         setUsernameError(INPUT_ERRORS_MESSAGES.EMPTY);
         isValid = false;
       }
 
-      if (password === '') {
+      if (password === "") {
         setPasswordError(INPUT_ERRORS_MESSAGES.EMPTY);
         isValid = false;
       }
@@ -172,7 +172,7 @@ export const useSignForm = (): SignForm => {
     ) => {
       let isValid = true;
 
-      if (username === '') {
+      if (username === "") {
         setUsernameError(INPUT_ERRORS_MESSAGES.EMPTY);
         isValid = false;
       } else if (!USERNAME_REGEX.test(username)) {
@@ -180,7 +180,7 @@ export const useSignForm = (): SignForm => {
         isValid = false;
       }
 
-      if (password === '') {
+      if (password === "") {
         setPasswordError(INPUT_ERRORS_MESSAGES.EMPTY);
         isValid = false;
       } else if (!PASSWORD_REGEX.test(password)) {
@@ -188,7 +188,7 @@ export const useSignForm = (): SignForm => {
         isValid = false;
       }
 
-      if (confirmPassword === '') {
+      if (confirmPassword === "") {
         setConfirmPasswordError(INPUT_ERRORS_MESSAGES.EMPTY);
         isValid = false;
       } else if (confirmPassword !== password) {
@@ -229,32 +229,35 @@ export const useSignForm = (): SignForm => {
     setTermsCheckIsValidated(false);
   }, []);
 
-  const clearValidationAndError = useCallback(
-    (input?: SignFormInput) => {
-      switch (input) {
-        case 'USERNAME':
+  const validationCleaners: Record<SignFormInput | "ALL", () => void> =
+    useMemo(() => {
+      return {
+        USERNAME: () => {
           setUsernameError(undefined);
           setUsernameIsValidated(false);
-          break;
-        case 'PASSWORD':
+        },
+        PASSWORD: () => {
           setPasswordError(undefined);
           setPasswordIsValidated(false);
-          break;
-        case 'CONFIRM_PASSWORD':
+        },
+        CONFIRM_PASSWORD: () => {
           setConfirmPasswordError(undefined);
           setConfirmPasswordIsValidated(false);
-          break;
-        case 'TERMS':
+        },
+        TERMS: () => {
           setTermsError(false);
           setTermsCheckIsValidated(false);
-          break;
-
-        default: {
-          clearErrors();
+        },
+        ALL: () => {
           clearValidation();
-          break;
-        }
-      }
+          clearErrors();
+        },
+      };
+    }, []);
+
+  const clearValidationAndError = useCallback(
+    (input?: SignFormInput) => {
+      validationCleaners[input ?? "ALL"]();
     },
     [clearErrors]
   );
