@@ -1,0 +1,50 @@
+@use "../../styles/variables.scss";
+
+.offerCard {
+  max-width: 350px;
+  height: 230px;
+  position: relative;
+  background-color: variables.$white;
+  padding: 50px 32px 32px 32px;
+  border-radius: 6px;
+  line-height: normal;
+  cursor: pointer;
+
+  .companyLogo {
+    position: absolute;
+    top: 0;
+    left: 32px;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+  }
+
+  .content {
+    color: variables.$grey;
+    font-size: 16px;
+    display: flex;
+    flex-flow: column;
+    align-items: flex-start;
+    gap: 16px;
+    font-family: variables.$font-family-light;
+    height: 100%;
+
+    svg {
+      margin: 0 12px;
+    }
+
+    h3 {
+      color: variables.$very-dark-blue;
+      font-size: 20px;
+      font-family: variables.$font-family-bold;
+    }
+    .country {
+      margin-top: auto;
+      display: block;
+      color: variables.$violet;
+      font-size: 14px;
+      font-family: variables.$font-family-bold;
+      text-align: left;
+    }
+  }
+}
