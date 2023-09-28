@@ -17,7 +17,7 @@ const OfferList = () => {
     const [fetchedOffers] = await fetch<OfferCardProps[]>(HttpMethod.GET, {
       path: "/api/offers",
     });
-    if (fetchedOffers) {
+    if (fetchedOffers.length) {
       setOffers(fetchedOffers);
     }
   }, []);
@@ -30,7 +30,14 @@ const OfferList = () => {
     <div className={classes.offerList}>
       {isFetching && <LoadingSpinner />}
       {offers.map(
-        ({ id, company, title, country, workTime }: OfferCardProps) => (
+        ({
+          id,
+          company,
+          title,
+          country,
+          workTime,
+          createdAt,
+        }: OfferCardProps) => (
           <OfferCard
             key={`offer-${id}`}
             id={id}
@@ -38,6 +45,7 @@ const OfferList = () => {
             company={company}
             country={country}
             workTime={workTime}
+            createdAt={createdAt}
           />
         )
       )}

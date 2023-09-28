@@ -8,17 +8,34 @@ export type OfferCardProps = {
   company: string;
   workTime: string;
   country: string;
+  createdAt: number;
 };
 
-const offerAddedTime = (createdAt: number) => {
-  return "15h ago";
+const now = Math.floor(new Date().getTime() / 1000);
+
+const getOfferAddedTime = (createdAt: number) => {
+  const hoursDiff = Math.abs(now - createdAt) / 3600;
+  let suffix = "h";
+  let diff = Math.floor(hoursDiff);
+
+  if (!diff) {
+    return "Recent";
+  }
+
+  if (hoursDiff >= 24) {
+    diff = Math.floor(hoursDiff / 24);
+    suffix = "d";
+  }
+
+  return `${diff}${suffix} ago`;
 };
 
 const OfferCard = ({
   title,
-  company = "FIRMA",
-  country = "United Country",
+  company,
+  country,
   workTime,
+  createdAt,
 }: OfferCardProps) => {
   const companyLogo = "";
   return (
@@ -28,7 +45,7 @@ const OfferCard = ({
 
       <div className={classes.content}>
         <p>
-          <span>{offerAddedTime(22)}</span>
+          <span>{getOfferAddedTime(createdAt)}</span>
           <SvgIcon id="icon-dot" width={4} height={4} />
           <span>{workTime}</span>
         </p>
