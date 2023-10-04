@@ -1,0 +1,36 @@
+@use "../../../styles/variables.scss";
+
+.snackBar {
+  width: fit-content;
+  max-width: 500px;
+  height: fit-content;
+  max-height: 300px;
+  position: fixed;
+  top: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 30px 10px 15px;
+  color: variables.$midnight;
+  border-radius: 6px;
+
+  &.success {
+    background-color: variables.$valid;
+  }
+
+  &.error {
+    background-color: variables.$red;
+    color: variables.$white;
+  }
+
+  &.info {
+    background-color: variables.$light-violet;
+    color: variables.$white;
+  }
+
+  .closeIcon {
+    position: absolute;
+    right: 5px;
+    top: 10px;
+    cursor: pointer;
+  }
+}

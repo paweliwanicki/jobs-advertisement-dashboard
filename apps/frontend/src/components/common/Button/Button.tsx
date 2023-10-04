@@ -1,7 +1,7 @@
-import classes from './Button.module.scss';
+import classes from "./Button.module.scss";
 
-type ButtonType = 'button' | 'submit';
-type ButtonVariant = 'primary' | 'secondary';
+type ButtonType = "button" | "submit";
+type ButtonVariant = "primary" | "secondary";
 
 type ButtonProps = {
   id?: string;
@@ -9,6 +9,7 @@ type ButtonProps = {
   variant: ButtonVariant;
   type?: ButtonType;
   classNames?: string;
+  disabled?: boolean;
   onClick?: () => void;
 };
 
@@ -16,8 +17,9 @@ const Button = ({
   id,
   children,
   variant,
-  classNames = '',
-  type = 'button',
+  disabled,
+  classNames = "",
+  type = "button",
   onClick,
 }: ButtonProps) => {
   return (
@@ -26,6 +28,7 @@ const Button = ({
       onClick={onClick}
       type={type}
       id={id}
+      disabled={disabled}
     >
       {children}
     </button>

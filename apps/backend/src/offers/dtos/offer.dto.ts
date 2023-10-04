@@ -6,15 +6,13 @@ export class OfferDto {
   @Expose()
   title: string;
   @Expose()
-  desciption: string;
+  description: string;
   @Expose()
   location: string;
   @Expose()
   workTime: string;
   @Expose()
   company: string;
-  @Expose()
-  country: string;
   @Expose()
   createdAt: number;
   @Expose()

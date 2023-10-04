@@ -24,3 +24,12 @@
     }
   }
 }
+
+@mixin text-multi-line-ellipsis($lines-to-show) {
+  display: block; 
+  display: -webkit-box;
+  -webkit-line-clamp: $lines-to-show;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

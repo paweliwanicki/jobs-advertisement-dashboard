@@ -20,8 +20,4 @@ export class UpdateOfferDto {
   @IsString()
   @IsNotEmpty()
   company: string;
-
-  @IsString()
-  @IsNotEmpty()
-  country: string;
 }

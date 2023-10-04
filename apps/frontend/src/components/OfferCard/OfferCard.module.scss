@@ -1,10 +1,22 @@
 @use "../../styles/variables.scss";
+@use "../../styles/themeVariables.scss";
+@use "../../styles/utils.scss";
 
 .offerCard {
+  width: 100%;
   max-width: 350px;
   height: 230px;
   position: relative;
   background-color: variables.$white;
+
+  a {
+    text-decoration: none;
+  }
+
+  @include themeVariables.themify(themeVariables.$themes) {
+    background-color: themeVariables.themed("offer-card-bg");
+  }
+
   padding: 50px 32px 32px 32px;
   border-radius: 6px;
   line-height: normal;
@@ -34,18 +46,26 @@
     }
 
     h3 {
-      color: variables.$very-dark-blue;
       font-size: 20px;
       font-family: variables.$font-family-bold;
       text-align: left;
+
+      @include themeVariables.themify(themeVariables.$themes) {
+        color: themeVariables.themed("offer-card-title-color");
+      }
+
+      @include utils.text-multi-line-ellipsis(1);
     }
-    .country {
+
+    .locationBox {
       margin-top: auto;
-      display: block;
-      color: variables.$violet;
-      font-size: 14px;
-      font-family: variables.$font-family-bold;
-      text-align: left;
+      .location {
+        color: variables.$violet;
+        font-size: 14px;
+        font-family: variables.$font-family-bold;
+        text-align: left;
+        @include utils.text-multi-line-ellipsis(1);
+      }
     }
   }
 }

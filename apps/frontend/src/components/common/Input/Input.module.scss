@@ -1,5 +1,5 @@
-@use '../../../styles/variables.scss';
-@use '../../../styles/themeVariables.scss';
+@use "../../../styles/variables.scss";
+@use "../../../styles/themeVariables.scss";
 
 .inputLabel {
   display: flex;
@@ -28,7 +28,7 @@
     border-radius: 6px;
     padding-right: 10px;
     @include themeVariables.themify(themeVariables.$themes) {
-      background-color: themeVariables.themed('input-background');
+      background-color: themeVariables.themed("input-background");
     }
 
     .tooltipError {
@@ -37,10 +37,10 @@
     }
 
     &.error {
-      outline: 1px solid variables.$error;
-      -webkit-box-shadow: 0px 0px 10px 0px variables.$error;
-      -moz-box-shadow: 0px 0px 10px 0px variables.$error;
-      box-shadow: 0px 0px 10px 0px variables.$error;
+      outline: 1px solid variables.$red;
+      -webkit-box-shadow: 0px 0px 10px 0px variables.$red;
+      -moz-box-shadow: 0px 0px 10px 0px variables.$red;
+      box-shadow: 0px 0px 10px 0px variables.$red;
     }
 
     &.valid {
@@ -64,9 +64,9 @@
         -webkit-box-shadow: 0 0 0px 1px inset;
         @include themeVariables.themify(themeVariables.$themes) {
           -webkit-box-shadow: 0 0 0px 40px
-            themeVariables.themed('input-background') inset !important;
+            themeVariables.themed("input-background") inset !important;
           -webkit-text-fill-color: themeVariables.themed(
-            'input-color'
+            "input-color"
           ) !important;
         }
       }
@@ -77,17 +77,20 @@
 
       &.small {
         height: 40px;
+        font-size: 14px;
       }
       &.medium {
         height: 60px;
+        font-size: 16px;
       }
       &.large {
         height: 80px;
+        font-size: 18px;
       }
 
       @include themeVariables.themify(themeVariables.$themes) {
-        background-color: themeVariables.themed('input-background');
-        color: themeVariables.themed('input-color');
+        background-color: themeVariables.themed("input-background");
+        color: themeVariables.themed("input-color");
       }
 
       border: none;
@@ -101,7 +104,7 @@
         font-family: variables.$font-family-light;
 
         @include themeVariables.themify(themeVariables.$themes) {
-          color: themeVariables.themed('input-color');
+          color: themeVariables.themed("input-color");
         }
       }
     }
@@ -115,9 +118,9 @@
         cursor: pointer;
       }
 
-      .validationIcon {
-        opacity: 0;
-      }
+      // .validationIcon {
+      //   opacity: 0;
+      // }
     }
   }
 }

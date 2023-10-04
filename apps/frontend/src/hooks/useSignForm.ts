@@ -259,7 +259,7 @@ export const useSignForm = (): SignForm => {
     (input?: SignFormInput) => {
       validationCleaners[input ?? "ALL"]();
     },
-    [clearErrors]
+    []
   );
 
   return {

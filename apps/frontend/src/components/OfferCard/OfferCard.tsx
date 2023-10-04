@@ -1,13 +1,14 @@
 import classes from "./OfferCard.module.scss";
-import testLogo from "../../assets/logos/pod.svg";
 import SvgIcon from "../common/SvgIcon/SvgIcon";
+import testLogo from "../../assets/logos/creative.svg";
+import { Link } from "react-router-dom";
 
 export type OfferCardProps = {
   id: number;
   title: string;
   company: string;
   workTime: string;
-  country: string;
+  location: string;
   createdAt: number;
 };
 
@@ -33,26 +34,32 @@ const getOfferAddedTime = (createdAt: number) => {
 const OfferCard = ({
   title,
   company,
-  country,
+  location,
   workTime,
   createdAt,
 }: OfferCardProps) => {
-  const companyLogo = "";
   return (
     <div className={classes.offerCard}>
-      {/* <img src={companyLogo} className={classes.companyLogo} alt="company" /> */}
-      <img src={testLogo} className={classes.companyLogo} alt="company" />
+      <Link to="/offer/:id">
+        {testLogo && (
+          <img src={testLogo} className={classes.companyLogo} alt="company" />
+        )}
 
-      <div className={classes.content}>
-        <p>
-          <span>{getOfferAddedTime(createdAt)}</span>
-          <SvgIcon id="icon-dot" width={4} height={4} />
-          <span>{workTime}</span>
-        </p>
-        <h3>{title}</h3>
-        <p>{company}</p>
-        <p className={classes.country}>{country}</p>
-      </div>
+        <div className={classes.content}>
+          <p>
+            <span>{getOfferAddedTime(createdAt)}</span>
+            <SvgIcon id="icon-dot" width={4} height={4} />
+            <span>{workTime}</span>
+          </p>
+          <div>
+            <h3>{title}</h3>
+          </div>
+          <p>{company}</p>
+          <div className={classes.locationBox}>
+            <p className={classes.location}>{location}</p>
+          </div>
+        </div>
+      </Link>
     </div>
   );
 };

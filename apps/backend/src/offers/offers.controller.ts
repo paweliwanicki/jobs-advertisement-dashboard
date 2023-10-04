@@ -33,6 +33,7 @@ export class OffersController {
     };
 
     const offer = await this.offersService.create(newOffer);
+    console.log(offer);
     return offer;
   }
 

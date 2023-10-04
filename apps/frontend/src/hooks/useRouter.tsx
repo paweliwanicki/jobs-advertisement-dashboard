@@ -7,6 +7,7 @@ import { UserPanel } from '../components/UserPanel/UserPanel';
 import Layout from '../containers/Layout/Layout';
 import Dashboard from '../containers/Dashboard/Dashboard';
 import { RoutePath } from '../enums/RoutePath';
+import OfferEditor from '../components/OfferEditor/OfferEditor';
 
 const history = createBrowserHistory();
 
@@ -32,6 +33,10 @@ const router = createBrowserRouter([
       {
         path: RoutePath.DASHBOARD,
         element: <Dashboard />,
+      },
+      {
+        path: RoutePath.OFFER_EDIT,
+        element: <OfferEditor />,
       },
     ],
   },

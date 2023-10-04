@@ -25,9 +25,6 @@ export class Offer {
   workTime: string;
 
   @Column()
-  country: string;
-
-  @Column()
   company: string;
 
   @Column()

@@ -1,0 +1,156 @@
+@use "../../styles/variables.scss";
+@use "../../styles/themeVariables.scss";
+
+.offerEditorContainer {
+  width: 100%;
+
+  .inputBox {
+    border: 2px solid;
+
+    @include themeVariables.themify(themeVariables.$themes) {
+      border-color: themeVariables.themed("offer-input-border-color");
+    }
+  }
+
+  h2,
+  label {
+    @include themeVariables.themify(themeVariables.$themes) {
+      color: themeVariables.themed("text-main-color");
+    }
+
+    text-align: left;
+    display: block;
+  }
+
+  h2 {
+    font-family: variables.$font-family-bold;
+    margin-bottom: 20px;
+  }
+
+  .locationLabel,
+  .workTimeLabel {
+    margin-bottom: 20px;
+    position: relative;
+
+    .validationIcon {
+      right: 45px;
+      top: 34px;
+    }
+  }
+
+  .validationIcon {
+    position: absolute;
+    z-index: 20;
+    div[role="tooltip"] {
+      width: fit-content;
+      text-wrap: nowrap;
+    }
+  }
+
+  .tinymceLabel {
+    textarea {
+      display: block;
+      min-height: 200px;
+      background-color: variables.$white;
+      width: 100%;
+    }
+
+    .tinymceEditorBox {
+      position: relative;
+
+      .validationIcon {
+        right: 15px;
+        top: 13px;
+        z-index: 9;
+      }
+    }
+  }
+
+  .actionsBox {
+    display: flex;
+    gap: 15px;
+    margin-top: 25px;
+    justify-content: flex-end;
+  }
+
+  .locationSelect,
+  .workTimeSelect {
+    font-family: variables.$font-family-light;
+    font-size: 14px;
+  }
+
+  .inputsBox {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
+    label {
+      flex-basis: 49%;
+    }
+  }
+}
+
+// styles for react select
+:global {
+  #location-select,
+  #worktime-select {
+    height: 44px;
+    .css-1fdsijx-ValueContainer,
+    .css-art2ul-ValueContainer2 {
+      padding-left: 15px;
+
+      .css-1dimb5e-singleValue {
+        @include themeVariables.themify(themeVariables.$themes) {
+          color: themeVariables.themed("input-color");
+        }
+      }
+    }
+
+    .css-13cymwt-control,
+    .css-t3ipsp-control {
+      border: 2px solid;
+      height: 100%;
+
+      @include themeVariables.themify(themeVariables.$themes) {
+        border-color: themeVariables.themed("offer-input-border-color");
+        background-color: themeVariables.themed("input-background");
+      }
+
+      .css-1jqq78o-placeholder {
+        opacity: 0.5;
+        @include themeVariables.themify(themeVariables.$themes) {
+          color: themeVariables.themed("input-color");
+        }
+      }
+    }
+
+    .css-1nmdiq5-menu {
+      z-index: 10;
+
+      @include themeVariables.themify(themeVariables.$themes) {
+        color: themeVariables.themed("input-color");
+        background-color: themeVariables.themed("input-background");
+      }
+    }
+
+    .css-d7l1ni-option {
+      @include themeVariables.themify(themeVariables.$themes) {
+        background-color: themeVariables.themed("select-option-background");
+      }
+    }
+  }
+}
+
+.error {
+  outline: 1px solid variables.$red;
+  -webkit-box-shadow: 0px 0px 10px 0px variables.$red;
+  -moz-box-shadow: 0px 0px 10px 0px variables.$red;
+  box-shadow: 0px 0px 10px 0px variables.$red;
+}
+
+.valid {
+  outline: 1px solid variables.$valid;
+  -webkit-box-shadow: 0px 0px 10px 0px variables.$valid;
+  -moz-box-shadow: 0px 0px 10px 0px variables.$valid;
+  box-shadow: 0px 0px 10px 0px variables.$valid;
+}

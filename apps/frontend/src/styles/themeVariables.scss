@@ -11,6 +11,10 @@ $themes: (
     button-secondary-color: variables.$violet,
     input-background: variables.$white,
     input-color: variables.$very-dark-blue,
+    offer-input-border-color: variables.$light-grey,
+    offer-card-bg: variables.$white,
+    offer-card-title-color: variables.$very-dark-blue,
+    text-main-color: variables.$very-dark-blue, 
   ),
 
   dark: (
@@ -21,9 +25,14 @@ $themes: (
     button-secondary-bg: variables.$dark-blue,
     button-secondary-bg-hover: variables.$dark-grey,
     button-secondary-color: variables.$white,
-    input-background: variables.$very-dark-blue,
+    input-background: variables.$dark-blue,
     input-color: variables.$white,
+    offer-input-border-color: transparent,
+    offer-card-bg: variables.$very-dark-blue,
+    offer-card-title-color: variables.$white,
     login-container-bg: none,
+    text-main-color: variables.$white, 
+    select-option-background: variables.$grey,
   ),
 );
 

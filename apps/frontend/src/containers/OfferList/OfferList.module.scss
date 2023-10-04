@@ -1,8 +1,22 @@
 .offerList {
-  display: grid;
-  grid-template-rows: auto;
-  grid-template-columns: 1fr 1fr 1fr;
-  column-gap: 30px;
-  row-gap: 40px;
-  width: 100%;
+
+  display: flex;
+  flex-flow: column;
+
+  .controlsBox {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    margin-bottom: 25px;
+  }
+
+  .list {
+    display: grid;
+    grid-template-rows: auto;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    column-gap: 30px;
+    row-gap: 65px;
+    width: 100%;
+    justify-items: center;
+  }
 }

@@ -1,12 +1,10 @@
-import classes from './Input.module.scss';
-import { ReactNode, useCallback, useEffect, ChangeEvent } from 'react';
-import { Tooltip } from 'react-tooltip';
-import SvgIcon from '../SvgIcon/SvgIcon';
-import { useMotionAnimate } from 'motion-hooks';
-import { KeyboardEvent } from 'react';
+import classes from "./Input.module.scss";
+import { ReactNode, useCallback, ChangeEvent } from "react";
+import { KeyboardEvent } from "react";
+import ValidationIcon from "../ValidationIcon/ValidationIcon";
 
-type InputTypes = 'text' | 'number' | 'password' | 'email';
-type InputSize = 'small' | 'medium' | 'large';
+type InputTypes = "text" | "number" | "password" | "email";
+type InputSize = "small" | "medium" | "large";
 
 export type InputProps = {
   id: string;
@@ -23,6 +21,7 @@ export type InputProps = {
   size?: InputSize;
   autoComplete?: string;
   children?: ReactNode;
+  classNames?: string;
   onChange: (val: string) => void;
   onKeyDown?: (event: KeyboardEvent<HTMLInputElement>) => void;
 };
@@ -39,25 +38,17 @@ const Input = ({
   placeholder,
   autoComplete,
   children,
-  size = 'medium',
-  type = 'text',
+  classNames = "",
+  size = "medium",
+  type = "text",
   onChange,
   onKeyDown,
 }: InputProps) => {
-  const validationIconAnimation = useMotionAnimate(
-    `.${classes.validationIcon}`,
-    { opacity: 1 },
-    {
-      duration: 0.5,
-      easing: [0.22, 0.03, 0.26, 1],
-    }
-  );
-
-  let validClassName = '';
-  let inputBoxClassNames = `${classes.inputBox}`;
+  let validClassName = "";
+  let inputBoxClassNames = `${classNames} ${classes.inputBox}`;
 
   const showValidationInfo =
-    (errorText !== '' || validText !== '') && isValidated;
+    (errorText !== "" || validText !== "") && isValidated;
   if (showValidationInfo) {
     validClassName = !hasError ? classes.valid : classes.error;
     inputBoxClassNames = `${inputBoxClassNames} ${validClassName}`;
@@ -69,13 +60,6 @@ const Input = ({
     },
     [onChange]
   );
-
-  useEffect(() => {
-    if (showValidationInfo) {
-      void validationIconAnimation.play();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isValidated]);
 
   return (
     <label className={classes.inputLabel} htmlFor={id}>
@@ -90,36 +74,22 @@ const Input = ({
           onChange={handleInputOnChange}
           onKeyDown={onKeyDown}
           placeholder={placeholder}
-          className={`${classes[size]} ${icon ? classes.withIcon : ''}`}
+          className={`${classes[size]} ${icon ? classes.withIcon : ""}`}
           autoComplete={autoComplete}
         />
 
         <div
           className={`${classes.iconsBox} 
-          ${classes[type]}
-          ${isValidated ? classes.isValidated : ''}`}
+          ${classes[type] ?? ""}`}
         >
           {children}
           {showValidationInfo && (
-            <>
-              <SvgIcon
-                classNames={classes.validationIcon}
-                id={hasError ? 'icon-error' : 'icon-valid'}
-                elementId={`validation-icon-${id}`}
-                color="#bb0909"
-                hoverColor="#bb0909"
-                width={24}
-                height={24}
-              />
-
-              <Tooltip
-                anchorSelect={`#validation-icon-${id}`}
-                place="bottom-end"
-                variant={hasError ? 'error' : 'success'}
-                content={hasError ? errorText : validText}
-                className={classes.tooltipError}
-              />
-            </>
+            <ValidationIcon
+              id={id}
+              hasError={hasError}
+              errorText={errorText}
+              validText={validText}
+            />
           )}
         </div>
       </div>
