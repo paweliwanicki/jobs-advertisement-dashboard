@@ -6,7 +6,7 @@ type RequestOptions = {
   payload?: string;
 };
 
-type ResponseParams = {
+export type ResponseParams = {
   statusCode: number;
   message?: string;
 };

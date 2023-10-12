@@ -1,6 +1,11 @@
 import { useCallback, useMemo, useState } from "react";
 import { HttpMethod } from "../enums/HttpMethods";
-import { useApi } from "./useApi";
+import { ResponseParams, useApi } from "./useApi";
+
+const OFFER_STATUS_MESSAGES: Record<number, string> = {
+  201: "Offer has been successfuly!",
+  404: "Unknown error has occured :(",
+} as const;
 
 type OfferEditorInput =
   | "TITLE"
@@ -43,7 +48,7 @@ type UseOfferEditor = {
     workTime: string,
     description: string
   ) => boolean;
-  addOffer: (offer: Offer) => void;
+  addOffer: (offer: Offer) => Promise<ResponseParams>;
 };
 
 type InputError = "EMPTY";
@@ -117,11 +122,18 @@ export const useOfferEditor = (): UseOfferEditor => {
   };
 
   const addOffer = useCallback(async (offer: Offer) => {
-    const response = await fetch<Offer>(HttpMethod.POST, {
+    const [, response] = await fetch<Offer>(HttpMethod.POST, {
       path: "/api/offers",
       payload: JSON.stringify(offer),
     });
-    console.log(response);
+
+    if (response) {
+      setResponseMessage(
+        OFFER_STATUS_MESSAGES[response.statusCode] ?? "Unknown status"
+      );
+      setResponseError(response.statusCode !== 201);
+    }
+
     return response;
   }, []);
 

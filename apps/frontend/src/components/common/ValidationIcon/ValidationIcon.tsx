@@ -1,6 +1,6 @@
-import { Tooltip } from "react-tooltip";
 import SvgIcon from "../SvgIcon/SvgIcon";
 import classes from "./ValidationIcon.module.scss";
+import { Tooltip } from "react-tooltip";
 import { useMotionAnimate } from "motion-hooks";
 import { useEffect } from "react";
 

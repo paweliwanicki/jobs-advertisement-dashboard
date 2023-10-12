@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
 import classes from "./OfferList.module.scss";
+import Button from "../../components/common/Button/Button";
 import { useApi } from "../../hooks/useApi";
 import { HttpMethod } from "../../enums/HttpMethods";
 import OfferCard, {
@@ -7,10 +7,8 @@ import OfferCard, {
 } from "../../components/OfferCard/OfferCard";
 import { LoadingSpinner } from "../../components/common/LoadingSpinner/LoadingSpinner";
 import { useUser } from "../../hooks/useUser";
-import Button from "../../components/common/Button/Button";
 import { Link } from "react-router-dom";
-
-type OfferListProps = {};
+import { useCallback, useEffect, useState } from "react";
 
 const OfferList = () => {
   const { fetch, isFetching } = useApi();

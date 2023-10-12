@@ -1,44 +1,53 @@
-import { ReactNode, useCallback, useState } from "react";
 import classes from "./SnackBar.module.scss";
-import Button from "../Button/Button";
 import SvgIcon from "../SvgIcon/SvgIcon";
+import { useCallback, useEffect } from "react";
+import { useMotionAnimate } from "motion-hooks";
+import { useSnackBar } from "../../../hooks/useSnackBar";
 
-type SnackBarVariant = "error" | "success" | "info";
+const SnackBar = () => {
+  const { play: openAnimation } = useMotionAnimate(
+    `.${classes.snackBar}`,
+    { top: "15px" },
+    {
+      duration: 0.5,
+      easing: [0.22, 0.03, 0.26, 1],
+    }
+  );
 
-type SnackBarProps = {
-  id: string;
-  children: ReactNode;
-  isShowing: boolean;
-  variant: SnackBarVariant;
-  classNames?: string;
-};
+  const { play: closeAnimation } = useMotionAnimate(
+    `.${classes.snackBar}`,
+    { top: "-200px" },
+    {
+      duration: 0.5,
+      easing: [0.22, 0.03, 0.26, 1],
+    }
+  );
 
-const SnackBar = ({
-  id,
-  children,
-  isShowing,
-  variant,
-  classNames = "",
-}: SnackBarProps) => {
-  const [showSnackBar, setShowSnackBar] = useState<boolean>(isShowing);
+  const { content, isShowing, variant, setIsShowing } = useSnackBar();
 
-  const handleSnackBarIsShowing = useCallback(() => {
-    setShowSnackBar((showSnackBar) => !showSnackBar);
+  const handleCloseSnackBar = useCallback(() => {
+    setIsShowing(false);
   }, []);
 
+  useEffect(() => {
+    if (isShowing) {
+      openAnimation();
+    } else {
+      closeAnimation();
+    }
+  }, [isShowing]);
+
   return (
-    showSnackBar && (
-      <div id={id} className={`${classes.snackBar} ${variant} ${classNames} `}>
-        {children}
-        <SvgIcon
-          id="icon-close"
-          onClick={handleSnackBarIsShowing}
-          width={24}
-          height={24}
-          classNames={classes.closeIcon}
-        />
-      </div>
-    )
+    <div id="snackbar" className={classes.snackBar} data-variant={variant}>
+      {content}
+      <SvgIcon
+        id="icon-close"
+        onClick={handleCloseSnackBar}
+        width={24}
+        height={24}
+        classNames={classes.closeIcon}
+      />
+    </div>
   );
 };
 

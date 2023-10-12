@@ -1,5 +1,6 @@
 @use "../../styles/variables.scss";
 @use "../../styles/themeVariables.scss";
+@use "../../styles/utils.scss";
 
 .offerEditorContainer {
   width: 100%;
@@ -83,6 +84,11 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+
+    @include utils.respond-to(bp-small) {
+      flex-flow: column;
+      flex-wrap: nowrap;
+    }
 
     label {
       flex-basis: 49%;

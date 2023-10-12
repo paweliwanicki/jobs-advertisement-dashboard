@@ -6,25 +6,24 @@
   height: fit-content;
   max-height: 300px;
   position: fixed;
-  top: 15px;
+  top: -100px;
   left: 50%;
   transform: translateX(-50%);
   padding: 10px 30px 10px 15px;
-  color: variables.$midnight;
   border-radius: 6px;
+  color: variables.$light-grey;
+  z-index: 998;
 
-  &.success {
+  &[data-variant="success"] {
     background-color: variables.$valid;
   }
 
-  &.error {
+  &[data-variant="error"] {
     background-color: variables.$red;
-    color: variables.$white;
   }
 
-  &.info {
-    background-color: variables.$light-violet;
-    color: variables.$white;
+  &[data-variant="info"] {
+    background-color: variables.$dark-grey;
   }
 
   .closeIcon {
@@ -32,5 +31,6 @@
     right: 5px;
     top: 10px;
     cursor: pointer;
+    padding-left: 5px;
   }
 }

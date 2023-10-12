@@ -1,19 +1,19 @@
-import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import classes from "./OfferEditor.module.scss";
-import { Editor } from "@tinymce/tinymce-react";
-import type { Editor as TinyMceEditor } from "tinymce";
 import Input from "../common/Input/Input";
-import { useTheme } from "../../hooks/useTheme";
 import Button from "../common/Button/Button";
+import GooglePlacesAutocomplete from "react-google-places-autocomplete";
+import CreatableSelect from "react-select/creatable";
+import ValidationIcon from "../common/ValidationIcon/ValidationIcon";
+import { Editor } from "@tinymce/tinymce-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { SingleValue } from "react-select";
+import { useTheme } from "../../hooks/useTheme";
+import { useOfferEditor } from "../../hooks/useOfferEditor";
 import { Link } from "react-router-dom";
 import { LoadingSpinner } from "../common/LoadingSpinner/LoadingSpinner";
-import GooglePlacesAutocomplete from "react-google-places-autocomplete";
+import { useSnackBar } from "../../hooks/useSnackBar";
 import type { Option } from "react-google-places-autocomplete/build/types";
-import { SingleValue } from "react-select";
-import CreatableSelect from "react-select/creatable";
-import { useOfferEditor } from "../../hooks/useOfferEditor";
-import ValidationIcon from "../common/ValidationIcon/ValidationIcon";
-import SnackBar from "../common/SnackBar/SnackBar";
+import type { Editor as TinyMceEditor } from "tinymce";
 
 const WORK_TIME_OPTIONS = [
   { value: "1/4 time", label: "1/4 time" },
@@ -37,6 +37,8 @@ const OfferEditor = () => {
     validateOfferEditor,
   } = useOfferEditor();
 
+  const { handleShowSnackBar } = useSnackBar();
+
   const {
     titleError,
     workTimeError,
@@ -53,17 +55,14 @@ const OfferEditor = () => {
     descriptionIsValidated,
   } = isValidated;
 
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [title, setTitle] = useState<string>("");
   const [company, setCompany] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [location, setLocation] = useState<SingleValue<Option>>();
   const [workTime, setWorkTime] = useState<SingleValue<Option>>();
   const [initialEditorValue, setInitialEditorValue] = useState<string>("");
-  const [editorKey, setEditorKey] = useState<number>(0);
-
-  const [offerSnackBarIsShowing, setOfferSnackBarIsShowing] =
-    useState<boolean>(true);
+  const [editorElementKey, setEditorElementKey] = useState<number>(0);
 
   const handleTitleOnChange = useCallback(
     (title: string) => {
@@ -106,7 +105,7 @@ const OfferEditor = () => {
   );
 
   const handleOnInitTinyMCE = useCallback(
-    (event: any, editor: TinyMceEditor) => {
+    (_event: any, editor: TinyMceEditor) => {
       setIsLoading(false);
       return (editorRef.current = editor);
     },
@@ -115,7 +114,7 @@ const OfferEditor = () => {
 
   const handleChangeTinyMCEStyles = useCallback(() => {
     setInitialEditorValue(description);
-    setEditorKey((key) => key + 1); // force rerender
+    setEditorElementKey((key) => key + 1); // force tinymce rerender
   }, [description]);
 
   const handleSaveOffer = useCallback(async () => {
@@ -128,15 +127,15 @@ const OfferEditor = () => {
     );
 
     if (isValid) {
-      const results = addOffer({
+      await addOffer({
         title,
         company,
         description,
         location: location?.label ?? "",
         workTime: workTime?.value,
       });
-      console.log(results);
-      setOfferSnackBarIsShowing(true);
+
+      handleShowSnackBar(responseMessage, responseError ? "error" : "success");
     }
   }, [description, company, location, workTime, title]);
 
@@ -147,7 +146,11 @@ const OfferEditor = () => {
   return (
     <div className={classes.offerEditorContainer}>
       <h2>Add new offer</h2>
-      {(isLoading || isFetching) && <LoadingSpinner />}
+      {(isLoading || isFetching) && (
+        <LoadingSpinner
+          message={isLoading ? "Initialization text editor" : ""}
+        />
+      )}
 
       <div className={classes.inputsBox}>
         <Input
@@ -172,9 +175,13 @@ const OfferEditor = () => {
           errorText={companyError}
           hasError={!!companyError}
           isValidated={isValidated.companyIsValidated}
+          autoComplete="off"
         />
-        <label htmlFor="location-select" className={classes.locationLabel}>
-          {isValidated.locationIsValidated && (
+        <label
+          htmlFor="react-select-location-input"
+          className={classes.locationLabel}
+        >
+          {locationIsValidated && (
             <ValidationIcon
               id="location-select"
               hasError={!!locationError}
@@ -188,19 +195,23 @@ const OfferEditor = () => {
             minLengthAutocomplete={3}
             selectProps={{
               value: location,
-              onChange: handleLocationOnChange,
+              id: "location-select",
+              instanceId: "location",
+              placeholder: "Work location",
               className: `${classes.locationSelect} ${
                 locationIsValidated &&
                 (locationError ? classes.error : classes.valid)
               }`,
-              id: "location-select",
-              placeholder: "Work location",
               noOptionsMessage: () => "Please type location...",
+              onChange: handleLocationOnChange,
             }}
           />
         </label>
-        <label htmlFor="worktime-select" className={classes.workTimeLabel}>
-          {isValidated.workTimeIsValidated && (
+        <label
+          htmlFor="react-select-worktime-input"
+          className={classes.workTimeLabel}
+        >
+          {workTimeIsValidated && (
             <ValidationIcon
               id="wortkime-select"
               hasError={!!workTimeError}
@@ -211,7 +222,7 @@ const OfferEditor = () => {
           Working time
           <CreatableSelect
             id="worktime-select"
-            isClearable
+            instanceId="worktime"
             options={WORK_TIME_OPTIONS}
             className={`${classes.workTimeSelect} ${
               workTimeIsValidated &&
@@ -219,6 +230,7 @@ const OfferEditor = () => {
             }`}
             placeholder="Working time"
             onChange={handleWorkTimeOnChange}
+            isClearable
           />
         </label>
       </div>
@@ -230,7 +242,7 @@ const OfferEditor = () => {
             (errors.descriptionError ? classes.error : classes.valid)
           }`}
         >
-          {isValidated.descriptionIsValidated && (
+          {descriptionIsValidated && (
             <ValidationIcon
               id="wortkime-select"
               hasError={!!descriptionError}
@@ -239,7 +251,7 @@ const OfferEditor = () => {
             />
           )}
           <Editor
-            key={`editor-${editorKey}`}
+            key={`editor-${editorElementKey}`}
             id="offer-description"
             apiKey="hobfut19zde8hcqzn78dkiv360ipccmckyz7o1cgshf3llrr"
             onInit={handleOnInitTinyMCE}
@@ -271,13 +283,6 @@ const OfferEditor = () => {
           Save
         </Button>
       </div>
-      <SnackBar
-        variant={responseError ? "error" : "success"}
-        isShowing={offerSnackBarIsShowing}
-        id="offer-status"
-      >
-        {responseMessage}
-      </SnackBar>
     </div>
   );
 };

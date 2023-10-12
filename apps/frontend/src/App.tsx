@@ -1,9 +1,11 @@
-import './App.scss';
-import { CookiesProvider } from 'react-cookie';
-import { RouterProvider } from 'react-router-dom';
-import { useRouter } from './hooks/useRouter';
-import { UserProvider } from './providers/UserProvider';
-import ThemeProvider from './providers/ThemeProvider';
+import "./App.scss";
+import ThemeProvider from "./providers/ThemeProvider";
+import SnackBarProvider from "./providers/SnackBarProvider";
+import { CookiesProvider } from "react-cookie";
+import { RouterProvider } from "react-router-dom";
+import { useRouter } from "./hooks/useRouter";
+import { UserProvider } from "./providers/UserProvider";
+
 const { router } = useRouter();
 
 export function App() {
@@ -11,7 +13,9 @@ export function App() {
     <CookiesProvider>
       <UserProvider>
         <ThemeProvider>
-          <RouterProvider router={router} />
+          <SnackBarProvider>
+            <RouterProvider router={router} />
+          </SnackBarProvider>
         </ThemeProvider>
       </UserProvider>
     </CookiesProvider>
