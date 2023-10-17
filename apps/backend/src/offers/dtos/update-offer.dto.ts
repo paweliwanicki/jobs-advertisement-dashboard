@@ -15,7 +15,7 @@ export class UpdateOfferDto {
 
   @IsString()
   @IsNotEmpty()
-  workTime: string;
+  contract: string;
 
   @IsString()
   @IsNotEmpty()

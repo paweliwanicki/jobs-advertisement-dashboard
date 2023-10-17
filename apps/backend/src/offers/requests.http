@@ -17,7 +17,7 @@ Content-Type: application/json
 {
   "title": "Senior devops dsadwadsadsa sasdsdaad ssdsad",
   "description": "TU BEDZIE MEGA DLUGI TEKTS Z TEXT EDITORA W HTMLU ZAPEWNE",
-  "workTime": "Full-time",
+  "contract": "Full-time",
   "location": "Remote",
   "country": "DLIUUUGUGUUGUGUGUGUGUGUUG",
   "company": "NONODASDAW"
@@ -31,6 +31,6 @@ Content-Type: application/json
 {
   "title": "Senior devops v2",
   "description": "UPDATE",
-  "workTime": "UPD Full-time",
+  "contract": "UPD Full-time",
   "location": "UPD Remote"
 }

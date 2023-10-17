@@ -1,25 +1,25 @@
-import classes from "./OfferEditor.module.scss";
-import Input from "../common/Input/Input";
-import Button from "../common/Button/Button";
-import GooglePlacesAutocomplete from "react-google-places-autocomplete";
-import CreatableSelect from "react-select/creatable";
-import ValidationIcon from "../common/ValidationIcon/ValidationIcon";
-import { Editor } from "@tinymce/tinymce-react";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { SingleValue } from "react-select";
-import { useTheme } from "../../hooks/useTheme";
-import { useOfferEditor } from "../../hooks/useOfferEditor";
-import { Link } from "react-router-dom";
-import { LoadingSpinner } from "../common/LoadingSpinner/LoadingSpinner";
-import { useSnackBar } from "../../hooks/useSnackBar";
-import type { Option } from "react-google-places-autocomplete/build/types";
-import type { Editor as TinyMceEditor } from "tinymce";
+import classes from './OfferEditor.module.scss';
+import Input from '../common/Input/Input';
+import Button from '../common/Button/Button';
+import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
+import CreatableSelect from 'react-select/creatable';
+import ValidationIcon from '../common/ValidationIcon/ValidationIcon';
+import { Editor } from '@tinymce/tinymce-react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { SingleValue } from 'react-select';
+import { useTheme } from '../../hooks/useTheme';
+import { useOfferEditor } from '../../hooks/useOfferEditor';
+import { Link } from 'react-router-dom';
+import { LoadingSpinner } from '../common/LoadingSpinner/LoadingSpinner';
+import { useSnackBar } from '../../hooks/useSnackBar';
+import type { Option } from 'react-google-places-autocomplete/build/types';
+import type { Editor as TinyMceEditor } from 'tinymce';
 
 const WORK_TIME_OPTIONS = [
-  { value: "1/4 time", label: "1/4 time" },
-  { value: "1/3 time", label: "1/3 time" },
-  { value: "1/2 time", label: "1/2 time" },
-  { value: "Full time", label: "Full time" },
+  { value: '1/4 time', label: '1/4 time' },
+  { value: '1/3 time', label: '1/3 time' },
+  { value: '1/2 time', label: '1/2 time' },
+  { value: 'Full time', label: 'Full time' },
 ] as const;
 
 const OfferEditor = () => {
@@ -56,17 +56,17 @@ const OfferEditor = () => {
   } = isValidated;
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [title, setTitle] = useState<string>("");
-  const [company, setCompany] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
+  const [title, setTitle] = useState<string>('');
+  const [company, setCompany] = useState<string>('');
+  const [description, setDescription] = useState<string>('');
   const [location, setLocation] = useState<SingleValue<Option>>();
-  const [workTime, setWorkTime] = useState<SingleValue<Option>>();
-  const [initialEditorValue, setInitialEditorValue] = useState<string>("");
+  const [contract, setWorkTime] = useState<SingleValue<Option>>();
+  const [initialEditorValue, setInitialEditorValue] = useState<string>('');
   const [editorElementKey, setEditorElementKey] = useState<number>(0);
 
   const handleTitleOnChange = useCallback(
     (title: string) => {
-      titleIsValidated && clearValidationAndError("TITLE");
+      titleIsValidated && clearValidationAndError('TITLE');
       setTitle(title);
     },
     [titleIsValidated, clearValidationAndError]
@@ -74,7 +74,7 @@ const OfferEditor = () => {
 
   const handleCompanyOnChange = useCallback(
     (company: string) => {
-      companyIsValidated && clearValidationAndError("COMPANY");
+      companyIsValidated && clearValidationAndError('COMPANY');
       setCompany(company);
     },
     [companyIsValidated, clearValidationAndError]
@@ -82,23 +82,23 @@ const OfferEditor = () => {
 
   const handleLocationOnChange = useCallback(
     (location: SingleValue<Option>) => {
-      locationIsValidated && clearValidationAndError("LOCATION");
+      locationIsValidated && clearValidationAndError('LOCATION');
       setLocation(location);
     },
     [locationIsValidated, clearValidationAndError]
   );
 
   const handleWorkTimeOnChange = useCallback(
-    (workTime: SingleValue<Option>) => {
-      workTimeIsValidated && clearValidationAndError("WORKTIME");
-      setWorkTime(workTime);
+    (contract: SingleValue<Option>) => {
+      workTimeIsValidated && clearValidationAndError('CONTRACT');
+      setWorkTime(contract);
     },
     [workTimeIsValidated, clearValidationAndError]
   );
 
   const handleDescriptionOnChange = useCallback(
     (description: string) => {
-      descriptionIsValidated && clearValidationAndError("DESCRIPTION");
+      descriptionIsValidated && clearValidationAndError('DESCRIPTION');
       setDescription(description);
     },
     [descriptionIsValidated, clearValidationAndError]
@@ -121,8 +121,8 @@ const OfferEditor = () => {
     const isValid = validateOfferEditor(
       title,
       company,
-      location?.label ?? "",
-      workTime?.value ?? "",
+      location?.label ?? '',
+      contract?.value ?? '',
       description
     );
 
@@ -131,13 +131,13 @@ const OfferEditor = () => {
         title,
         company,
         description,
-        location: location?.label ?? "",
-        workTime: workTime?.value,
+        location: location?.label ?? '',
+        contract: contract?.value,
       });
 
-      handleShowSnackBar(responseMessage, responseError ? "error" : "success");
+      handleShowSnackBar(responseMessage, responseError ? 'error' : 'success');
     }
-  }, [description, company, location, workTime, title]);
+  }, [description, company, location, contract, title]);
 
   useEffect(() => {
     handleChangeTinyMCEStyles();
@@ -148,7 +148,7 @@ const OfferEditor = () => {
       <h2>Add new offer</h2>
       {(isLoading || isFetching) && (
         <LoadingSpinner
-          message={isLoading ? "Initialization text editor" : ""}
+          message={isLoading ? 'Initialization text editor' : ''}
         />
       )}
 
@@ -195,14 +195,14 @@ const OfferEditor = () => {
             minLengthAutocomplete={3}
             selectProps={{
               value: location,
-              id: "location-select",
-              instanceId: "location",
-              placeholder: "Work location",
+              id: 'location-select',
+              instanceId: 'location',
+              placeholder: 'Work location',
               className: `${classes.locationSelect} ${
                 locationIsValidated &&
                 (locationError ? classes.error : classes.valid)
               }`,
-              noOptionsMessage: () => "Please type location...",
+              noOptionsMessage: () => 'Please type location...',
               onChange: handleLocationOnChange,
             }}
           />
@@ -261,12 +261,12 @@ const OfferEditor = () => {
               height: 500,
               menubar: true,
               plugins:
-                "preview code searchreplace autolink directionality visualblocks visualchars fullscreen image link media  codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists",
+                'preview code searchreplace autolink directionality visualblocks visualchars fullscreen image link media  codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists',
               toolbar:
-                "formatselect | bold italic underline strikethrough | forecolor backcolor blockquote | link image media | alignleft aligncenter alignright alignjustify | numlist bullist outdent indent | removeformat | code",
+                'formatselect | bold italic underline strikethrough | forecolor backcolor blockquote | link image media | alignleft aligncenter alignright alignjustify | numlist bullist outdent indent | removeformat | code',
               image_advtab: true,
-              skin: theme === "dark" ? "oxide-dark" : "oxide",
-              content_css: theme === "dark" ? "dark" : "",
+              skin: theme === 'dark' ? 'oxide-dark' : 'oxide',
+              content_css: theme === 'dark' ? 'dark' : '',
             }}
           />
         </div>

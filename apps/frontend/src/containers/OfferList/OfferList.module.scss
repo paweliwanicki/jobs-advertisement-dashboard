@@ -1,13 +1,14 @@
 .offerList {
-
   display: flex;
   flex-flow: column;
+  gap: 25px;
 
   .controlsBox {
     display: flex;
     align-items: flex-end;
     justify-content: flex-end;
     margin-bottom: 25px;
+    gap: 15px;
   }
 
   .list {

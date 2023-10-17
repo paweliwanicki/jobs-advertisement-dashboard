@@ -1,13 +1,13 @@
-import classes from "./OfferCard.module.scss";
-import SvgIcon from "../common/SvgIcon/SvgIcon";
-import testLogo from "../../assets/logos/creative.svg";
-import { Link } from "react-router-dom";
+import classes from './OfferCard.module.scss';
+import SvgIcon from '../common/SvgIcon/SvgIcon';
+import testLogo from '../../assets/logos/creative.svg';
+import { Link } from 'react-router-dom';
 
 export type OfferCardProps = {
   id: number;
   title: string;
   company: string;
-  workTime: string;
+  contract: string;
   location: string;
   createdAt: number;
 };
@@ -16,31 +16,32 @@ const now = Math.floor(new Date().getTime() / 1000);
 
 const getOfferAddedTime = (createdAt: number) => {
   const hoursDiff = Math.abs(now - createdAt) / 3600;
-  let suffix = "h";
+  let suffix = 'h';
   let diff = Math.floor(hoursDiff);
 
   if (!diff) {
-    return "Recent";
+    return 'Recent';
   }
 
   if (hoursDiff >= 24) {
     diff = Math.floor(hoursDiff / 24);
-    suffix = "d";
+    suffix = 'd';
   }
 
   return `${diff}${suffix} ago`;
 };
 
 const OfferCard = ({
+  id,
   title,
   company,
   location,
-  workTime,
+  contract,
   createdAt,
 }: OfferCardProps) => {
   return (
     <div className={classes.offerCard}>
-      <Link to="/offer/:id">
+      <Link to={`/offer/${id}`}>
         {testLogo && (
           <img src={testLogo} className={classes.companyLogo} alt="company" />
         )}
@@ -49,7 +50,7 @@ const OfferCard = ({
           <p>
             <span>{getOfferAddedTime(createdAt)}</span>
             <SvgIcon id="icon-dot" width={4} height={4} />
-            <span>{workTime}</span>
+            <span>{contract}</span>
           </p>
           <div>
             <h3>{title}</h3>

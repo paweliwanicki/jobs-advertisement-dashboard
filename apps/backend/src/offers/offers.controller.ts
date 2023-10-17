@@ -19,12 +19,12 @@ import { JwtAuthGuard } from 'src/authentication/guards/jwt-auth.guard';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 
 @Controller('offers')
-@UseGuards(JwtAuthGuard)
 export class OffersController {
   constructor(private offersService: OffersService) {}
 
   @Post()
   @Serialize(OfferDto)
+  @UseGuards(JwtAuthGuard)
   async addOffer(@Body() body: UpdateOfferDto, @CurrentUser() user: User) {
     const newOffer = {
       ...body,
@@ -34,6 +34,36 @@ export class OffersController {
 
     const offer = await this.offersService.create(newOffer);
     return offer;
+  }
+
+  @Post('/import')
+  @Serialize(OfferDto)
+  @UseGuards(JwtAuthGuard)
+  async importOffers(@Body() body: any, @CurrentUser() user: User) {
+    let offers = [];
+    if (body.length) {
+      offers = body.map((offer: any) => {
+        const newOffer: Partial<OfferDto & { unremovable: boolean }> = {
+          title: offer.position,
+          company: offer.company,
+          contract: offer.contract,
+          location: offer.location,
+          description: `${offer.description}
+                  ${offer.role.content}
+                  ${offer.role.items}
+                  ${offer.requirements.content}
+                  ${offer.requirements.items}
+                `,
+          unremovable: true,
+        };
+        return newOffer;
+      });
+      if (offers.length) {
+        offers.forEach(async (offer: any) => await this.addOffer(offer, user));
+      }
+    }
+
+    return offers;
   }
 
   @Get('/:id')
@@ -51,11 +81,13 @@ export class OffersController {
   }
 
   @Delete('/:id')
+  @UseGuards(JwtAuthGuard)
   removeOffer(@Param('id') id: string) {
     return this.offersService.remove(parseInt(id));
   }
 
   @Patch('/:id')
+  @UseGuards(JwtAuthGuard)
   updateOffer(
     @Param('id') id: string,
     @Body() body: UpdateOfferDto,

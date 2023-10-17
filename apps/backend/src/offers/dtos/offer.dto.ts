@@ -10,7 +10,7 @@ export class OfferDto {
   @Expose()
   location: string;
   @Expose()
-  workTime: string;
+  contract: string;
   @Expose()
   company: string;
   @Expose()

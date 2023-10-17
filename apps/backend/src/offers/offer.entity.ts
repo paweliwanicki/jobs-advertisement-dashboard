@@ -22,7 +22,7 @@ export class Offer {
   location: string;
 
   @Column()
-  workTime: string;
+  contract: string;
 
   @Column()
   company: string;
@@ -38,6 +38,9 @@ export class Offer {
 
   @Column({ nullable: true })
   modifiedAt: number;
+
+  @Column({ default: false })
+  unremovable: boolean;
 
   @AfterInsert()
   logInsert() {

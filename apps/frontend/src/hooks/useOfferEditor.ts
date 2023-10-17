@@ -1,24 +1,24 @@
-import { useCallback, useMemo, useState } from "react";
-import { HttpMethod } from "../enums/HttpMethods";
-import { ResponseParams, useApi } from "./useApi";
+import { useCallback, useMemo, useState } from 'react';
+import { HttpMethod } from '../enums/HttpMethods';
+import { ResponseParams, useApi } from './useApi';
 
 const OFFER_STATUS_MESSAGES: Record<number, string> = {
-  201: "Offer has been successfuly!",
-  404: "Unknown error has occured :(",
+  201: 'Offer has been successfuly!',
+  404: 'Unknown error has occured :(',
 } as const;
 
 type OfferEditorInput =
-  | "TITLE"
-  | "LOCATION"
-  | "COMPANY"
-  | "WORKTIME"
-  | "DESCRIPTION";
+  | 'TITLE'
+  | 'LOCATION'
+  | 'COMPANY'
+  | 'CONTRACT'
+  | 'DESCRIPTION';
 
 export type Offer = {
   title: string;
   company: string;
   location: string;
-  workTime: string;
+  contract: string;
   description: string;
 };
 
@@ -45,16 +45,16 @@ type UseOfferEditor = {
     title: string,
     company: string,
     location: string,
-    workTime: string,
+    contract: string,
     description: string
   ) => boolean;
   addOffer: (offer: Offer) => Promise<ResponseParams>;
 };
 
-type InputError = "EMPTY";
+type InputError = 'EMPTY';
 
 const INPUT_ERRORS_MESSAGES: Record<InputError, string> = {
-  EMPTY: "Can not be empty!",
+  EMPTY: 'Can not be empty!',
 } as const;
 
 export const useOfferEditor = (): UseOfferEditor => {
@@ -84,30 +84,30 @@ export const useOfferEditor = (): UseOfferEditor => {
     title: string,
     company: string,
     location: string,
-    workTime: string,
+    contract: string,
     description: string
   ) => {
     let isValid = true;
-    if (title === "") {
+    if (title === '') {
       setTitleError(INPUT_ERRORS_MESSAGES.EMPTY);
       isValid = false;
     }
 
-    if (company === "") {
+    if (company === '') {
       setCompanyError(INPUT_ERRORS_MESSAGES.EMPTY);
       isValid = false;
     }
 
-    if (location === "") {
+    if (location === '') {
       setLocationError(INPUT_ERRORS_MESSAGES.EMPTY);
       isValid = false;
     }
-    if (workTime === "") {
+    if (contract === '') {
       setWorkTimeError(INPUT_ERRORS_MESSAGES.EMPTY);
       isValid = false;
     }
 
-    if (description === "") {
+    if (description === '') {
       setDescriptionError(INPUT_ERRORS_MESSAGES.EMPTY);
       isValid = false;
     }
@@ -123,13 +123,13 @@ export const useOfferEditor = (): UseOfferEditor => {
 
   const addOffer = useCallback(async (offer: Offer) => {
     const [, response] = await fetch<Offer>(HttpMethod.POST, {
-      path: "/api/offers",
+      path: '/api/offers',
       payload: JSON.stringify(offer),
     });
 
     if (response) {
       setResponseMessage(
-        OFFER_STATUS_MESSAGES[response.statusCode] ?? "Unknown status"
+        OFFER_STATUS_MESSAGES[response.statusCode] ?? 'Unknown status'
       );
       setResponseError(response.statusCode !== 201);
     }
@@ -137,7 +137,7 @@ export const useOfferEditor = (): UseOfferEditor => {
     return response;
   }, []);
 
-  const validationCleaners: Record<OfferEditorInput | "ALL", () => void> =
+  const validationCleaners: Record<OfferEditorInput | 'ALL', () => void> =
     useMemo(() => {
       return {
         TITLE: () => {
@@ -148,7 +148,7 @@ export const useOfferEditor = (): UseOfferEditor => {
           setCompanyError(undefined);
           setCompanyIsValidated(false);
         },
-        WORKTIME: () => {
+        CONTRACT: () => {
           setWorkTimeError(undefined);
           setWorkTimeIsValidated(false);
         },
@@ -184,7 +184,7 @@ export const useOfferEditor = (): UseOfferEditor => {
   }, []);
 
   const clearValidationAndError = useCallback((input?: OfferEditorInput) => {
-    validationCleaners[input ?? "ALL"]();
+    validationCleaners[input ?? 'ALL']();
   }, []);
 
   return {
