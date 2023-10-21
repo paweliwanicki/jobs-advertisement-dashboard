@@ -1,0 +1,109 @@
+@use '../../../styles/variables.scss';
+@use '../../../styles/themeVariables.scss';
+
+.fileInputBox {
+  color: variables.$midnight;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+
+  .fileInfoBox {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-right: 15px;
+
+    > svg {
+      cursor: pointer;
+    }
+  }
+
+  label.inputLabel {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex-basis: unset;
+
+    margin-bottom: 20px;
+
+    > .labelText {
+      margin-bottom: 3px;
+      display: flex;
+      align-self: center;
+      gap: 10px;
+    }
+
+    .inputBox {
+      width: 100%;
+      display: inline-flex;
+      border-radius: 6px;
+      align-items: center;
+      color: variables.$light-grey;
+
+      > p {
+        padding: 8px;
+        opacity: 0.5;
+        font-family: variables.$font-family-light;
+
+        @include themeVariables.themify(themeVariables.$themes) {
+          color: themeVariables.themed('input-color');
+        }
+      }
+
+      height: 40px;
+      font-size: 14px;
+
+      @include themeVariables.themify(themeVariables.$themes) {
+        background-color: themeVariables.themed('input-background');
+      }
+
+      .tooltipError {
+        width: auto;
+        max-width: 250px;
+      }
+
+      &.error {
+        outline: 1px solid variables.$red;
+        -webkit-box-shadow: 0px 0px 10px 0px variables.$red;
+        -moz-box-shadow: 0px 0px 10px 0px variables.$red;
+        box-shadow: 0px 0px 10px 0px variables.$red;
+      }
+
+      &.valid {
+        outline: 1px solid variables.$valid;
+        -webkit-box-shadow: 0px 0px 15px 0px variables.$valid;
+        -moz-box-shadow: 0px 0px 15px 0px variables.$valid;
+        box-shadow: 0px 0px 15px 0px variables.$valid;
+      }
+
+      > input {
+        padding-left: 20px;
+        padding-right: 5px;
+        border-top-left-radius: inherit;
+        border-bottom-left-radius: inherit;
+        display: none;
+
+        @include themeVariables.themify(themeVariables.$themes) {
+          background-color: themeVariables.themed('input-background');
+          color: themeVariables.themed('input-color');
+        }
+
+        border: none;
+        outline: none;
+        flex-grow: 1;
+        border-radius: inherit;
+        flex-shrink: 0;
+
+        &::placeholder {
+          opacity: 0.5;
+          font-family: variables.$font-family-light;
+
+          @include themeVariables.themify(themeVariables.$themes) {
+            color: themeVariables.themed('input-color');
+          }
+        }
+      }
+    }
+  }
+}

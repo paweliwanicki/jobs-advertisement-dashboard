@@ -20,6 +20,7 @@ export type Offer = {
   location: string;
   contract: string;
   description: string;
+  companyLogoImg?: File;
 };
 
 type UseOfferEditor = {

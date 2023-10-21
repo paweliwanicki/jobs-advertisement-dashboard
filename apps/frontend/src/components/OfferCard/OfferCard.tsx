@@ -10,6 +10,7 @@ export type OfferCardProps = {
   contract: string;
   location: string;
   createdAt: number;
+  unremovable: boolean;
 };
 
 const now = Math.floor(new Date().getTime() / 1000);
@@ -38,11 +39,12 @@ const OfferCard = ({
   location,
   contract,
   createdAt,
+  unremovable,
 }: OfferCardProps) => {
   return (
     <div className={classes.offerCard}>
       <Link to={`/offer/${id}`}>
-        {testLogo && (
+        {unremovable && (
           <img src={testLogo} className={classes.companyLogo} alt="company" />
         )}
 

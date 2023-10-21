@@ -29,13 +29,18 @@
   }
 
   .locationLabel,
+  .companyLabel,
   .contractLabel {
     margin-bottom: 20px;
     position: relative;
 
+    > p {
+      margin-bottom: 3px;
+    }
+
     .validationIcon {
       right: 45px;
-      top: 34px;
+      top: 37px;
     }
   }
 
@@ -74,7 +79,13 @@
     justify-content: flex-end;
   }
 
+  .companyLogoUploadBox {
+    margin-left: auto;
+    flex-basis: 49%;
+  }
+
   .locationSelect,
+  .companySelect,
   .contractSelect {
     font-family: variables.$font-family-light;
     font-size: 14px;
@@ -99,6 +110,7 @@
 // styles for react select
 :global {
   #location-select,
+  #company-select,
   #contract-select {
     height: 44px;
     .css-1fdsijx-ValueContainer,
@@ -116,6 +128,7 @@
     .css-t3ipsp-control {
       border: 2px solid;
       height: 100%;
+      border-radius: 6px;
 
       @include themeVariables.themify(themeVariables.$themes) {
         border-color: themeVariables.themed('offer-input-border-color');

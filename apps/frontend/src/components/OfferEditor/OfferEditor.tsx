@@ -14,12 +14,19 @@ import { LoadingSpinner } from '../common/LoadingSpinner/LoadingSpinner';
 import { useSnackBar } from '../../hooks/useSnackBar';
 import type { Option } from 'react-google-places-autocomplete/build/types';
 import type { Editor as TinyMceEditor } from 'tinymce';
+import FileInput from '../common/FileInput/FileInput';
 
-const WORK_TIME_OPTIONS = [
+const CONTRACT_OPTIONS = [
   { value: '1/4 time', label: '1/4 time' },
   { value: '1/3 time', label: '1/3 time' },
   { value: '1/2 time', label: '1/2 time' },
   { value: 'Full time', label: 'Full time' },
+] as const;
+
+const COMPANY_OPTIONS = [
+  { value: 'scoot', label: 'Scoot' },
+  { value: 'blogr', label: 'Blogr' },
+  { value: 'vector', label: 'Vector' },
 ] as const;
 
 const OfferEditor = () => {
@@ -57,7 +64,8 @@ const OfferEditor = () => {
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [title, setTitle] = useState<string>('');
-  const [company, setCompany] = useState<string>('');
+  const [company, setCompany] = useState<SingleValue<Option>>();
+  const [companyLogoImg, setCompanyLogoImg] = useState<File>();
   const [description, setDescription] = useState<string>('');
   const [location, setLocation] = useState<SingleValue<Option>>();
   const [contract, setContract] = useState<SingleValue<Option>>();
@@ -73,7 +81,7 @@ const OfferEditor = () => {
   );
 
   const handleCompanyOnChange = useCallback(
-    (company: string) => {
+    (company: SingleValue<Option>) => {
       companyIsValidated && clearValidationAndError('COMPANY');
       setCompany(company);
     },
@@ -88,7 +96,7 @@ const OfferEditor = () => {
     [locationIsValidated, clearValidationAndError]
   );
 
-  const handlecontractOnChange = useCallback(
+  const handleContractOnChange = useCallback(
     (contract: SingleValue<Option>) => {
       contractIsValidated && clearValidationAndError('CONTRACT');
       setContract(contract);
@@ -120,7 +128,7 @@ const OfferEditor = () => {
   const handleSaveOffer = useCallback(async () => {
     const isValid = validateOfferEditor(
       title,
-      company,
+      company?.label ?? '',
       location?.label ?? '',
       contract?.value ?? '',
       description
@@ -129,8 +137,9 @@ const OfferEditor = () => {
     if (isValid) {
       await addOffer({
         title,
-        company,
         description,
+        company: company?.label ?? '',
+        companyLogoImg,
         location: location?.label ?? '',
         contract: contract?.value,
       });
@@ -164,19 +173,6 @@ const OfferEditor = () => {
           hasError={!!titleError}
           isValidated={isValidated.titleIsValidated}
         />
-
-        <Input
-          id="company"
-          onChange={handleCompanyOnChange}
-          label="Company"
-          size="small"
-          classNames={classes.inputBox}
-          placeholder="Company"
-          errorText={companyError}
-          hasError={!!companyError}
-          isValidated={isValidated.companyIsValidated}
-          autoComplete="off"
-        />
         <label
           htmlFor="react-select-location-input"
           className={classes.locationLabel}
@@ -189,7 +185,7 @@ const OfferEditor = () => {
               classNames={classes.validationIcon}
             />
           )}
-          Location
+          <p>Location</p>
           <GooglePlacesAutocomplete
             apiKey="AIzaSyBa7WIrBOkKT7YRiTJFzhFMYZfCTc_6iRY"
             minLengthAutocomplete={3}
@@ -207,6 +203,7 @@ const OfferEditor = () => {
             }}
           />
         </label>
+
         <label
           htmlFor="react-select-contract-input"
           className={classes.contractLabel}
@@ -219,21 +216,56 @@ const OfferEditor = () => {
               classNames={classes.validationIcon}
             />
           )}
-          Working time
+          <p>Contract</p>
           <CreatableSelect
             id="contract-select"
             instanceId="contract"
-            options={WORK_TIME_OPTIONS}
+            options={CONTRACT_OPTIONS}
             className={`${classes.contractSelect} ${
               contractIsValidated &&
               (contractError ? classes.error : classes.valid)
             }`}
-            placeholder="Working time"
-            onChange={handlecontractOnChange}
+            placeholder="Contract"
+            onChange={handleContractOnChange}
             isClearable
           />
         </label>
+
+        <label
+          htmlFor="react-select-company-input"
+          className={classes.companyLabel}
+        >
+          <p>Company</p>
+          {companyIsValidated && (
+            <ValidationIcon
+              id="company-select"
+              hasError={!!companyError}
+              errorText={companyError}
+              classNames={classes.validationIcon}
+            />
+          )}
+          <CreatableSelect
+            id="company-select"
+            onChange={handleCompanyOnChange}
+            placeholder="Company"
+            instanceId="company"
+            options={COMPANY_OPTIONS}
+            className={`${classes.companySelect} ${
+              companyIsValidated &&
+              (companyError ? classes.error : classes.valid)
+            }`}
+            isClearable
+          />
+        </label>
+        <div className={classes.companyLogoUploadBox}>
+          <FileInput
+            label="Company logo"
+            setSelectedFile={setCompanyLogoImg}
+            acceptTypes="image/png, image/gif, image/jpeg"
+          />
+        </div>
       </div>
+
       <label htmlFor="offer-description" className={classes.tinymceLabel}>
         Description
         <div
