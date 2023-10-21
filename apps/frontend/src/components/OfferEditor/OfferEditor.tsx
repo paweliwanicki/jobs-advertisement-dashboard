@@ -41,7 +41,7 @@ const OfferEditor = () => {
 
   const {
     titleError,
-    workTimeError,
+    contractError,
     locationError,
     descriptionError,
     companyError,
@@ -50,7 +50,7 @@ const OfferEditor = () => {
   const {
     titleIsValidated,
     companyIsValidated,
-    workTimeIsValidated,
+    contractIsValidated,
     locationIsValidated,
     descriptionIsValidated,
   } = isValidated;
@@ -60,7 +60,7 @@ const OfferEditor = () => {
   const [company, setCompany] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [location, setLocation] = useState<SingleValue<Option>>();
-  const [contract, setWorkTime] = useState<SingleValue<Option>>();
+  const [contract, setContract] = useState<SingleValue<Option>>();
   const [initialEditorValue, setInitialEditorValue] = useState<string>('');
   const [editorElementKey, setEditorElementKey] = useState<number>(0);
 
@@ -88,12 +88,12 @@ const OfferEditor = () => {
     [locationIsValidated, clearValidationAndError]
   );
 
-  const handleWorkTimeOnChange = useCallback(
+  const handlecontractOnChange = useCallback(
     (contract: SingleValue<Option>) => {
-      workTimeIsValidated && clearValidationAndError('CONTRACT');
-      setWorkTime(contract);
+      contractIsValidated && clearValidationAndError('CONTRACT');
+      setContract(contract);
     },
-    [workTimeIsValidated, clearValidationAndError]
+    [contractIsValidated, clearValidationAndError]
   );
 
   const handleDescriptionOnChange = useCallback(
@@ -208,28 +208,28 @@ const OfferEditor = () => {
           />
         </label>
         <label
-          htmlFor="react-select-worktime-input"
-          className={classes.workTimeLabel}
+          htmlFor="react-select-contract-input"
+          className={classes.contractLabel}
         >
-          {workTimeIsValidated && (
+          {contractIsValidated && (
             <ValidationIcon
               id="wortkime-select"
-              hasError={!!workTimeError}
-              errorText={workTimeError}
+              hasError={!!contractError}
+              errorText={contractError}
               classNames={classes.validationIcon}
             />
           )}
           Working time
           <CreatableSelect
-            id="worktime-select"
-            instanceId="worktime"
+            id="contract-select"
+            instanceId="contract"
             options={WORK_TIME_OPTIONS}
-            className={`${classes.workTimeSelect} ${
-              workTimeIsValidated &&
-              (workTimeError ? classes.error : classes.valid)
+            className={`${classes.contractSelect} ${
+              contractIsValidated &&
+              (contractError ? classes.error : classes.valid)
             }`}
             placeholder="Working time"
-            onChange={handleWorkTimeOnChange}
+            onChange={handlecontractOnChange}
             isClearable
           />
         </label>

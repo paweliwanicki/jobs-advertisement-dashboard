@@ -1,6 +1,6 @@
-@use "../../styles/variables.scss";
-@use "../../styles/themeVariables.scss";
-@use "../../styles/utils.scss";
+@use '../../styles/variables.scss';
+@use '../../styles/themeVariables.scss';
+@use '../../styles/utils.scss';
 
 .offerEditorContainer {
   width: 100%;
@@ -9,14 +9,14 @@
     border: 2px solid;
 
     @include themeVariables.themify(themeVariables.$themes) {
-      border-color: themeVariables.themed("offer-input-border-color");
+      border-color: themeVariables.themed('offer-input-border-color');
     }
   }
 
   h2,
   label {
     @include themeVariables.themify(themeVariables.$themes) {
-      color: themeVariables.themed("text-main-color");
+      color: themeVariables.themed('text-main-color');
     }
 
     text-align: left;
@@ -29,7 +29,7 @@
   }
 
   .locationLabel,
-  .workTimeLabel {
+  .contractLabel {
     margin-bottom: 20px;
     position: relative;
 
@@ -42,7 +42,7 @@
   .validationIcon {
     position: absolute;
     z-index: 20;
-    div[role="tooltip"] {
+    div[role='tooltip'] {
       width: fit-content;
       text-wrap: nowrap;
     }
@@ -75,7 +75,7 @@
   }
 
   .locationSelect,
-  .workTimeSelect {
+  .contractSelect {
     font-family: variables.$font-family-light;
     font-size: 14px;
   }
@@ -99,7 +99,7 @@
 // styles for react select
 :global {
   #location-select,
-  #worktime-select {
+  #contract-select {
     height: 44px;
     .css-1fdsijx-ValueContainer,
     .css-art2ul-ValueContainer2 {
@@ -107,7 +107,7 @@
 
       .css-1dimb5e-singleValue {
         @include themeVariables.themify(themeVariables.$themes) {
-          color: themeVariables.themed("input-color");
+          color: themeVariables.themed('input-color');
         }
       }
     }
@@ -118,14 +118,14 @@
       height: 100%;
 
       @include themeVariables.themify(themeVariables.$themes) {
-        border-color: themeVariables.themed("offer-input-border-color");
-        background-color: themeVariables.themed("input-background");
+        border-color: themeVariables.themed('offer-input-border-color');
+        background-color: themeVariables.themed('input-background');
       }
 
       .css-1jqq78o-placeholder {
         opacity: 0.5;
         @include themeVariables.themify(themeVariables.$themes) {
-          color: themeVariables.themed("input-color");
+          color: themeVariables.themed('input-color');
         }
       }
     }
@@ -134,14 +134,14 @@
       z-index: 10;
 
       @include themeVariables.themify(themeVariables.$themes) {
-        color: themeVariables.themed("input-color");
-        background-color: themeVariables.themed("input-background");
+        color: themeVariables.themed('input-color');
+        background-color: themeVariables.themed('input-background');
       }
     }
 
     .css-d7l1ni-option {
       @include themeVariables.themify(themeVariables.$themes) {
-        background-color: themeVariables.themed("select-option-background");
+        background-color: themeVariables.themed('select-option-background');
       }
     }
   }

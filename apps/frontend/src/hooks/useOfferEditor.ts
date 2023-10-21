@@ -26,14 +26,14 @@ type UseOfferEditor = {
   errors: {
     titleError: string | undefined;
     companyError: string | undefined;
-    workTimeError: string | undefined;
+    contractError: string | undefined;
     locationError: string | undefined;
     descriptionError: string | undefined;
   };
   isValidated: {
     titleIsValidated: boolean;
     companyIsValidated: boolean;
-    workTimeIsValidated: boolean;
+    contractIsValidated: boolean;
     locationIsValidated: boolean;
     descriptionIsValidated: boolean;
   };
@@ -62,7 +62,7 @@ export const useOfferEditor = (): UseOfferEditor => {
 
   const [titleError, setTitleError] = useState<string | undefined>();
   const [companyError, setCompanyError] = useState<string | undefined>();
-  const [workTimeError, setWorkTimeError] = useState<string | undefined>();
+  const [contractError, setContractError] = useState<string | undefined>();
   const [locationError, setLocationError] = useState<string | undefined>();
   const [descriptionError, setDescriptionError] = useState<
     string | undefined
@@ -70,7 +70,7 @@ export const useOfferEditor = (): UseOfferEditor => {
 
   const [titleIsValidated, setTitleIsValidated] = useState<boolean>(false);
   const [companyIsValidated, setCompanyIsValidated] = useState<boolean>(false);
-  const [workTimeIsValidated, setWorkTimeIsValidated] =
+  const [contractIsValidated, setContractIsValidated] =
     useState<boolean>(false);
   const [locationIsValidated, setLocationIsValidated] =
     useState<boolean>(false);
@@ -103,7 +103,7 @@ export const useOfferEditor = (): UseOfferEditor => {
       isValid = false;
     }
     if (contract === '') {
-      setWorkTimeError(INPUT_ERRORS_MESSAGES.EMPTY);
+      setContractError(INPUT_ERRORS_MESSAGES.EMPTY);
       isValid = false;
     }
 
@@ -116,7 +116,7 @@ export const useOfferEditor = (): UseOfferEditor => {
     setCompanyIsValidated(true);
     setLocationIsValidated(true);
     setDescriptionIsValidated(true);
-    setWorkTimeIsValidated(true);
+    setContractIsValidated(true);
 
     return isValid;
   };
@@ -149,8 +149,8 @@ export const useOfferEditor = (): UseOfferEditor => {
           setCompanyIsValidated(false);
         },
         CONTRACT: () => {
-          setWorkTimeError(undefined);
-          setWorkTimeIsValidated(false);
+          setContractError(undefined);
+          setContractIsValidated(false);
         },
         LOCATION: () => {
           setLocationError(undefined);
@@ -170,7 +170,7 @@ export const useOfferEditor = (): UseOfferEditor => {
   const clearErrors = useCallback(() => {
     setTitleError(undefined);
     setCompanyError(undefined);
-    setWorkTimeError(undefined);
+    setContractError(undefined);
     setLocationError(undefined);
     setDescriptionError(undefined);
   }, []);
@@ -178,7 +178,7 @@ export const useOfferEditor = (): UseOfferEditor => {
   const clearValidation = useCallback(() => {
     setTitleIsValidated(false);
     setCompanyIsValidated(false);
-    setWorkTimeIsValidated(false);
+    setContractIsValidated(false);
     setLocationIsValidated(false);
     setDescriptionIsValidated(false);
   }, []);
@@ -191,7 +191,7 @@ export const useOfferEditor = (): UseOfferEditor => {
     errors: {
       titleError,
       companyError,
-      workTimeError,
+      contractError,
       locationError,
       descriptionError,
     },
@@ -199,7 +199,7 @@ export const useOfferEditor = (): UseOfferEditor => {
       titleIsValidated,
       companyIsValidated,
       locationIsValidated,
-      workTimeIsValidated,
+      contractIsValidated,
       descriptionIsValidated,
     },
     isFetching,
