@@ -21,4 +21,6 @@ export class OfferDto {
   modifiedAt: number;
   @Expose()
   modifiedBy: number;
+  @Expose()
+  unremovable: boolean;
 }

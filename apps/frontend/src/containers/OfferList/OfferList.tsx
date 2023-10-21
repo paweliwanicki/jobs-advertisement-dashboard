@@ -9,6 +9,7 @@ import { LoadingSpinner } from '../../components/common/LoadingSpinner/LoadingSp
 import { useUser } from '../../hooks/useUser';
 import { Link } from 'react-router-dom';
 import { useCallback, useEffect, useState } from 'react';
+import SvgIcon from '../../components/common/SvgIcon/SvgIcon';
 
 const OfferList = () => {
   const { fetch, isFetching } = useApi();
@@ -62,25 +63,34 @@ const OfferList = () => {
       </div>
 
       <div className={classes.list}>
-        {offers.map(
-          ({
-            id,
-            company,
-            title,
-            location,
-            contract,
-            createdAt,
-          }: OfferCardProps) => (
-            <OfferCard
-              key={`offer-${id}`}
-              id={id}
-              title={title}
-              company={company}
-              location={location}
-              contract={contract}
-              createdAt={createdAt}
-            />
+        {offers.length ? (
+          offers.map(
+            ({
+              id,
+              company,
+              title,
+              location,
+              contract,
+              createdAt,
+              unremovable,
+            }: OfferCardProps) => (
+              <OfferCard
+                key={`offer-${id}`}
+                id={id}
+                title={title}
+                company={company}
+                location={location}
+                contract={contract}
+                createdAt={createdAt}
+                unremovable={unremovable}
+              />
+            )
           )
+        ) : (
+          <div className={classes.noOffersWarningBox}>
+            <SvgIcon id="icon-error" color="black" width={64} height={64} />
+            <h3>No jobs offers has been found!</h3>
+          </div>
         )}
       </div>
     </div>
