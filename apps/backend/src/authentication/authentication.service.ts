@@ -32,12 +32,16 @@ export class AuthenticationService {
   }
 
   async userSignUp(username: string, password: string) {
-    const currentUser = await this.validateUser(username, password);
-    if (currentUser) {
-      throw new BadRequestException({
-        status: 404,
-        message: AUTH_EXCEPTION_MESSAGES.USER_IS_IN_USE,
-      });
+    try {
+      const currentUser = await this.validateUser(username, password);
+      if (currentUser) {
+        throw new BadRequestException({
+          status: 404,
+          message: AUTH_EXCEPTION_MESSAGES.USER_IS_IN_USE,
+        });
+      }
+    } catch (err) {
+      console.error(err);
     }
     const salt = await genSalt(8);
     const hashed = await hash(password, salt);

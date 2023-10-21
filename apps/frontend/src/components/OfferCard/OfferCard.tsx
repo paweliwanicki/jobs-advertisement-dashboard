@@ -10,6 +10,7 @@ export type OfferCardProps = {
   contract: string;
   location: string;
   createdAt: number;
+  unremovable: boolean;
 };
 
 const now = Math.floor(new Date().getTime() / 1000);
@@ -38,12 +39,15 @@ const OfferCard = ({
   location,
   contract,
   createdAt,
+  unremovable
 }: OfferCardProps) => {
   return (
     <div className={classes.offerCard}>
-      <Link to={`/offer/${id}`}>
-        {testLogo && (
-          <img src={testLogo} className={classes.companyLogo} alt="company" />
+      <Link to="/offer/:id">
+        
+        {unremovable && ( // project starter data.json offers are flagged as unremovable
+          // <img src={testLogo} className={classes.companyLogo} alt="company" />
+          <SvgIcon id={company.toLocaleLowerCase().trim()} classNames={classes.companyLogo}/>
         )}
 
         <div className={classes.content}>

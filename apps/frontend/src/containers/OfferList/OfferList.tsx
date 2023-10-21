@@ -1,14 +1,15 @@
-import classes from './OfferList.module.scss';
-import Button from '../../components/common/Button/Button';
-import { useApi } from '../../hooks/useApi';
-import { HttpMethod } from '../../enums/HttpMethods';
+import classes from "./OfferList.module.scss";
+import Button from "../../components/common/Button/Button";
+import { useApi } from "../../hooks/useApi";
+import { HttpMethod } from "../../enums/HttpMethods";
 import OfferCard, {
   OfferCardProps,
-} from '../../components/OfferCard/OfferCard';
-import { LoadingSpinner } from '../../components/common/LoadingSpinner/LoadingSpinner';
-import { useUser } from '../../hooks/useUser';
-import { Link } from 'react-router-dom';
-import { useCallback, useEffect, useState } from 'react';
+} from "../../components/OfferCard/OfferCard";
+import { LoadingSpinner } from "../../components/common/LoadingSpinner/LoadingSpinner";
+import { useUser } from "../../hooks/useUser";
+import { Link } from "react-router-dom";
+import { useCallback, useEffect, useState } from "react";
+import SvgIcon from "../../components/common/SvgIcon/SvgIcon";
 
 const OfferList = () => {
   const { fetch, isFetching } = useApi();
@@ -17,7 +18,7 @@ const OfferList = () => {
 
   const fetchOffers = useCallback(async () => {
     const [fetchedOffers] = await fetch<OfferCardProps[]>(HttpMethod.GET, {
-      path: '/api/offers',
+      path: "/api/offers",
     });
     if (fetchedOffers.length) {
       setOffers(fetchedOffers);
@@ -26,10 +27,10 @@ const OfferList = () => {
 
   const handleImportOffers = useCallback(async () => {
     const [offers] = await fetch<any[]>(HttpMethod.GET, {
-      path: '/offers.json',
+      path: "/offers.json",
     });
     const [response] = await fetch<OfferCardProps[]>(HttpMethod.POST, {
-      path: '/api/offers/import',
+      path: "/api/offers/import",
       payload: JSON.stringify(offers),
     });
     if (response.length) {
@@ -62,25 +63,34 @@ const OfferList = () => {
       </div>
 
       <div className={classes.list}>
-        {offers.map(
-          ({
-            id,
-            company,
-            title,
-            location,
-            contract,
-            createdAt,
-          }: OfferCardProps) => (
-            <OfferCard
-              key={`offer-${id}`}
-              id={id}
-              title={title}
-              company={company}
-              location={location}
-              contract={contract}
-              createdAt={createdAt}
-            />
+        {offers.length ? (
+          offers.map(
+            ({
+              id,
+              company,
+              title,
+              location,
+              contract,
+              createdAt,
+              unremovable,
+            }: OfferCardProps) => (
+              <OfferCard
+                key={`offer-${id}`}
+                id={id}
+                title={title}
+                company={company}
+                location={location}
+                contract={contract}
+                createdAt={createdAt}
+                unremovable={unremovable}
+              />
+            )
           )
+        ) : (
+          <div className={classes.noOffersWarningBox}>
+            <SvgIcon id="icon-error" color="black" width={64} height={64} />
+            <h3>No jobs offers has been found!</h3>
+          </div>
         )}
       </div>
     </div>
