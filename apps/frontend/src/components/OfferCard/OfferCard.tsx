@@ -1,7 +1,6 @@
-import classes from './OfferCard.module.scss';
-import SvgIcon from '../common/SvgIcon/SvgIcon';
-import testLogo from '../../assets/logos/creative.svg';
-import { Link } from 'react-router-dom';
+import classes from "./OfferCard.module.scss";
+import SvgIcon from "../common/SvgIcon/SvgIcon";
+import { Link } from "react-router-dom";
 
 export type OfferCardProps = {
   id: number;
@@ -17,16 +16,16 @@ const now = Math.floor(new Date().getTime() / 1000);
 
 const getOfferAddedTime = (createdAt: number) => {
   const hoursDiff = Math.abs(now - createdAt) / 3600;
-  let suffix = 'h';
+  let suffix = "h";
   let diff = Math.floor(hoursDiff);
 
   if (!diff) {
-    return 'Recent';
+    return "Recent";
   }
 
   if (hoursDiff >= 24) {
     diff = Math.floor(hoursDiff / 24);
-    suffix = 'd';
+    suffix = "d";
   }
 
   return `${diff}${suffix} ago`;
@@ -45,7 +44,12 @@ const OfferCard = ({
     <div className={classes.offerCard}>
       <Link to={`/offer/${id}`}>
         {unremovable && (
-          <img src={testLogo} className={classes.companyLogo} alt="company" />
+          <SvgIcon
+            id={company.toLocaleLowerCase().trim()}
+            width={50}
+            height={50}
+            classNames={classes.companyLogo}
+          />
         )}
 
         <div className={classes.content}>

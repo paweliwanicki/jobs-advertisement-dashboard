@@ -9,6 +9,8 @@ import {
   Patch,
   Post,
   UseGuards,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { OffersService } from './offers.service';
 import { UpdateOfferDto } from './dtos/update-offer.dto';
@@ -17,6 +19,7 @@ import { User } from 'src/users/user.entity';
 import { OfferDto } from './dtos/offer.dto';
 import { JwtAuthGuard } from 'src/authentication/guards/jwt-auth.guard';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('offers')
 export class OffersController {
@@ -100,5 +103,11 @@ export class OffersController {
     };
 
     return this.offersService.update(parseInt(id), updOffer);
+  }
+
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('file'))
+  uploadFile(@UploadedFile() file: Express.Multer.File) {
+    console.log(file);
   }
 }

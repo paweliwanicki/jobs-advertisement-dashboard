@@ -13,8 +13,8 @@ import SvgIcon from '../../components/common/SvgIcon/SvgIcon';
 
 const OfferList = () => {
   const { fetch, isFetching } = useApi();
-  const [offers, setOffers] = useState<OfferCardProps[]>([]);
   const { user } = useUser();
+  const [offers, setOffers] = useState<OfferCardProps[]>([]);
 
   const fetchOffers = useCallback(async () => {
     const [fetchedOffers] = await fetch<OfferCardProps[]>(HttpMethod.GET, {

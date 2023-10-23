@@ -13,7 +13,7 @@ export const LoadingSpinner = ({ message }: LoadingSpinnerProps) => {
         src={spinner}
         alt="loading spinner"
       />
-      <p>{message}</p>
+      {message && <p>{message}</p>}
     </div>
   );
 };
