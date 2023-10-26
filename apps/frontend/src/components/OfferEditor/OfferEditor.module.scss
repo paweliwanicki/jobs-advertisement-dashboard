@@ -82,6 +82,17 @@
   .companyLogoUploadBox {
     margin-left: auto;
     flex-basis: 49%;
+    display: flex;
+
+    > p {
+      width: 140px;
+    }
+
+    .companyLogoPreview {
+      max-width: 100px;
+      height: auto;
+      border-radius: 12px;
+    }
   }
 
   .locationSelect,

@@ -19,5 +19,9 @@ export class UpdateOfferDto {
 
   @IsString()
   @IsNotEmpty()
-  company: string;
+  companyId: number;
+
+  unremovable: boolean;
+  createdAt: number;
+  createdBy: number;
 }

@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import { User } from '../models/User';
+import { User } from '../types/User';
 
 type UserContextType = {
   user?: User;

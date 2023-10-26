@@ -65,7 +65,7 @@ const OfferEditor = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [title, setTitle] = useState<string>('');
   const [company, setCompany] = useState<SingleValue<Option>>();
-  const [companyLogoImg, setCompanyLogoImg] = useState<File>();
+  const [companyLogo, setCompanyLogo] = useState<File>();
   const [description, setDescription] = useState<string>('');
   const [location, setLocation] = useState<SingleValue<Option>>();
   const [contract, setContract] = useState<SingleValue<Option>>();
@@ -112,6 +112,13 @@ const OfferEditor = () => {
     [descriptionIsValidated, clearValidationAndError]
   );
 
+  const handleCompanyLogoOnChange = useCallback(
+    (file?: File) => {
+      setCompanyLogo(file);
+    },
+    [companyLogo]
+  );
+
   const handleOnInitTinyMCE = useCallback(
     (_event: any, editor: TinyMceEditor) => {
       setIsLoading(false);
@@ -125,28 +132,35 @@ const OfferEditor = () => {
     setEditorElementKey((key) => key + 1); // force tinymce rerender
   }, [description]);
 
-  const handleSaveOffer = useCallback(async () => {
-    const isValid = validateOfferEditor(
-      title,
-      company?.label ?? '',
-      location?.label ?? '',
-      contract?.value ?? '',
-      description
-    );
-
-    if (isValid) {
-      await addOffer({
+  const handleSaveOffer = useCallback(
+    async (e: any) => {
+      e.preventDefault();
+      const isValid = validateOfferEditor(
         title,
-        description,
-        company: company?.label ?? '',
-        companyLogoImg,
-        location: location?.label ?? '',
-        contract: contract?.value,
-      });
+        company?.label ?? '',
+        location?.label ?? '',
+        contract?.value ?? '',
+        description
+      );
 
-      handleShowSnackBar(responseMessage, responseError ? 'error' : 'success');
-    }
-  }, [description, company, location, contract, title]);
+      if (isValid) {
+        await addOffer({
+          title,
+          description,
+          companyLogo,
+          company: company?.label ?? '',
+          location: location?.label ?? '',
+          contract: contract?.value,
+        });
+
+        handleShowSnackBar(
+          responseMessage,
+          responseError ? 'error' : 'success'
+        );
+      }
+    },
+    [description, company, location, contract, title, companyLogo]
+  );
 
   useEffect(() => {
     handleChangeTinyMCEStyles();
@@ -160,161 +174,162 @@ const OfferEditor = () => {
           message={isLoading ? 'Initialization text editor' : ''}
         />
       )}
-
-      <div className={classes.inputsBox}>
-        <Input
-          id="title"
-          onChange={handleTitleOnChange}
-          label="Title"
-          size="small"
-          classNames={classes.inputBox}
-          placeholder="Work role"
-          errorText={titleError}
-          hasError={!!titleError}
-          isValidated={isValidated.titleIsValidated}
-        />
-        <label
-          htmlFor="react-select-location-input"
-          className={classes.locationLabel}
-        >
-          {locationIsValidated && (
-            <ValidationIcon
-              id="location-select"
-              hasError={!!locationError}
-              errorText={locationError}
-              classNames={classes.validationIcon}
-            />
-          )}
-          <p>Location</p>
-          <GooglePlacesAutocomplete
-            apiKey="AIzaSyBa7WIrBOkKT7YRiTJFzhFMYZfCTc_6iRY"
-            minLengthAutocomplete={3}
-            selectProps={{
-              value: location,
-              id: 'location-select',
-              instanceId: 'location',
-              placeholder: 'Work location',
-              className: `${classes.locationSelect} ${
-                locationIsValidated &&
-                (locationError ? classes.error : classes.valid)
-              }`,
-              noOptionsMessage: () => 'Please type location...',
-              onChange: handleLocationOnChange,
-            }}
+      <form onSubmit={handleSaveOffer}>
+        <div className={classes.inputsBox}>
+          <Input
+            id="title"
+            onChange={handleTitleOnChange}
+            label="Title"
+            size="small"
+            classNames={classes.inputBox}
+            placeholder="Work role"
+            errorText={titleError}
+            hasError={!!titleError}
+            isValidated={isValidated.titleIsValidated}
           />
-        </label>
-
-        <label
-          htmlFor="react-select-contract-input"
-          className={classes.contractLabel}
-        >
-          {contractIsValidated && (
-            <ValidationIcon
-              id="wortkime-select"
-              hasError={!!contractError}
-              errorText={contractError}
-              classNames={classes.validationIcon}
+          <label
+            htmlFor="react-select-location-input"
+            className={classes.locationLabel}
+          >
+            {locationIsValidated && (
+              <ValidationIcon
+                id="location-select"
+                hasError={!!locationError}
+                errorText={locationError}
+                classNames={classes.validationIcon}
+              />
+            )}
+            <p>Location</p>
+            <GooglePlacesAutocomplete
+              apiKey="AIzaSyBa7WIrBOkKT7YRiTJFzhFMYZfCTc_6iRY"
+              minLengthAutocomplete={3}
+              selectProps={{
+                value: location,
+                id: 'location-select',
+                instanceId: 'location',
+                placeholder: 'Work location',
+                className: `${classes.locationSelect} ${
+                  locationIsValidated &&
+                  (locationError ? classes.error : classes.valid)
+                }`,
+                noOptionsMessage: () => 'Please type location...',
+                onChange: handleLocationOnChange,
+              }}
             />
-          )}
-          <p>Contract</p>
-          <CreatableSelect
-            id="contract-select"
-            instanceId="contract"
-            options={CONTRACT_OPTIONS}
-            className={`${classes.contractSelect} ${
-              contractIsValidated &&
-              (contractError ? classes.error : classes.valid)
-            }`}
-            placeholder="Contract"
-            onChange={handleContractOnChange}
-            isClearable
-          />
-        </label>
+          </label>
 
-        <label
-          htmlFor="react-select-company-input"
-          className={classes.companyLabel}
-        >
-          <p>Company</p>
-          {companyIsValidated && (
-            <ValidationIcon
+          <label
+            htmlFor="react-select-contract-input"
+            className={classes.contractLabel}
+          >
+            {contractIsValidated && (
+              <ValidationIcon
+                id="wortkime-select"
+                hasError={!!contractError}
+                errorText={contractError}
+                classNames={classes.validationIcon}
+              />
+            )}
+            <p>Contract</p>
+            <CreatableSelect
+              id="contract-select"
+              instanceId="contract"
+              options={CONTRACT_OPTIONS}
+              className={`${classes.contractSelect} ${
+                contractIsValidated &&
+                (contractError ? classes.error : classes.valid)
+              }`}
+              placeholder="Contract"
+              onChange={handleContractOnChange}
+              isClearable
+            />
+          </label>
+
+          <label
+            htmlFor="react-select-company-input"
+            className={classes.companyLabel}
+          >
+            <p>Company</p>
+            {companyIsValidated && (
+              <ValidationIcon
+                id="company-select"
+                hasError={!!companyError}
+                errorText={companyError}
+                classNames={classes.validationIcon}
+              />
+            )}
+            <CreatableSelect
               id="company-select"
-              hasError={!!companyError}
-              errorText={companyError}
-              classNames={classes.validationIcon}
+              onChange={handleCompanyOnChange}
+              placeholder="Company"
+              instanceId="company"
+              options={COMPANY_OPTIONS}
+              className={`${classes.companySelect} ${
+                companyIsValidated &&
+                (companyError ? classes.error : classes.valid)
+              }`}
+              isClearable
             />
-          )}
-          <CreatableSelect
-            id="company-select"
-            onChange={handleCompanyOnChange}
-            placeholder="Company"
-            instanceId="company"
-            options={COMPANY_OPTIONS}
-            className={`${classes.companySelect} ${
-              companyIsValidated &&
-              (companyError ? classes.error : classes.valid)
-            }`}
-            isClearable
-          />
-        </label>
-        <div className={classes.companyLogoUploadBox}>
-          <FileInput
-            label="Company logo"
-            setSelectedFile={setCompanyLogoImg}
-            acceptTypes="image/png, image/gif, image/jpeg"
-          />
+          </label>
+          <div className={classes.companyLogoUploadBox}>
+            <img
+              src={companyLogo ? URL.createObjectURL(companyLogo) : undefined}
+              className={classes.companyLogoPreview}
+            />
+            <FileInput
+              label="Company logo"
+              setSelectedFile={handleCompanyLogoOnChange}
+              acceptTypes="image/png, image/gif, image/jpeg"
+            />
+          </div>
         </div>
-      </div>
 
-      <label htmlFor="offer-description" className={classes.tinymceLabel}>
-        Description
-        <div
-          className={`${classes.tinymceEditorBox} ${
-            descriptionIsValidated &&
-            (errors.descriptionError ? classes.error : classes.valid)
-          }`}
-        >
-          {descriptionIsValidated && (
-            <ValidationIcon
-              id="wortkime-select"
-              hasError={!!descriptionError}
-              errorText={descriptionError}
-              classNames={classes.validationIcon}
+        <label htmlFor="offer-description" className={classes.tinymceLabel}>
+          Description
+          <div
+            className={`${classes.tinymceEditorBox} ${
+              descriptionIsValidated &&
+              (errors.descriptionError ? classes.error : classes.valid)
+            }`}
+          >
+            {descriptionIsValidated && (
+              <ValidationIcon
+                id="wortkime-select"
+                hasError={!!descriptionError}
+                errorText={descriptionError}
+                classNames={classes.validationIcon}
+              />
+            )}
+            <Editor
+              key={`editor-${editorElementKey}`}
+              id="offer-description"
+              apiKey="hobfut19zde8hcqzn78dkiv360ipccmckyz7o1cgshf3llrr"
+              onInit={handleOnInitTinyMCE}
+              initialValue={initialEditorValue}
+              onEditorChange={handleDescriptionOnChange}
+              init={{
+                height: 500,
+                menubar: true,
+                plugins:
+                  'preview code searchreplace autolink directionality visualblocks visualchars fullscreen image link media  codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists',
+                toolbar:
+                  'formatselect | bold italic underline strikethrough | forecolor backcolor blockquote | link image media | alignleft aligncenter alignright alignjustify | numlist bullist outdent indent | removeformat | code',
+                image_advtab: true,
+                skin: theme === 'dark' ? 'oxide-dark' : 'oxide',
+                content_css: theme === 'dark' ? 'dark' : '',
+              }}
             />
-          )}
-          <Editor
-            key={`editor-${editorElementKey}`}
-            id="offer-description"
-            apiKey="hobfut19zde8hcqzn78dkiv360ipccmckyz7o1cgshf3llrr"
-            onInit={handleOnInitTinyMCE}
-            initialValue={initialEditorValue}
-            onEditorChange={handleDescriptionOnChange}
-            init={{
-              height: 500,
-              menubar: true,
-              plugins:
-                'preview code searchreplace autolink directionality visualblocks visualchars fullscreen image link media  codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists',
-              toolbar:
-                'formatselect | bold italic underline strikethrough | forecolor backcolor blockquote | link image media | alignleft aligncenter alignright alignjustify | numlist bullist outdent indent | removeformat | code',
-              image_advtab: true,
-              skin: theme === 'dark' ? 'oxide-dark' : 'oxide',
-              content_css: theme === 'dark' ? 'dark' : '',
-            }}
-          />
+          </div>
+        </label>
+        <div className={classes.actionsBox}>
+          <Link to="/dashboard">
+            <Button variant="secondary">Cancel</Button>
+          </Link>
+          <Button variant="primary" disabled={isFetching} type="submit">
+            Save
+          </Button>
         </div>
-      </label>
-      <div className={classes.actionsBox}>
-        <Link to="/dashboard">
-          <Button variant="secondary">Cancel</Button>
-        </Link>
-        <Button
-          variant="primary"
-          onClick={handleSaveOffer}
-          disabled={isFetching}
-        >
-          Save
-        </Button>
-      </div>
+      </form>
     </div>
   );
 };

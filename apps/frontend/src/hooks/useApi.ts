@@ -4,6 +4,7 @@ import { HttpMethod } from '../enums/HttpMethods';
 type RequestOptions = {
   path: string;
   payload?: string;
+  contentType?: string;
 };
 
 export type ResponseParams = {
@@ -24,13 +25,13 @@ const request = async (
   params: RequestOptions
 ): Promise<[body: any, resParams: ResponseParams]> => {
   let body = null;
-  const { path, payload } = params;
+  const { path, payload, contentType } = params;
 
   const response = await fetch(path, {
     method,
     body: payload,
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': contentType ? contentType : 'application/json',
     },
   });
 

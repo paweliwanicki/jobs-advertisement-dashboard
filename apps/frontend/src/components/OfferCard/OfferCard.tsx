@@ -1,31 +1,34 @@
-import classes from "./OfferCard.module.scss";
-import SvgIcon from "../common/SvgIcon/SvgIcon";
-import { Link } from "react-router-dom";
+import classes from './OfferCard.module.scss';
+import SvgIcon from '../common/SvgIcon/SvgIcon';
+import { Link } from 'react-router-dom';
+import { useDictionaries } from '../../hooks/useDictionaries';
 
 export type OfferCardProps = {
   id: number;
   title: string;
   company: string;
+  companyId: number;
   contract: string;
   location: string;
   createdAt: number;
   unremovable: boolean;
+  logoFileName: string;
 };
 
 const now = Math.floor(new Date().getTime() / 1000);
 
 const getOfferAddedTime = (createdAt: number) => {
   const hoursDiff = Math.abs(now - createdAt) / 3600;
-  let suffix = "h";
+  let suffix = 'h';
   let diff = Math.floor(hoursDiff);
 
   if (!diff) {
-    return "Recent";
+    return 'Recent';
   }
 
   if (hoursDiff >= 24) {
     diff = Math.floor(hoursDiff / 24);
-    suffix = "d";
+    suffix = 'd';
   }
 
   return `${diff}${suffix} ago`;
@@ -35,20 +38,32 @@ const OfferCard = ({
   id,
   title,
   company,
+  companyId,
   location,
   contract,
   createdAt,
   unremovable,
+  logoFileName,
 }: OfferCardProps) => {
+  const { companies } = useDictionaries();
+  const companyName = companies.find(
+    (company) => company.id === companyId
+  )?.name;
   return (
     <div className={classes.offerCard}>
       <Link to={`/offer/${id}`}>
-        {unremovable && (
+        {unremovable ? (
           <SvgIcon
-            id={company.toLocaleLowerCase().trim()}
+            id={companyName?.toLocaleLowerCase().trim() ?? ''}
             width={50}
             height={50}
             classNames={classes.companyLogo}
+          />
+        ) : (
+          <img
+            src={`./${logoFileName}`}
+            alt="company"
+            className={classes.companyLogo}
           />
         )}
 

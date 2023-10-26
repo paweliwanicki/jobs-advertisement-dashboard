@@ -1,3 +1,4 @@
+import { Company } from 'src/company/company.entity';
 import {
   AfterInsert,
   AfterUpdate,
@@ -5,6 +6,8 @@ import {
   Column,
   Entity,
   PrimaryGeneratedColumn,
+  OneToOne,
+  JoinColumn,
 } from 'typeorm';
 
 @Entity()
@@ -25,7 +28,7 @@ export class Offer {
   contract: string;
 
   @Column()
-  company: string;
+  companyId: number;
 
   @Column()
   createdAt: number;
@@ -41,6 +44,10 @@ export class Offer {
 
   @Column({ default: false })
   unremovable: boolean;
+
+  // @OneToOne(() => Company, (company) => company.id)
+  // @JoinColumn()
+  // company: Company;
 
   @AfterInsert()
   logInsert() {

@@ -45,6 +45,7 @@
         padding: 8px;
         opacity: 0.5;
         font-family: variables.$font-family-light;
+        width: 140px;
 
         @include themeVariables.themify(themeVariables.$themes) {
           color: themeVariables.themed('input-color');

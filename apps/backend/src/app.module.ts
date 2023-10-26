@@ -10,6 +10,9 @@ import { User } from './users/user.entity';
 import { OffersModule } from './offers/offers.module';
 import { UsersModule } from './users/users.module';
 import { Offer } from './offers/offer.entity';
+import { MulterModule } from '@nestjs/platform-express';
+import { CompanyModule } from './company/company.module';
+import { Company } from './company/company.entity';
 
 @Module({
   imports: [
@@ -28,11 +31,19 @@ import { Offer } from './offers/offer.entity';
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
         synchronize: configService.get<boolean>('SYNCHRONIZE'),
-        entities: [User, Offer],
+        entities: [User, Offer, Company],
       }),
+    }),
+    MulterModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        dest: configService.get<string>('UPLOADS_DIR'),
+      }),
+      inject: [ConfigService],
     }),
     AuthenticationModule,
     UsersModule,
+    CompanyModule,
     OffersModule,
   ],
   controllers: [AppController],

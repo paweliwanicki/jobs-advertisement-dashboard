@@ -4,13 +4,15 @@ import {
   Get,
   NotFoundException,
   Param,
-  Query,
   Delete,
   Patch,
   Post,
   UseGuards,
   UseInterceptors,
   UploadedFile,
+  ParseFilePipe,
+  FileTypeValidator,
+  MaxFileSizeValidator,
 } from '@nestjs/common';
 import { OffersService } from './offers.service';
 import { UpdateOfferDto } from './dtos/update-offer.dto';
@@ -20,10 +22,14 @@ import { OfferDto } from './dtos/offer.dto';
 import { JwtAuthGuard } from 'src/authentication/guards/jwt-auth.guard';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { CompanyService } from '../company/company.service';
 
 @Controller('offers')
 export class OffersController {
-  constructor(private offersService: OffersService) {}
+  constructor(
+    private offersService: OffersService,
+    private companyService: CompanyService,
+  ) {}
 
   @Post()
   @Serialize(OfferDto)
@@ -34,39 +40,8 @@ export class OffersController {
       createdAt: Math.floor(new Date().getTime() / 1000),
       createdBy: user.id,
     };
-
     const offer = await this.offersService.create(newOffer);
     return offer;
-  }
-
-  @Post('/import')
-  @Serialize(OfferDto)
-  @UseGuards(JwtAuthGuard)
-  async importOffers(@Body() body: any, @CurrentUser() user: User) {
-    let offers = [];
-    if (body.length) {
-      offers = body.map((offer: any) => {
-        const newOffer: Partial<OfferDto & { unremovable: boolean }> = {
-          title: offer.position,
-          company: offer.company,
-          contract: offer.contract,
-          location: offer.location,
-          description: `${offer.description}
-                  ${offer.role.content}
-                  ${offer.role.items}
-                  ${offer.requirements.content}
-                  ${offer.requirements.items}
-                `,
-          unremovable: true,
-        };
-        return newOffer;
-      });
-      if (offers.length) {
-        offers.forEach(async (offer: any) => await this.addOffer(offer, user));
-      }
-    }
-
-    return offers;
   }
 
   @Get('/:id')
@@ -79,19 +54,19 @@ export class OffersController {
   }
 
   @Get()
-  findOffersByUserId(@Query('createdBy') createdBy: number) {
-    return this.offersService.findByUserId(createdBy);
+  async findOffers() {
+    return await this.offersService.findAll();
   }
 
   @Delete('/:id')
   @UseGuards(JwtAuthGuard)
-  removeOffer(@Param('id') id: string) {
-    return this.offersService.remove(parseInt(id));
+  async removeOffer(@Param('id') id: string) {
+    return await this.offersService.remove(parseInt(id));
   }
 
   @Patch('/:id')
   @UseGuards(JwtAuthGuard)
-  updateOffer(
+  async updateOffer(
     @Param('id') id: string,
     @Body() body: UpdateOfferDto,
     @CurrentUser() user: User,
@@ -102,12 +77,35 @@ export class OffersController {
       modifiedBy: user.id,
     };
 
-    return this.offersService.update(parseInt(id), updOffer);
+    return await this.offersService.update(parseInt(id), updOffer);
   }
 
-  @Post('upload')
+  @Post('uploadCompanyLogo')
   @UseInterceptors(FileInterceptor('file'))
-  uploadFile(@UploadedFile() file: Express.Multer.File) {
-    console.log(file);
+  uploadCompanyLogo(
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
+          new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 4 }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
+  ) {
+    const { filename } = file;
+    return {
+      filename,
+    };
+  }
+
+  @Post('/import')
+  @Serialize(OfferDto)
+  @UseGuards(JwtAuthGuard)
+  async importOffers(@Body() body: any, @CurrentUser() user: User) {
+    body.user = user;
+    const companies = await this.companyService.getAll();
+    await this.companyService.importCompanies(body);
+    await this.offersService.importOffers(body, companies);
   }
 }

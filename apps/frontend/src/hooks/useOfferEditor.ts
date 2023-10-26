@@ -20,7 +20,7 @@ export type Offer = {
   location: string;
   contract: string;
   description: string;
-  companyLogoImg?: File;
+  companyLogo?: File;
 };
 
 type UseOfferEditor = {
@@ -59,7 +59,7 @@ const INPUT_ERRORS_MESSAGES: Record<InputError, string> = {
 } as const;
 
 export const useOfferEditor = (): UseOfferEditor => {
-  const { fetch, isFetching } = useApi();
+  const { fetch: useFetch, isFetching } = useApi();
 
   const [titleError, setTitleError] = useState<string | undefined>();
   const [companyError, setCompanyError] = useState<string | undefined>();
@@ -123,16 +123,31 @@ export const useOfferEditor = (): UseOfferEditor => {
   };
 
   const addOffer = useCallback(async (offer: Offer) => {
-    const [, response] = await fetch<Offer>(HttpMethod.POST, {
+    console.log(offer);
+    console.log(JSON.stringify(offer));
+    const [, response] = await useFetch<Offer>(HttpMethod.POST, {
       path: '/api/offers',
       payload: JSON.stringify(offer),
+      contentType: ``,
     });
+
+    if (offer.companyLogo) {
+      const formData = new FormData();
+      formData.append('file', offer.companyLogo);
+      const imgResponse = await fetch('/api/offers/uploadCompanyLogo', {
+        method: HttpMethod.POST,
+        body: formData,
+      });
+      console.log(imgResponse);
+    }
 
     if (response) {
       setResponseMessage(
         OFFER_STATUS_MESSAGES[response.statusCode] ?? 'Unknown status'
       );
-      setResponseError(response.statusCode !== 201);
+      setResponseError(
+        response.statusCode !== 200 && response.statusCode !== 201
+      );
     }
 
     return response;

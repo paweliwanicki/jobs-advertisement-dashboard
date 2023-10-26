@@ -12,7 +12,7 @@ export class OfferDto {
   @Expose()
   contract: string;
   @Expose()
-  company: string;
+  companyId: number;
   @Expose()
   createdAt: number;
   @Expose()
@@ -23,4 +23,6 @@ export class OfferDto {
   modifiedBy: number;
   @Expose()
   unremovable: boolean;
+  @Expose()
+  company: string;
 }

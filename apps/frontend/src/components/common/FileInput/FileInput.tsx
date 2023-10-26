@@ -6,7 +6,7 @@ type FileInputProps = {
   id?: string;
   label?: string;
   acceptTypes: string;
-  setSelectedFile?: (files: File) => void;
+  setSelectedFile?: (file?: File) => void;
 };
 
 const FileInput = ({
@@ -17,16 +17,20 @@ const FileInput = ({
 }: FileInputProps) => {
   const [file, setFile] = useState<File>();
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files) {
-      setFile(files[0]);
-      setSelectedFile && setSelectedFile(files[0]);
-    }
-  };
+  const handleFileChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      const files = e.target.files;
+      if (files) {
+        setFile(files[0]);
+        setSelectedFile && setSelectedFile(files[0]);
+      }
+    },
+    [file]
+  );
 
   const clearSelectedFile = useCallback(() => {
     setFile(undefined);
+    setSelectedFile && setSelectedFile(undefined);
   }, [file]);
 
   return (
@@ -36,8 +40,8 @@ const FileInput = ({
           <span>{file.name}</span>
           <SvgIcon
             id="icon-close-dark"
-            width={20}
-            height={20}
+            width={26}
+            height={26}
             onClick={clearSelectedFile}
           />
         </div>
@@ -46,7 +50,12 @@ const FileInput = ({
         <div className={classes.labelText}>{label}</div>
         <div className={classes.inputBox}>
           <p>Click to upload file</p>
-          <input type="file" onChange={handleFileChange} accept={acceptTypes} />
+          <input
+            type="file"
+            onChange={handleFileChange}
+            accept={acceptTypes}
+            name="file"
+          />
         </div>
       </label>
     </div>

@@ -4,6 +4,7 @@ import { Offer } from './offer.entity';
 import { Repository } from 'typeorm';
 import { UpdateOfferDto } from './dtos/update-offer.dto';
 import { OFFER_EXCEPTION_MESSAGES } from './offer-exception.messages';
+import { Company } from 'src/company/company.entity';
 
 @Injectable()
 export class OffersService {
@@ -16,17 +17,26 @@ export class OffersService {
     return this.offerRepository.save(newOffer);
   }
 
-  findOneById(id: number) {
+  async findOneById(id: number) {
     if (!id) return null;
-    return this.offerRepository.findOneBy({ id });
+    return await this.offerRepository.findOneBy({ id });
   }
 
-  findByUserId(createdBy: number) {
+  async findByUserId(createdBy: number) {
+    console.log(
+      await this.findAll({
+        where: { createdBy },
+        //relations: { companyId: true },
+      }),
+    );
     return this.offerRepository.find({ where: { createdBy } });
   }
 
-  findOne(where: any) {
-    return this.offerRepository.findOne({ where: { ...where } });
+  async findOne(where: any) {
+    return await this.offerRepository.findOne({ where: { ...where } });
+  }
+  async findAll(where?: any) {
+    return await this.offerRepository.find({ where: { ...where } });
   }
 
   async update(id: number, attrs: Partial<Offer>) {
@@ -44,5 +54,34 @@ export class OffersService {
       throw new NotFoundException(OFFER_EXCEPTION_MESSAGES.NOT_FOUND);
     }
     return this.offerRepository.remove(offer);
+  }
+
+  async importOffers(body: any, companies: Company[]) {
+    const offers = [];
+    if (body.length) {
+      body.map(async (offer: any) => {
+        const { id: companyId } = companies.find((company: Company) => {
+          return company.name === offer.company;
+        });
+
+        const newOffer: UpdateOfferDto = {
+          companyId,
+          title: offer.position,
+          contract: offer.contract,
+          location: offer.location,
+          description: `${offer.description}
+                    ${offer.role.content}
+                    ${offer.role.items}
+                    ${offer.requirements.content}
+                    ${offer.requirements.items}`,
+          unremovable: true,
+          createdAt: Math.floor(new Date().getTime() / 1000),
+          createdBy: body.user.id,
+        };
+        await this.create(newOffer);
+        offers.push(newOffer);
+      });
+    }
+    return offers;
   }
 }

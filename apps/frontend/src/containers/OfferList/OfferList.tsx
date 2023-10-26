@@ -68,10 +68,12 @@ const OfferList = () => {
             ({
               id,
               company,
+              companyId,
               title,
               location,
               contract,
               createdAt,
+              logoFileName,
               unremovable,
             }: OfferCardProps) => (
               <OfferCard
@@ -79,9 +81,11 @@ const OfferList = () => {
                 id={id}
                 title={title}
                 company={company}
+                companyId={companyId}
                 location={location}
                 contract={contract}
                 createdAt={createdAt}
+                logoFileName={logoFileName}
                 unremovable={unremovable}
               />
             )

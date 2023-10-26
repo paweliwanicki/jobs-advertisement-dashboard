@@ -1,5 +1,5 @@
 import { useState, ReactNode, useMemo, useCallback } from 'react';
-import { User } from '../models/User';
+import { User } from '../types/User';
 import { UserContext } from '../contexts/userContext';
 
 type UserProviderProps = {
