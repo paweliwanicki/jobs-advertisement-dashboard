@@ -1,5 +1,5 @@
 export type Company = {
-  id: number;
+  id?: number;
   name: string;
   logoFileName?: string;
 };

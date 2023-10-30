@@ -69,4 +69,11 @@ export class CompanyService {
       return currentCompanies;
     }
   }
+
+  async setCompanyLogo(companyId: number, file: Express.Multer.File) {
+    const { filename } = file;
+    return await this.update(companyId, {
+      logoFileName: filename,
+    });
+  }
 }

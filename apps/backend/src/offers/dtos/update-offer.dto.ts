@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class UpdateOfferDto {
   @IsString()
@@ -17,7 +17,7 @@ export class UpdateOfferDto {
   @IsNotEmpty()
   contract: string;
 
-  @IsString()
+  @IsNumber()
   @IsNotEmpty()
   companyId: number;
 

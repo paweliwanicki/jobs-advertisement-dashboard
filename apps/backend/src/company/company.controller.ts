@@ -42,7 +42,9 @@ export class CompanyController {
   @Post()
   @UseGuards(JwtAuthGuard)
   async addCompany(@Body() body: UpdateCompanyDto, @CurrentUser() user: User) {
-    const currentCompany = this.companyService.findOne({ name: body.name });
+    const currentCompany = await this.companyService.findOne({
+      name: body.name,
+    });
     if (currentCompany) {
       throw new BadRequestException({
         status: 404,

@@ -49,6 +49,7 @@ const OfferCard = ({
   const companyName = companies.find(
     (company) => company.id === companyId
   )?.name;
+
   return (
     <div className={classes.offerCard}>
       <Link to={`/offer/${id}`}>
@@ -61,7 +62,7 @@ const OfferCard = ({
           />
         ) : (
           <img
-            src={`./${logoFileName}`}
+            src={`/uploads/${logoFileName}`}
             alt="company"
             className={classes.companyLogo}
           />

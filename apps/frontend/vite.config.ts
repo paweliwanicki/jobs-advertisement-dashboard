@@ -10,6 +10,10 @@ export default defineConfig({
         target: 'http://localhost:3000', // local nest app
         changeOrigin: true,
       },
+      '/uploads': {
+        target: 'http://localhost:3000', // local nest app
+        changeOrigin: true,
+      },
     },
   },
 });

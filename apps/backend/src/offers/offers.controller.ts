@@ -23,6 +23,8 @@ import { JwtAuthGuard } from 'src/authentication/guards/jwt-auth.guard';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CompanyService } from '../company/company.service';
+import { diskStorage } from 'multer';
+import { existsSync, mkdirSync } from 'fs';
 
 @Controller('offers')
 export class OffersController {
@@ -81,8 +83,23 @@ export class OffersController {
   }
 
   @Post('uploadCompanyLogo')
-  @UseInterceptors(FileInterceptor('file'))
-  uploadCompanyLogo(
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: (req: any, file: any, cb: any) => {
+          const uploadPath = 'uploads/';
+          if (!existsSync(uploadPath)) {
+            mkdirSync(uploadPath);
+          }
+          cb(null, uploadPath);
+        },
+        filename: (req: any, file: any, cb: any) => {
+          cb(null, `${file.originalname.replace(/\s/g, '_')}`);
+        },
+      }),
+    }),
+  )
+  async uploadCompanyLogo(
     @UploadedFile(
       new ParseFilePipe({
         validators: [
@@ -92,10 +109,11 @@ export class OffersController {
       }),
     )
     file: Express.Multer.File,
+    @Body('companyId') companyId: number,
   ) {
-    const { filename } = file;
+    await this.companyService.setCompanyLogo(companyId, file);
     return {
-      filename,
+      file: file.buffer?.toString(),
     };
   }
 

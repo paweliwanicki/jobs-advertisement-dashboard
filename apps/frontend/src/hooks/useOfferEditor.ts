@@ -3,7 +3,7 @@ import { HttpMethod } from '../enums/HttpMethods';
 import { ResponseParams, useApi } from './useApi';
 
 const OFFER_STATUS_MESSAGES: Record<number, string> = {
-  201: 'Offer has been successfuly!',
+  201: 'Offer has been added successfuly!',
   404: 'Unknown error has occured :(',
 } as const;
 
@@ -16,7 +16,7 @@ type OfferEditorInput =
 
 export type Offer = {
   title: string;
-  company: string;
+  companyId: number;
   location: string;
   contract: string;
   description: string;
@@ -44,7 +44,7 @@ type UseOfferEditor = {
   clearValidationAndError: (input: OfferEditorInput) => void;
   validateOfferEditor: (
     title: string,
-    company: string,
+    company: number,
     location: string,
     contract: string,
     description: string
@@ -83,7 +83,7 @@ export const useOfferEditor = (): UseOfferEditor => {
 
   const validateOfferEditor = (
     title: string,
-    company: string,
+    company: number,
     location: string,
     contract: string,
     description: string
@@ -94,7 +94,7 @@ export const useOfferEditor = (): UseOfferEditor => {
       isValid = false;
     }
 
-    if (company === '') {
+    if (!company) {
       setCompanyError(INPUT_ERRORS_MESSAGES.EMPTY);
       isValid = false;
     }
@@ -123,17 +123,15 @@ export const useOfferEditor = (): UseOfferEditor => {
   };
 
   const addOffer = useCallback(async (offer: Offer) => {
-    console.log(offer);
-    console.log(JSON.stringify(offer));
     const [, response] = await useFetch<Offer>(HttpMethod.POST, {
       path: '/api/offers',
       payload: JSON.stringify(offer),
-      contentType: ``,
     });
 
     if (offer.companyLogo) {
       const formData = new FormData();
       formData.append('file', offer.companyLogo);
+      formData.append('companyId', offer.companyId.toString());
       const imgResponse = await fetch('/api/offers/uploadCompanyLogo', {
         method: HttpMethod.POST,
         body: formData,
@@ -142,12 +140,9 @@ export const useOfferEditor = (): UseOfferEditor => {
     }
 
     if (response) {
-      setResponseMessage(
-        OFFER_STATUS_MESSAGES[response.statusCode] ?? 'Unknown status'
-      );
-      setResponseError(
-        response.statusCode !== 200 && response.statusCode !== 201
-      );
+      const { statusCode } = response;
+      setResponseMessage(OFFER_STATUS_MESSAGES[statusCode] ?? 'Unknown status');
+      setResponseError(statusCode !== 200 && statusCode !== 201);
     }
 
     return response;

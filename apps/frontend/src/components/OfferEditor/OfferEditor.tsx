@@ -15,6 +15,8 @@ import { useSnackBar } from '../../hooks/useSnackBar';
 import type { Option } from 'react-google-places-autocomplete/build/types';
 import type { Editor as TinyMceEditor } from 'tinymce';
 import FileInput from '../common/FileInput/FileInput';
+import { useDictionaries } from '../../hooks/useDictionaries';
+import { Company } from '../../types/Company';
 
 const CONTRACT_OPTIONS = [
   { value: '1/4 time', label: '1/4 time' },
@@ -23,14 +25,10 @@ const CONTRACT_OPTIONS = [
   { value: 'Full time', label: 'Full time' },
 ] as const;
 
-const COMPANY_OPTIONS = [
-  { value: 'scoot', label: 'Scoot' },
-  { value: 'blogr', label: 'Blogr' },
-  { value: 'vector', label: 'Vector' },
-] as const;
-
 const OfferEditor = () => {
   const editorRef = useRef<TinyMceEditor>();
+
+  const { companies, companySelectOptions, createCompany } = useDictionaries();
 
   const { theme } = useTheme();
   const {
@@ -132,12 +130,22 @@ const OfferEditor = () => {
     setEditorElementKey((key) => key + 1); // force tinymce rerender
   }, [description]);
 
+  const handleCreateNewCompany = useCallback(
+    async (name: string) => {
+      const newCompany: Company = {
+        name: name,
+      };
+      const addedCompany = await createCompany(newCompany);
+    },
+    [companies, companySelectOptions, createCompany]
+  );
+
   const handleSaveOffer = useCallback(
     async (e: any) => {
       e.preventDefault();
       const isValid = validateOfferEditor(
         title,
-        company?.label ?? '',
+        company?.value ?? '',
         location?.label ?? '',
         contract?.value ?? '',
         description
@@ -148,7 +156,7 @@ const OfferEditor = () => {
           title,
           description,
           companyLogo,
-          company: company?.label ?? '',
+          companyId: company?.value ?? '',
           location: location?.label ?? '',
           contract: contract?.value,
         });
@@ -212,6 +220,7 @@ const OfferEditor = () => {
                   locationIsValidated &&
                   (locationError ? classes.error : classes.valid)
                 }`,
+                isClearable: true,
                 noOptionsMessage: () => 'Please type location...',
                 onChange: handleLocationOnChange,
               }}
@@ -261,9 +270,10 @@ const OfferEditor = () => {
             <CreatableSelect
               id="company-select"
               onChange={handleCompanyOnChange}
+              onCreateOption={handleCreateNewCompany}
               placeholder="Company"
               instanceId="company"
-              options={COMPANY_OPTIONS}
+              options={companySelectOptions}
               className={`${classes.companySelect} ${
                 companyIsValidated &&
                 (companyError ? classes.error : classes.valid)
