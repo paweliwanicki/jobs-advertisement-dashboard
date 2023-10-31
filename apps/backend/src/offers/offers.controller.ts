@@ -25,7 +25,6 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { CompanyService } from '../company/company.service';
 import { diskStorage } from 'multer';
 import { existsSync, mkdirSync } from 'fs';
-
 @Controller('offers')
 export class OffersController {
   constructor(
@@ -122,8 +121,10 @@ export class OffersController {
   @UseGuards(JwtAuthGuard)
   async importOffers(@Body() body: any, @CurrentUser() user: User) {
     body.user = user;
-    const companies = await this.companyService.getAll();
-    await this.companyService.importCompanies(body);
+    console.warn('1 step - import companies');
+    const companies = await this.companyService.importCompanies(body);
+    console.warn('2 step - import offers');
     await this.offersService.importOffers(body, companies);
+    return true;
   }
 }

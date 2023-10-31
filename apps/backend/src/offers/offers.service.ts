@@ -56,16 +56,16 @@ export class OffersService {
     return this.offerRepository.remove(offer);
   }
 
-  async importOffers(body: any, companies: Company[]) {
+  async importOffers(body: any, currentCompanies: Company[]) {
     const offers = [];
     if (body.length) {
-      body.map(async (offer: any) => {
-        const { id: companyId } = companies.find((company: Company) => {
+      body.map((offer: any) => {
+        const company = currentCompanies.find((company: Company) => {
           return company.name === offer.company;
         });
 
         const newOffer: UpdateOfferDto = {
-          companyId,
+          companyId: company.id,
           title: offer.position,
           contract: offer.contract,
           location: offer.location,
@@ -78,7 +78,7 @@ export class OffersService {
           createdAt: Math.floor(new Date().getTime() / 1000),
           createdBy: body.user.id,
         };
-        await this.create(newOffer);
+        this.create(newOffer);
         offers.push(newOffer);
       });
     }

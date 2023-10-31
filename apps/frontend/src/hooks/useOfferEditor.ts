@@ -123,7 +123,7 @@ export const useOfferEditor = (): UseOfferEditor => {
   };
 
   const addOffer = useCallback(async (offer: Offer) => {
-    const [, response] = await useFetch<Offer>(HttpMethod.POST, {
+    const [as, response] = await useFetch<Offer>(HttpMethod.POST, {
       path: '/api/offers',
       payload: JSON.stringify(offer),
     });
@@ -136,7 +136,7 @@ export const useOfferEditor = (): UseOfferEditor => {
         method: HttpMethod.POST,
         body: formData,
       });
-      console.log(imgResponse);
+      //console.log(imgResponse);
     }
 
     if (response) {

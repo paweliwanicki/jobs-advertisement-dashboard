@@ -4,18 +4,26 @@
 .fileInputBox {
   color: variables.$midnight;
   display: inline-flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: flex-end;
   width: 100%;
 
   .fileInfoBox {
     display: inline-flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 8px;
     margin-right: 15px;
+    @include themeVariables.themify(themeVariables.$themes) {
+      color: themeVariables.themed('input-color');
+    }
+
+    > span {
+      max-width: 80%;
+    }
 
     > svg {
       cursor: pointer;
+      margin-top: 10px;
     }
   }
 
@@ -41,11 +49,16 @@
       align-items: center;
       color: variables.$light-grey;
 
+      @include themeVariables.themify(themeVariables.$themes) {
+        border: 2px solid themeVariables.themed('offer-input-border-color');
+      }
+
       > p {
         padding: 8px;
-        opacity: 0.5;
         font-family: variables.$font-family-light;
-        width: 140px;
+        width: fit-content;
+        white-space: nowrap;
+        opacity: 0.5;
 
         @include themeVariables.themify(themeVariables.$themes) {
           color: themeVariables.themed('input-color');

@@ -1,4 +1,5 @@
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { Company } from 'src/company/company.entity';
 
 export class UpdateOfferDto {
   @IsString()
@@ -24,4 +25,5 @@ export class UpdateOfferDto {
   unremovable: boolean;
   createdAt: number;
   createdBy: number;
+  company?: Company;
 }

@@ -48,9 +48,10 @@ export class CompanyService {
   }
 
   async importCompanies(body: any[]) {
-    let currentCompanies = await this.getAll();
+    const currentCompanies = await this.getAll();
+
     if (body.length) {
-      body.map(async (offer: any) => {
+      body.map((offer: any) => {
         const exist = currentCompanies.find(
           (company: Company) => company.name === offer.company,
         );
@@ -58,16 +59,18 @@ export class CompanyService {
           console.warn(`${offer.company} is already exist!`);
           return false;
         }
+
         this.create({
           name: offer.company,
-          logoFileName: offer.logo,
+          logoFileName: offer.logo.split('/')[3],
           createdBy: 1,
-        } as UpdateCompanyDto);
+        }).then((company: Company) => {
+          currentCompanies.push(company);
+        });
       });
-
-      currentCompanies = await this.getAll();
-      return currentCompanies;
     }
+
+    return currentCompanies;
   }
 
   async setCompanyLogo(companyId: number, file: Express.Multer.File) {

@@ -45,9 +45,9 @@ export class Offer {
   @Column({ default: false })
   unremovable: boolean;
 
-  // @OneToOne(() => Company, (company) => company.id)
-  // @JoinColumn()
-  // company: Company;
+  @OneToOne(() => Company, (company) => company.offer)
+  //@JoinColumn({ name: 'logoFileName', referencedColumnName: 'logoFileName' })
+  company: Company;
 
   @AfterInsert()
   logInsert() {

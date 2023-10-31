@@ -1,0 +1,11 @@
+.uploadFilesBox {
+  margin-left: auto;
+  flex-basis: 49%;
+  display: flex;
+
+  .filePreview {
+    max-width: 100px;
+    height: auto;
+    border-radius: 12px;
+  }
+}

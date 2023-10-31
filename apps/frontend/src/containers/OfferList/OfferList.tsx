@@ -29,11 +29,12 @@ const OfferList = () => {
     const [offers] = await fetch<any[]>(HttpMethod.GET, {
       path: '/offers.json',
     });
-    const [response] = await fetch<OfferCardProps[]>(HttpMethod.POST, {
+    const [, response] = await fetch<OfferCardProps[]>(HttpMethod.POST, {
       path: '/api/offers/import',
       payload: JSON.stringify(offers),
     });
-    if (response.length) {
+
+    if (response.statusCode === 201) {
       fetchOffers();
     }
   }, []);

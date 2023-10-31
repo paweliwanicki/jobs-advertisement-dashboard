@@ -9,6 +9,7 @@ import {
   ManyToMany,
   OneToMany,
   OneToOne,
+  JoinColumn,
 } from 'typeorm';
 
 @Entity()
@@ -16,7 +17,7 @@ export class Company {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ unique: true })
   name: string;
 
   @Column({ nullable: true })
@@ -34,8 +35,9 @@ export class Company {
   @Column({ nullable: true })
   modifiedAt: number;
 
-  // @OneToMany(() => Offer, (offer) => offer.companyId)
-  // offer: Offer;
+  @OneToOne(() => Offer, (offer) => offer.company)
+  //@JoinColumn({ name: 'logoFileName', referencedColumnName: 'logoFileName' })
+  offer: Offer[];
 
   @AfterInsert()
   logInsert() {

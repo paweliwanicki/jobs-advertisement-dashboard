@@ -1,6 +1,6 @@
-@use "../../styles/variables.scss";
-@use "../../styles/themeVariables.scss";
-@use "../../styles/utils.scss";
+@use '../../styles/variables.scss';
+@use '../../styles/themeVariables.scss';
+@use '../../styles/utils.scss';
 
 .offerCard {
   width: 100%;
@@ -14,7 +14,7 @@
   }
 
   @include themeVariables.themify(themeVariables.$themes) {
-    background-color: themeVariables.themed("offer-card-bg");
+    background-color: themeVariables.themed('offer-card-bg');
   }
 
   padding: 50px 32px 32px 32px;
@@ -29,6 +29,7 @@
     transform: translateY(-50%);
     width: 50px;
     height: 50px;
+    border-radius: 15px;
   }
 
   .content {
@@ -51,7 +52,7 @@
       text-align: left;
 
       @include themeVariables.themify(themeVariables.$themes) {
-        color: themeVariables.themed("offer-card-title-color");
+        color: themeVariables.themed('offer-card-title-color');
       }
 
       @include utils.text-multi-line-ellipsis(1);

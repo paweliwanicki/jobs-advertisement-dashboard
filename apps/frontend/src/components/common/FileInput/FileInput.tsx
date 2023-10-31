@@ -1,11 +1,13 @@
-import { ChangeEvent, useCallback, useState } from 'react';
+import { ChangeEvent, ReactNode, useCallback, useState } from 'react';
 import classes from './FileInput.module.scss';
 import SvgIcon from '../SvgIcon/SvgIcon';
+import { useTheme } from '../../../hooks/useTheme';
 
 type FileInputProps = {
   id?: string;
-  label?: string;
+  label?: ReactNode;
   acceptTypes: string;
+  placeholder?: string;
   setSelectedFile?: (file?: File) => void;
 };
 
@@ -13,8 +15,10 @@ const FileInput = ({
   id,
   label,
   acceptTypes,
+  placeholder,
   setSelectedFile,
 }: FileInputProps) => {
+  const { theme } = useTheme();
   const [file, setFile] = useState<File>();
 
   const handleFileChange = useCallback(
@@ -39,7 +43,7 @@ const FileInput = ({
         <div className={classes.fileInfoBox}>
           <span>{file.name}</span>
           <SvgIcon
-            id="icon-close-dark"
+            id={`icon-close${theme !== 'dark' ? '-dark' : ''}`}
             width={26}
             height={26}
             onClick={clearSelectedFile}
@@ -49,7 +53,7 @@ const FileInput = ({
       <label className={classes.inputLabel} htmlFor={id}>
         <div className={classes.labelText}>{label}</div>
         <div className={classes.inputBox}>
-          <p>Click to upload file</p>
+          <p>{placeholder ? placeholder : 'Click to upload file'}</p>
           <input
             type="file"
             onChange={handleFileChange}

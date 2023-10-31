@@ -8,8 +8,8 @@ export class UpdateCompanyDto {
   // @IsString()
   // @IsNotEmpty()
   logoFileName: string;
-  modifiedBy: number;
-  modifiedAt: number;
-  createdBy: number;
-  createdAt: number;
+  modifiedBy?: number;
+  modifiedAt?: number;
+  createdBy?: number;
+  createdAt?: number;
 }

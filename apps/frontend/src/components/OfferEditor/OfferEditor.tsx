@@ -14,9 +14,9 @@ import { LoadingSpinner } from '../common/LoadingSpinner/LoadingSpinner';
 import { useSnackBar } from '../../hooks/useSnackBar';
 import type { Option } from 'react-google-places-autocomplete/build/types';
 import type { Editor as TinyMceEditor } from 'tinymce';
-import FileInput from '../common/FileInput/FileInput';
 import { useDictionaries } from '../../hooks/useDictionaries';
 import { Company } from '../../types/Company';
+import UploadFilesBox from '../common/UploadFilesBox/UploadFilesBox';
 
 const CONTRACT_OPTIONS = [
   { value: '1/4 time', label: '1/4 time' },
@@ -167,7 +167,16 @@ const OfferEditor = () => {
         );
       }
     },
-    [description, company, location, contract, title, companyLogo]
+    [
+      description,
+      company,
+      location,
+      contract,
+      title,
+      responseMessage,
+      responseError,
+      companyLogo,
+    ]
   );
 
   useEffect(() => {
@@ -226,7 +235,6 @@ const OfferEditor = () => {
               }}
             />
           </label>
-
           <label
             htmlFor="react-select-contract-input"
             className={classes.contractLabel}
@@ -253,7 +261,6 @@ const OfferEditor = () => {
               isClearable
             />
           </label>
-
           <label
             htmlFor="react-select-company-input"
             className={classes.companyLabel}
@@ -281,17 +288,13 @@ const OfferEditor = () => {
               isClearable
             />
           </label>
-          <div className={classes.companyLogoUploadBox}>
-            <img
-              src={companyLogo ? URL.createObjectURL(companyLogo) : undefined}
-              className={classes.companyLogoPreview}
-            />
-            <FileInput
-              label="Company logo"
-              setSelectedFile={handleCompanyLogoOnChange}
-              acceptTypes="image/png, image/gif, image/jpeg"
-            />
-          </div>
+
+          <UploadFilesBox
+            image={companyLogo ?? undefined}
+            acceptTypes="image/png, image/gif, image/jpeg"
+            onSelect={handleCompanyLogoOnChange}
+            placeholder="Click here to upload Company logo"
+          />
         </div>
 
         <label htmlFor="offer-description" className={classes.tinymceLabel}>
