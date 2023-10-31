@@ -36,8 +36,10 @@ export class OffersController {
   @Serialize(OfferDto)
   @UseGuards(JwtAuthGuard)
   async addOffer(@Body() body: UpdateOfferDto, @CurrentUser() user: User) {
+    const company = await this.companyService.findOneById(body.companyId);
     const newOffer = {
       ...body,
+      company,
       createdAt: Math.floor(new Date().getTime() / 1000),
       createdBy: user.id,
     };
@@ -122,9 +124,9 @@ export class OffersController {
   async importOffers(@Body() body: any, @CurrentUser() user: User) {
     body.user = user;
     console.warn('1 step - import companies');
-    const companies = await this.companyService.importCompanies(body);
+    await this.companyService.importCompanies(body);
     console.warn('2 step - import offers');
-    await this.offersService.importOffers(body, companies);
+    await this.offersService.importOffers(body);
     return true;
   }
 }

@@ -28,9 +28,6 @@ export class Offer {
   contract: string;
 
   @Column()
-  companyId: number;
-
-  @Column()
   createdAt: number;
 
   @Column()
@@ -46,7 +43,7 @@ export class Offer {
   unremovable: boolean;
 
   @OneToOne(() => Company, (company) => company.offer)
-  //@JoinColumn({ name: 'logoFileName', referencedColumnName: 'logoFileName' })
+  @JoinColumn()
   company: Company;
 
   @AfterInsert()

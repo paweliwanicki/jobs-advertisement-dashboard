@@ -11,7 +11,6 @@ import { useTheme } from '../../hooks/useTheme';
 import { useOfferEditor } from '../../hooks/useOfferEditor';
 import { Link } from 'react-router-dom';
 import { LoadingSpinner } from '../common/LoadingSpinner/LoadingSpinner';
-import { useSnackBar } from '../../hooks/useSnackBar';
 import type { Option } from 'react-google-places-autocomplete/build/types';
 import type { Editor as TinyMceEditor } from 'tinymce';
 import { useDictionaries } from '../../hooks/useDictionaries';
@@ -41,9 +40,6 @@ const OfferEditor = () => {
     addOffer,
     validateOfferEditor,
   } = useOfferEditor();
-
-  const { handleShowSnackBar } = useSnackBar();
-
   const {
     titleError,
     contractError,
@@ -135,7 +131,7 @@ const OfferEditor = () => {
       const newCompany: Company = {
         name: name,
       };
-      const addedCompany = await createCompany(newCompany);
+      await createCompany(newCompany);
     },
     [companies, companySelectOptions, createCompany]
   );
@@ -160,11 +156,6 @@ const OfferEditor = () => {
           location: location?.label ?? '',
           contract: contract?.value,
         });
-
-        handleShowSnackBar(
-          responseMessage,
-          responseError ? 'error' : 'success'
-        );
       }
     },
     [

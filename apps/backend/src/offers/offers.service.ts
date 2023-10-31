@@ -5,10 +5,12 @@ import { Repository } from 'typeorm';
 import { UpdateOfferDto } from './dtos/update-offer.dto';
 import { OFFER_EXCEPTION_MESSAGES } from './offer-exception.messages';
 import { Company } from 'src/company/company.entity';
+import { CompanyService } from 'src/company/company.service';
 
 @Injectable()
 export class OffersService {
   constructor(
+    private companyService: CompanyService,
     @InjectRepository(Offer) private offerRepository: Repository<Offer>,
   ) {}
 
@@ -36,7 +38,10 @@ export class OffersService {
     return await this.offerRepository.findOne({ where: { ...where } });
   }
   async findAll(where?: any) {
-    return await this.offerRepository.find({ where: { ...where } });
+    return await this.offerRepository.find({
+      where: { ...where },
+      relations: { company: true },
+    });
   }
 
   async update(id: number, attrs: Partial<Offer>) {
@@ -56,16 +61,17 @@ export class OffersService {
     return this.offerRepository.remove(offer);
   }
 
-  async importOffers(body: any, currentCompanies: Company[]) {
+  async importOffers(body: any) {
     const offers = [];
+    const currentCompanies = await this.companyService.importCompanies(body);
     if (body.length) {
       body.map((offer: any) => {
         const company = currentCompanies.find((company: Company) => {
           return company.name === offer.company;
         });
 
-        const newOffer: UpdateOfferDto = {
-          companyId: company.id,
+        const newOffer: any = {
+          company: company,
           title: offer.position,
           contract: offer.contract,
           location: offer.location,

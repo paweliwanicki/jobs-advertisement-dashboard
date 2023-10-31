@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import { HttpMethod } from '../enums/HttpMethods';
 import { ResponseParams, useApi } from './useApi';
+import { useSnackBar } from './useSnackBar';
 
 const OFFER_STATUS_MESSAGES: Record<number, string> = {
   201: 'Offer has been added successfuly!',
@@ -59,6 +60,7 @@ const INPUT_ERRORS_MESSAGES: Record<InputError, string> = {
 } as const;
 
 export const useOfferEditor = (): UseOfferEditor => {
+  const { handleShowSnackBar } = useSnackBar();
   const { fetch: useFetch, isFetching } = useApi();
 
   const [titleError, setTitleError] = useState<string | undefined>();
@@ -123,7 +125,7 @@ export const useOfferEditor = (): UseOfferEditor => {
   };
 
   const addOffer = useCallback(async (offer: Offer) => {
-    const [as, response] = await useFetch<Offer>(HttpMethod.POST, {
+    const [, response] = await useFetch<Offer>(HttpMethod.POST, {
       path: '/api/offers',
       payload: JSON.stringify(offer),
     });
@@ -141,8 +143,14 @@ export const useOfferEditor = (): UseOfferEditor => {
 
     if (response) {
       const { statusCode } = response;
-      setResponseMessage(OFFER_STATUS_MESSAGES[statusCode] ?? 'Unknown status');
+
+      const [message, error] = [
+        OFFER_STATUS_MESSAGES[statusCode],
+        statusCode !== 200 && statusCode !== 201,
+      ];
+      setResponseMessage(message ?? 'Unknown status');
       setResponseError(statusCode !== 200 && statusCode !== 201);
+      handleShowSnackBar(message, error ? 'error' : 'success');
     }
 
     return response;

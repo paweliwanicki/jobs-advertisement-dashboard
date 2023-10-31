@@ -1,18 +1,16 @@
 import classes from './OfferCard.module.scss';
 import SvgIcon from '../common/SvgIcon/SvgIcon';
 import { Link } from 'react-router-dom';
-import { useDictionaries } from '../../hooks/useDictionaries';
+import { Company } from '../../types/Company';
 
 export type OfferCardProps = {
   id: number;
   title: string;
-  company: string;
-  companyId: number;
+  company: Company;
   contract: string;
   location: string;
   createdAt: number;
   unremovable: boolean;
-  logoFileName: string;
 };
 
 const now = Math.floor(new Date().getTime() / 1000);
@@ -38,35 +36,23 @@ const OfferCard = ({
   id,
   title,
   company,
-  companyId,
   location,
   contract,
   createdAt,
-  unremovable,
-  logoFileName,
 }: OfferCardProps) => {
-  const { companies } = useDictionaries();
-  const companyName = companies.find(
-    (company) => company.id === companyId
-  )?.name;
-
+  console.log(company);
   return (
     <div className={classes.offerCard}>
       <Link to={`/offer/${id}`}>
-        {unremovable ? (
-          <SvgIcon
-            id={companyName?.toLocaleLowerCase().trim() ?? ''}
-            width={50}
-            height={50}
-            classNames={classes.companyLogo}
-          />
-        ) : (
-          <img
-            src={`/uploads/${logoFileName}`}
-            alt="company"
-            className={classes.companyLogo}
-          />
-        )}
+        <img
+          src={`/uploads/${
+            company?.logoFileName
+              ? company?.logoFileName
+              : 'company_default_logo.jpeg'
+          }`}
+          alt="company"
+          className={classes.companyLogo}
+        />
 
         <div className={classes.content}>
           <p>
@@ -77,7 +63,7 @@ const OfferCard = ({
           <div>
             <h3>{title}</h3>
           </div>
-          <p>{company}</p>
+          <p>{company?.name}</p>
           <div className={classes.locationBox}>
             <p className={classes.location}>{location}</p>
           </div>
