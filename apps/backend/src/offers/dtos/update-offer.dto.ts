@@ -1,7 +1,10 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 import { Company } from 'src/company/company.entity';
 
 export class UpdateOfferDto {
+  @IsOptional()
+  id: number;
+
   @IsString()
   @IsNotEmpty()
   title: string;
@@ -22,8 +25,15 @@ export class UpdateOfferDto {
   @IsNotEmpty()
   companyId: number;
 
+  @IsOptional()
   unremovable: boolean;
+
+  @IsOptional()
   createdAt: number;
+
+  @IsOptional()
   createdBy: number;
-  company?: Company;
+
+  @IsOptional()
+  company: Company;
 }

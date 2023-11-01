@@ -3,5 +3,5 @@ export enum RoutePath {
   USER = '/user',
   DASHBOARD = '/dashboard',
   LOGIN = '/login',
-  OFFER_EDITOR = '/offer/edit'
+  OFFER_EDITOR = '/offer/edit/:id',
 }

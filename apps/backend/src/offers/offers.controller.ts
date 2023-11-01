@@ -33,7 +33,6 @@ export class OffersController {
   ) {}
 
   @Post()
-  @Serialize(OfferDto)
   @UseGuards(JwtAuthGuard)
   async addOffer(@Body() body: UpdateOfferDto, @CurrentUser() user: User) {
     const company = await this.companyService.findOneById(body.companyId);
@@ -43,6 +42,7 @@ export class OffersController {
       createdAt: Math.floor(new Date().getTime() / 1000),
       createdBy: user.id,
     };
+
     const offer = await this.offersService.create(newOffer);
     return offer;
   }
@@ -67,20 +67,19 @@ export class OffersController {
     return await this.offersService.remove(parseInt(id));
   }
 
-  @Patch('/:id')
+  @Patch()
   @UseGuards(JwtAuthGuard)
-  async updateOffer(
-    @Param('id') id: string,
-    @Body() body: UpdateOfferDto,
-    @CurrentUser() user: User,
-  ) {
+  async updateOffer(@Body() body: UpdateOfferDto, @CurrentUser() user: User) {
+    const { id, companyId } = body;
+
+    const company = await this.companyService.findOneById(companyId);
     const updOffer = {
       ...body,
+      company,
       modifiedAt: Math.floor(new Date().getTime() / 1000),
       modifiedBy: user.id,
     };
-
-    return await this.offersService.update(parseInt(id), updOffer);
+    return await this.offersService.update(id, updOffer);
   }
 
   @Post('uploadCompanyLogo')

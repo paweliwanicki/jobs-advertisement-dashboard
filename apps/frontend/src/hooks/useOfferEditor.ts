@@ -2,10 +2,13 @@ import { useCallback, useMemo, useState } from 'react';
 import { HttpMethod } from '../enums/HttpMethods';
 import { ResponseParams, useApi } from './useApi';
 import { useSnackBar } from './useSnackBar';
+import { Company } from '../types/Company';
 
 const OFFER_STATUS_MESSAGES: Record<number, string> = {
+  200: 'Offer has been updated successfuly!',
   201: 'Offer has been added successfuly!',
   404: 'Unknown error has occured :(',
+  500: 'Internal server error',
 } as const;
 
 type OfferEditorInput =
@@ -16,8 +19,10 @@ type OfferEditorInput =
   | 'DESCRIPTION';
 
 export type Offer = {
+  id?: number;
   title: string;
-  companyId: number;
+  company?: Company;
+  companyId: number; // fix to only Company!;
   location: string;
   contract: string;
   description: string;
@@ -51,6 +56,7 @@ type UseOfferEditor = {
     description: string
   ) => boolean;
   addOffer: (offer: Offer) => Promise<ResponseParams>;
+  updateOffer: (offer: Offer) => Promise<ResponseParams>;
 };
 
 type InputError = 'EMPTY';
@@ -124,37 +130,62 @@ export const useOfferEditor = (): UseOfferEditor => {
     return isValid;
   };
 
+  const handleOfferResponse = useCallback((response: ResponseParams) => {
+    const { statusCode } = response;
+
+    const [message, error] = [
+      OFFER_STATUS_MESSAGES[statusCode],
+      statusCode !== 200 && statusCode !== 201,
+    ];
+    setResponseMessage(message ?? 'Unknown status');
+    setResponseError(statusCode !== 200 && statusCode !== 201);
+    handleShowSnackBar(message, error ? 'error' : 'success');
+  }, []);
+
   const addOffer = useCallback(async (offer: Offer) => {
     const [, response] = await useFetch<Offer>(HttpMethod.POST, {
       path: '/api/offers',
       payload: JSON.stringify(offer),
     });
 
-    if (offer.companyLogo) {
-      const formData = new FormData();
-      formData.append('file', offer.companyLogo);
-      formData.append('companyId', offer.companyId.toString());
-      const imgResponse = await fetch('/api/offers/uploadCompanyLogo', {
-        method: HttpMethod.POST,
-        body: formData,
-      });
-      //console.log(imgResponse);
-    }
+    if (offer.companyLogo)
+      uploadCompanyLogo(offer.companyLogo, offer.companyId);
 
-    if (response) {
-      const { statusCode } = response;
-
-      const [message, error] = [
-        OFFER_STATUS_MESSAGES[statusCode],
-        statusCode !== 200 && statusCode !== 201,
-      ];
-      setResponseMessage(message ?? 'Unknown status');
-      setResponseError(statusCode !== 200 && statusCode !== 201);
-      handleShowSnackBar(message, error ? 'error' : 'success');
-    }
+    handleOfferResponse(response);
 
     return response;
   }, []);
+
+  const updateOffer = useCallback(async (offer: Offer) => {
+    const [, response] = await useFetch<Offer>(HttpMethod.PATCH, {
+      path: '/api/offers',
+      payload: JSON.stringify(offer),
+    });
+
+    if (offer.companyLogo)
+      uploadCompanyLogo(offer.companyLogo, offer.companyId);
+
+    handleOfferResponse(response);
+
+    console.log(response);
+    return response;
+  }, []);
+
+  const uploadCompanyLogo = useCallback(
+    async (file: Blob, companyId: number) => {
+      //if (file) {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('companyId', companyId.toString());
+      const response = await fetch('/api/offers/uploadCompanyLogo', {
+        method: HttpMethod.POST,
+        body: formData,
+      });
+      //}
+      return response;
+    },
+    []
+  );
 
   const validationCleaners: Record<OfferEditorInput | 'ALL', () => void> =
     useMemo(() => {
@@ -225,6 +256,7 @@ export const useOfferEditor = (): UseOfferEditor => {
     responseError,
     responseMessage,
     addOffer,
+    updateOffer,
     validateOfferEditor,
     clearValidationAndError,
   };

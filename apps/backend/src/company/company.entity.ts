@@ -6,10 +6,7 @@ import {
   Column,
   Entity,
   PrimaryGeneratedColumn,
-  ManyToMany,
   OneToMany,
-  OneToOne,
-  JoinColumn,
 } from 'typeorm';
 
 @Entity()
@@ -35,8 +32,7 @@ export class Company {
   @Column({ nullable: true })
   modifiedAt: number;
 
-  @OneToOne(() => Offer, (offer) => offer.company)
-  //@JoinColumn({ name: 'logoFileName', referencedColumnName: 'logoFileName' })
+  @OneToMany(() => Offer, (offer) => offer.company)
   offer: Offer[];
 
   @AfterInsert()

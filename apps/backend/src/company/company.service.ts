@@ -64,7 +64,7 @@ export class CompanyService {
           name: offer.company,
           logoFileName: offer.logo.split('/')[3],
           createdBy: 1,
-        }).then((company: Company) => {
+        } as Company).then((company: Company) => {
           currentCompanies.push(company);
         });
       });

@@ -21,7 +21,10 @@ export class OffersService {
 
   async findOneById(id: number) {
     if (!id) return null;
-    return await this.offerRepository.findOneBy({ id });
+    return await this.offerRepository.findOne({
+      where: { id: id },
+      relations: { company: true },
+    });
   }
 
   async findByUserId(createdBy: number) {
@@ -31,6 +34,7 @@ export class OffersService {
   async findOne(where: any) {
     return await this.offerRepository.findOne({
       where: { ...where },
+      relations: { company: true },
     });
   }
 

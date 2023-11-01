@@ -41,7 +41,10 @@ export class CompanyController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
-  async addCompany(@Body() body: UpdateCompanyDto, @CurrentUser() user: User) {
+  async addUpdateCompany(
+    @Body() body: UpdateCompanyDto,
+    @CurrentUser() user: User,
+  ) {
     const currentCompany = await this.companyService.findOne({
       name: body.name,
     });

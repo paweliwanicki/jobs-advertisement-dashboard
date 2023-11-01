@@ -8,7 +8,7 @@ import { Editor } from '@tinymce/tinymce-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { SingleValue } from 'react-select';
 import { useTheme } from '../../hooks/useTheme';
-import { useOfferEditor } from '../../hooks/useOfferEditor';
+import { Offer, useOfferEditor } from '../../hooks/useOfferEditor';
 import { Link, useParams } from 'react-router-dom';
 import { LoadingSpinner } from '../common/LoadingSpinner/LoadingSpinner';
 import type { Option } from 'react-google-places-autocomplete/build/types';
@@ -16,23 +16,23 @@ import type { Editor as TinyMceEditor } from 'tinymce';
 import { useDictionaries } from '../../hooks/useDictionaries';
 import { Company } from '../../types/Company';
 import UploadFilesBox from '../common/UploadFilesBox/UploadFilesBox';
+import { HttpMethod } from '../../enums/HttpMethods';
+import { useApi } from '../../hooks/useApi';
 
-const CONTRACT_OPTIONS = [
+const CONTRACT_OPTIONS: Option[] = [
   { value: '1/4 time', label: '1/4 time' },
   { value: '1/3 time', label: '1/3 time' },
   { value: '1/2 time', label: '1/2 time' },
   { value: 'Full time', label: 'Full time' },
-] as const;
+];
 
 const OfferEditor = () => {
+  let { id } = useParams();
+  const { fetch } = useApi();
+  const { theme } = useTheme();
   const editorRef = useRef<TinyMceEditor>();
-
   const { companies, companySelectOptions, createCompany } = useDictionaries();
 
-  let { id } = useParams();
-  console.log(id);
-
-  const { theme } = useTheme();
   const {
     errors,
     isValidated,
@@ -41,8 +41,10 @@ const OfferEditor = () => {
     responseMessage,
     clearValidationAndError,
     addOffer,
+    updateOffer,
     validateOfferEditor,
   } = useOfferEditor();
+
   const {
     titleError,
     contractError,
@@ -61,13 +63,13 @@ const OfferEditor = () => {
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [title, setTitle] = useState<string>('');
-  const [company, setCompany] = useState<SingleValue<Option>>();
-  const [companyLogo, setCompanyLogo] = useState<File>();
   const [description, setDescription] = useState<string>('');
-  const [location, setLocation] = useState<SingleValue<Option>>();
-  const [contract, setContract] = useState<SingleValue<Option>>();
-  const [initialEditorValue, setInitialEditorValue] = useState<string>('');
+  const [company, setCompany] = useState<Option | null>();
+  const [location, setLocation] = useState<Option | null>();
+  const [contract, setContract] = useState<Option | null>();
+  const [companyLogo, setCompanyLogo] = useState<File>();
   const [editorElementKey, setEditorElementKey] = useState<number>(0);
+  const [initialEditorValue, setInitialEditorValue] = useState<string>('');
 
   const handleTitleOnChange = useCallback(
     (title: string) => {
@@ -140,7 +142,7 @@ const OfferEditor = () => {
   );
 
   const handleSaveOffer = useCallback(
-    async (e: any) => {
+    async (e: React.SyntheticEvent) => {
       e.preventDefault();
       const isValid = validateOfferEditor(
         title,
@@ -151,14 +153,17 @@ const OfferEditor = () => {
       );
 
       if (isValid) {
-        await addOffer({
+        const offer = {
           title,
+          id: parseInt(id ?? ''),
+          location: location?.label ?? '',
+          companyId: company?.value,
+          contract: contract?.value,
           description,
           companyLogo,
-          companyId: company?.value ?? '',
-          location: location?.label ?? '',
-          contract: contract?.value,
-        });
+        };
+
+        return id ? await updateOffer(offer) : await addOffer(offer);
       }
     },
     [
@@ -173,9 +178,41 @@ const OfferEditor = () => {
     ]
   );
 
+  const handleSetOffer = useCallback(async (offer: Offer) => {
+    const { title, company, contract, location, description } = offer;
+    setTitle(title);
+    setCompany({
+      label: company?.name ?? '',
+      value: company?.id ?? '',
+    });
+    setContract({
+      label: contract,
+      value: contract,
+    });
+    setLocation({
+      label: location,
+      value: location,
+    });
+    setInitialEditorValue(description);
+    setDescription(description);
+  }, []);
+
+  const fetchOffer = useCallback(async (id: string) => {
+    const [fetchedOffer] = await fetch<Offer>(HttpMethod.GET, {
+      path: `/api/offers/${id}`,
+    });
+    if (fetchedOffer.id) {
+      handleSetOffer(fetchedOffer);
+    }
+  }, []);
+
   useEffect(() => {
     handleChangeTinyMCEStyles();
   }, [theme]);
+
+  useEffect(() => {
+    id && fetchOffer(id);
+  }, []);
 
   return (
     <div className={classes.offerEditorContainer}>
@@ -197,6 +234,7 @@ const OfferEditor = () => {
             errorText={titleError}
             hasError={!!titleError}
             isValidated={isValidated.titleIsValidated}
+            value={title}
           />
           <label
             htmlFor="react-select-location-input"
@@ -252,6 +290,7 @@ const OfferEditor = () => {
               }`}
               placeholder="Contract"
               onChange={handleContractOnChange}
+              value={contract}
               isClearable
             />
           </label>
@@ -279,6 +318,7 @@ const OfferEditor = () => {
                 companyIsValidated &&
                 (companyError ? classes.error : classes.valid)
               }`}
+              value={company}
               isClearable
             />
           </label>
@@ -312,6 +352,7 @@ const OfferEditor = () => {
               id="offer-description"
               apiKey="hobfut19zde8hcqzn78dkiv360ipccmckyz7o1cgshf3llrr"
               onInit={handleOnInitTinyMCE}
+              value={description}
               initialValue={initialEditorValue}
               onEditorChange={handleDescriptionOnChange}
               init={{

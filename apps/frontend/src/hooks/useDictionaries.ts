@@ -2,12 +2,11 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Company } from '../types/Company';
 import { useApi } from './useApi';
 import { HttpMethod } from '../enums/HttpMethods';
-import { SingleValue } from 'react-select';
 import { Option } from 'react-google-places-autocomplete/build/types';
 
 type Dictionaries = {
   companies: Company[];
-  companySelectOptions: SingleValue<Option>[];
+  companySelectOptions: Option[];
   createCompany: (company: Company) => Promise<Company>;
 };
 
@@ -30,9 +29,9 @@ export const useDictionaries = (): Dictionaries => {
   const { fetch } = useApi();
 
   const [companies, setCompanies] = useState<Company[]>([]);
-  const [companySelectOptions, setCompanySelectOptions] = useState<
-    SingleValue<Option>[]
-  >([]);
+  const [companySelectOptions, setCompanySelectOptions] = useState<Option[]>(
+    []
+  );
 
   const getCompanies = useCallback(async () => {
     const [allCompanies, response] = await fetch<Company[]>(HttpMethod.GET, {

@@ -1,15 +1,25 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class UpdateCompanyDto {
+  @IsOptional()
+  id: number;
+
   @IsString()
   @IsNotEmpty()
   name: string;
 
-  // @IsString()
-  // @IsNotEmpty()
+  @IsOptional()
   logoFileName: string;
-  modifiedBy?: number;
-  modifiedAt?: number;
-  createdBy?: number;
-  createdAt?: number;
+
+  @IsOptional()
+  modifiedBy: number;
+
+  @IsOptional()
+  modifiedAt: number;
+
+  @IsOptional()
+  createdBy: number;
+
+  @IsOptional()
+  createdAt: number;
 }

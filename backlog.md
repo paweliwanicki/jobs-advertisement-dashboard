@@ -3,6 +3,7 @@
 !important @TODO
 
 1. Add auto company selection after creating a new one (OfferEditor).
+2. Rework Offers/Dictionaries to Contexts
 
 ###
 
