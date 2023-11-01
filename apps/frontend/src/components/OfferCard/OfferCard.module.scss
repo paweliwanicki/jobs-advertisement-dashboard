@@ -22,6 +22,18 @@
   line-height: normal;
   cursor: pointer;
 
+  .cardActionsBox {
+    width: auto;
+    position: absolute;
+    right: 30px;
+    top: 15px;
+
+    // a {
+    //   text-decoration: none;
+    //   color: inherit;
+    // }
+  }
+
   .companyLogo {
     position: absolute;
     top: 0;

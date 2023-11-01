@@ -9,7 +9,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { SingleValue } from 'react-select';
 import { useTheme } from '../../hooks/useTheme';
 import { useOfferEditor } from '../../hooks/useOfferEditor';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { LoadingSpinner } from '../common/LoadingSpinner/LoadingSpinner';
 import type { Option } from 'react-google-places-autocomplete/build/types';
 import type { Editor as TinyMceEditor } from 'tinymce';
@@ -28,6 +28,9 @@ const OfferEditor = () => {
   const editorRef = useRef<TinyMceEditor>();
 
   const { companies, companySelectOptions, createCompany } = useDictionaries();
+
+  let { id } = useParams();
+  console.log(id);
 
   const { theme } = useTheme();
   const {

@@ -2,6 +2,10 @@ import classes from './OfferCard.module.scss';
 import SvgIcon from '../common/SvgIcon/SvgIcon';
 import { Link } from 'react-router-dom';
 import { Company } from '../../types/Company';
+import { useUser } from '../../hooks/useUser';
+import ContextMenu, {
+  ContextMenuOption,
+} from '../common/ContextMenu/ContextMenu';
 
 export type OfferCardProps = {
   id: number;
@@ -40,9 +44,23 @@ const OfferCard = ({
   contract,
   createdAt,
 }: OfferCardProps) => {
-  console.log(company);
+  const CONTEXT_MENU_OPTIONS: ContextMenuOption[] = [
+    {
+      label: <Link to={`/offer/edit/${id}`}>Edit</Link>,
+    },
+  ];
+
+  const { user } = useUser();
   return (
     <div className={classes.offerCard}>
+      {user?.isAdmin && (
+        <div className={classes.cardActionsBox}>
+          <ContextMenu
+            options={CONTEXT_MENU_OPTIONS}
+            id={`offer-${id}-context-menu`}
+          />
+        </div>
+      )}
       <Link to={`/offer/${id}`}>
         <img
           src={`/uploads/${

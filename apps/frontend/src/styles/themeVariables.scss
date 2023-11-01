@@ -14,7 +14,10 @@ $themes: (
     offer-input-border-color: variables.$light-grey,
     offer-card-bg: variables.$white,
     offer-card-title-color: variables.$very-dark-blue,
-    text-main-color: variables.$very-dark-blue, 
+    text-main-color: variables.$very-dark-blue,
+    context-menu-bg-color: variables.$very-light-grey,
+    context-menu-border-color: variables.$midnight,
+    context-menu-option-color: variables.$dark-grey,
   ),
 
   dark: (
@@ -31,8 +34,11 @@ $themes: (
     offer-card-bg: variables.$very-dark-blue,
     offer-card-title-color: variables.$white,
     login-container-bg: none,
-    text-main-color: variables.$white, 
+    text-main-color: variables.$white,
     select-option-background: variables.$grey,
+    context-menu-bg-color: variables.$dark-blue,
+    context-menu-border-color: variables.$light-grey,
+    context-menu-option-color: variables.$white,
   ),
 );
 

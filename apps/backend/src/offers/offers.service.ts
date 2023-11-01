@@ -25,22 +25,22 @@ export class OffersService {
   }
 
   async findByUserId(createdBy: number) {
-    console.log(
-      await this.findAll({
-        where: { createdBy },
-        //relations: { companyId: true },
-      }),
-    );
     return this.offerRepository.find({ where: { createdBy } });
   }
 
   async findOne(where: any) {
-    return await this.offerRepository.findOne({ where: { ...where } });
+    return await this.offerRepository.findOne({
+      where: { ...where },
+    });
   }
+
   async findAll(where?: any) {
     return await this.offerRepository.find({
       where: { ...where },
       relations: { company: true },
+      order: {
+        createdAt: 'DESC',
+      },
     });
   }
 
