@@ -25,6 +25,17 @@ const generateSelectOptions = (
   });
 };
 
+export const uploadCompanyLogo = async (file: Blob, companyId: number) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('companyId', companyId.toString());
+  const response = await fetch('/api/offers/uploadCompanyLogo', {
+    method: HttpMethod.POST,
+    body: formData,
+  });
+  return response;
+};
+
 export const useDictionaries = (): Dictionaries => {
   const { fetch } = useApi();
 

@@ -14,10 +14,10 @@ import { LoadingSpinner } from '../common/LoadingSpinner/LoadingSpinner';
 import type { Option } from 'react-google-places-autocomplete/build/types';
 import type { Editor as TinyMceEditor } from 'tinymce';
 import { useDictionaries } from '../../hooks/useDictionaries';
-import { Company } from '../../types/Company';
-import UploadFilesBox from '../common/UploadFilesBox/UploadFilesBox';
 import { HttpMethod } from '../../enums/HttpMethods';
 import { useApi } from '../../hooks/useApi';
+import UploadCompanyLogoModal from '../UploadCompanyLogoModal/UploadCompanyLogoModal';
+import { Company } from '../../types/Company';
 
 const CONTRACT_OPTIONS: Option[] = [
   { value: '1/4 time', label: '1/4 time' },
@@ -31,7 +31,7 @@ const OfferEditor = () => {
   const { fetch } = useApi();
   const { theme } = useTheme();
   const editorRef = useRef<TinyMceEditor>();
-  const { companies, companySelectOptions, createCompany } = useDictionaries();
+  const { companySelectOptions, createCompany } = useDictionaries();
 
   const {
     errors,
@@ -67,9 +67,10 @@ const OfferEditor = () => {
   const [company, setCompany] = useState<Option | null>();
   const [location, setLocation] = useState<Option | null>();
   const [contract, setContract] = useState<Option | null>();
-  const [companyLogo, setCompanyLogo] = useState<File>();
   const [editorElementKey, setEditorElementKey] = useState<number>(0);
   const [initialEditorValue, setInitialEditorValue] = useState<string>('');
+
+  const [showNewCompanyModal, setShowNewCompanyModal] = useState<boolean>(true);
 
   const handleTitleOnChange = useCallback(
     (title: string) => {
@@ -111,13 +112,6 @@ const OfferEditor = () => {
     [descriptionIsValidated, clearValidationAndError]
   );
 
-  const handleCompanyLogoOnChange = useCallback(
-    (file?: File) => {
-      setCompanyLogo(file);
-    },
-    [companyLogo]
-  );
-
   const handleOnInitTinyMCE = useCallback(
     (_event: any, editor: TinyMceEditor) => {
       setIsLoading(false);
@@ -130,16 +124,6 @@ const OfferEditor = () => {
     setInitialEditorValue(description);
     setEditorElementKey((key) => key + 1); // force tinymce rerender
   }, [description]);
-
-  const handleCreateNewCompany = useCallback(
-    async (name: string) => {
-      const newCompany: Company = {
-        name: name,
-      };
-      await createCompany(newCompany);
-    },
-    [companies, companySelectOptions, createCompany]
-  );
 
   const handleSaveOffer = useCallback(
     async (e: React.SyntheticEvent) => {
@@ -160,7 +144,6 @@ const OfferEditor = () => {
           companyId: company?.value,
           contract: contract?.value,
           description,
-          companyLogo,
         };
 
         return id ? await updateOffer(offer) : await addOffer(offer);
@@ -174,7 +157,6 @@ const OfferEditor = () => {
       title,
       responseMessage,
       responseError,
-      companyLogo,
     ]
   );
 
@@ -204,6 +186,22 @@ const OfferEditor = () => {
     if (fetchedOffer.id) {
       handleSetOffer(fetchedOffer);
     }
+  }, []);
+
+  const handleCreateNewCompany = useCallback(async (name: string) => {
+    const newCompany: Company = {
+      name,
+    };
+    const company = await createCompany(newCompany);
+    setCompany({
+      label: company.name,
+      value: company.id,
+    });
+    handleShowNewCompanyLogoModal();
+  }, []);
+
+  const handleShowNewCompanyLogoModal = useCallback(() => {
+    setShowNewCompanyModal((isShowing) => !isShowing);
   }, []);
 
   useEffect(() => {
@@ -322,13 +320,6 @@ const OfferEditor = () => {
               isClearable
             />
           </label>
-
-          <UploadFilesBox
-            image={companyLogo ?? undefined}
-            acceptTypes="image/png, image/gif, image/jpeg"
-            onSelect={handleCompanyLogoOnChange}
-            placeholder="Click here to upload Company logo"
-          />
         </div>
 
         <label htmlFor="offer-description" className={classes.tinymceLabel}>
@@ -378,6 +369,11 @@ const OfferEditor = () => {
           </Button>
         </div>
       </form>
+      <UploadCompanyLogoModal
+        isShowing={showNewCompanyModal}
+        company={company ?? undefined}
+        onShow={handleShowNewCompanyLogoModal}
+      />
     </div>
   );
 };

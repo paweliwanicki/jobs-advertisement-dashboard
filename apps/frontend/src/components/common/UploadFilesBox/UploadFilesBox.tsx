@@ -7,6 +7,7 @@ type UploadFilesBoxProps = {
   image?: File;
   label?: ReactNode;
   placeholder?: string;
+  classNames?: string;
   onSelect: () => void;
 };
 
@@ -15,10 +16,11 @@ const UploadFilesBox = ({
   acceptTypes,
   placeholder,
   label = '',
+  classNames = '',
   onSelect,
 }: UploadFilesBoxProps) => {
   return (
-    <div className={classes.uploadFilesBox}>
+    <div className={`${classes.uploadFilesBox} ${classNames}`}>
       <img
         src={image ? URL.createObjectURL(image) : undefined}
         className={classes.filePreview}

@@ -39,17 +39,6 @@ const FileInput = ({
 
   return (
     <div className={classes.fileInputBox}>
-      {file && (
-        <div className={classes.fileInfoBox}>
-          <span>{file.name}</span>
-          <SvgIcon
-            id={`icon-close${theme !== 'dark' ? '-dark' : ''}`}
-            width={26}
-            height={26}
-            onClick={clearSelectedFile}
-          />
-        </div>
-      )}
       <label className={classes.inputLabel} htmlFor={id}>
         <div className={classes.labelText}>{label}</div>
         <div className={classes.inputBox}>
@@ -60,6 +49,17 @@ const FileInput = ({
             accept={acceptTypes}
             name="file"
           />
+          {file && (
+            <div className={classes.fileInfoBox}>
+              <span>{file.name}</span>
+              <SvgIcon
+                id={`icon-close${theme !== 'dark' ? '-dark' : ''}`}
+                width={26}
+                height={26}
+                onClick={clearSelectedFile}
+              />
+            </div>
+          )}
         </div>
       </label>
     </div>

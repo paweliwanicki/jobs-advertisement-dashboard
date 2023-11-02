@@ -148,9 +148,6 @@ export const useOfferEditor = (): UseOfferEditor => {
       payload: JSON.stringify(offer),
     });
 
-    if (offer.companyLogo)
-      uploadCompanyLogo(offer.companyLogo, offer.companyId);
-
     handleOfferResponse(response);
 
     return response;
@@ -162,30 +159,10 @@ export const useOfferEditor = (): UseOfferEditor => {
       payload: JSON.stringify(offer),
     });
 
-    if (offer.companyLogo)
-      uploadCompanyLogo(offer.companyLogo, offer.companyId);
-
     handleOfferResponse(response);
 
-    console.log(response);
     return response;
   }, []);
-
-  const uploadCompanyLogo = useCallback(
-    async (file: Blob, companyId: number) => {
-      //if (file) {
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('companyId', companyId.toString());
-      const response = await fetch('/api/offers/uploadCompanyLogo', {
-        method: HttpMethod.POST,
-        body: formData,
-      });
-      //}
-      return response;
-    },
-    []
-  );
 
   const validationCleaners: Record<OfferEditorInput | 'ALL', () => void> =
     useMemo(() => {
