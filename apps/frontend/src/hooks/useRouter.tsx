@@ -8,6 +8,7 @@ import { Page404 } from "../404";
 import { AuthGuard } from "../guards/AuthGuard";
 import { UserPanel } from "../components/UserPanel/UserPanel";
 import { RoutePath } from "../enums/RoutePath";
+import OfferPreview from "../containers/OfferPreview/OfferPreview";
 
 const history = createBrowserHistory();
 
@@ -40,6 +41,14 @@ const router = createBrowserRouter([
           <AuthGuard>
             <OfferEditor />
           </AuthGuard>
+        ),
+      },
+      {
+        path: RoutePath.OFFER_PREVIEW,
+        element: (
+          // <AuthGuard>
+            <OfferPreview />
+          // </AuthGuard>
         ),
       },
     ],

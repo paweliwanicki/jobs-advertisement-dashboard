@@ -1,7 +1,7 @@
 import classes from './Button.module.scss';
 
 type ButtonType = 'button' | 'submit';
-type ButtonVariant = 'primary' | 'secondary';
+type ButtonVariant = 'primary' | 'secondary' | 'link';
 
 type ButtonProps = {
   id?: string;
