@@ -26,6 +26,7 @@ export type Offer = {
   location: string;
   contract: string;
   description: string;
+  createdAt?: number;
   companyLogo?: File;
 };
 

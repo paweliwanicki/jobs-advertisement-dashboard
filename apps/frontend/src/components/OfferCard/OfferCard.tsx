@@ -19,7 +19,7 @@ export type OfferCardProps = {
 
 const now = Math.floor(new Date().getTime() / 1000);
 
-const getOfferAddedTime = (createdAt: number) => {
+export const getOfferAddedTime = (createdAt: number) => {
   const hoursDiff = Math.abs(now - createdAt) / 3600;
   let suffix = 'h';
   let diff = Math.floor(hoursDiff);

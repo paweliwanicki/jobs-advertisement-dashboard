@@ -67,7 +67,7 @@ export class OffersService {
 
   async importOffers(body: any) {
     const offers = [];
-    const currentCompanies = await this.companyService.importCompanies(body);
+    const currentCompanies = await this.companyService.getAll();
     if (body.length) {
       body.map((offer: any) => {
         const company = currentCompanies.find((company: Company) => {

@@ -12,10 +12,12 @@
     width: 100%;
     max-width: 1190px;
     display: flex;
-    align-items: center;
+    // align-items: center;
     justify-content: center;
-    margin: auto;
+    margin: 0 auto;
     padding: 0 40px;
+    flex-grow: 1;
+    flex-flow: column;
   }
 }
 

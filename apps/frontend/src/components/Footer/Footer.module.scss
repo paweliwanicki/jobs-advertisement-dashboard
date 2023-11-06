@@ -1,15 +1,13 @@
-@use "../../styles/variables.scss";
+@use '../../styles/variables.scss';
 
 .footer {
   background-color: variables.$violet;
   width: 100%;
   max-width: 1110px;
   align-self: center;
-  background-image: url("./bg-footer.svg");
+  background-image: url('./bg-footer.svg');
   background-position: center;
   background-size: cover;
-  border-top-left-radius: 6px;
-  border-top-right-radius: 6px;
   height: 75px;
   display: flex;
   align-items: center;

@@ -3,19 +3,21 @@ import { Company } from '../types/Company';
 import { useApi } from './useApi';
 import { HttpMethod } from '../enums/HttpMethods';
 import { Option } from 'react-google-places-autocomplete/build/types';
+import { Contract } from '../types/Contract';
 
 type Dictionaries = {
   companies: Company[];
   companySelectOptions: Option[];
   createCompany: (company: Company) => Promise<Company>;
+  createContract: (contract: Contract) => Promise<Contract>;
 };
 
-type SelectOptionsData = Company[];
+type SelectOptionsData = Company[] | Contract[];
 
 const generateSelectOptions = (
   data: SelectOptionsData,
-  valueKey: string,
-  labelKey: string
+  valueKey = 'id',
+  labelKey = 'name'
 ) => {
   return data.map((obj: any) => {
     return {
@@ -44,16 +46,18 @@ export const useDictionaries = (): Dictionaries => {
     []
   );
 
+  const [contracts, setContracts] = useState<Contract[]>([]);
+  const [contractSelectOptions, setContractSelectOptions] = useState<Option[]>(
+    []
+  );
+
   const getCompanies = useCallback(async () => {
     const [allCompanies, response] = await fetch<Company[]>(HttpMethod.GET, {
       path: '/api/dict/company/',
     });
     if (response.statusCode !== 404 && response.statusCode !== 401) {
-      console.log(allCompanies);
       setCompanies(allCompanies);
-      setCompanySelectOptions(
-        generateSelectOptions(allCompanies, 'id', 'name')
-      );
+      setCompanySelectOptions(generateSelectOptions(allCompanies));
     }
   }, []);
 
@@ -68,6 +72,28 @@ export const useDictionaries = (): Dictionaries => {
     return newCompany;
   }, []);
 
+  const getContracts = useCallback(async () => {
+    const [allContracts, response] = await fetch<Contract[]>(HttpMethod.GET, {
+      path: '/api/dict/contract/',
+    });
+    if (response.statusCode !== 404 && response.statusCode !== 401) {
+      console.log(allContracts);
+      setContracts(allContracts);
+      setContractSelectOptions(generateSelectOptions(allContracts));
+    }
+  }, []);
+
+  const createContract = useCallback(async (contract: Company) => {
+    const [newContract, response] = await fetch<Company>(HttpMethod.POST, {
+      path: '/api/dict/contract/',
+      payload: JSON.stringify(contract),
+    });
+    if (response.statusCode !== 404 && response.statusCode !== 401) {
+      await getContracts();
+    }
+    return newContract;
+  }, []);
+
   useEffect(() => {
     getCompanies();
   }, []);
@@ -76,9 +102,19 @@ export const useDictionaries = (): Dictionaries => {
     () => ({
       companies,
       companySelectOptions,
+      contracts,
+      contractSelectOptions,
       createCompany,
+      createContract,
     }),
-    [companies, companySelectOptions, createCompany]
+    [
+      companies,
+      companySelectOptions,
+      contracts,
+      contractSelectOptions,
+      createCompany,
+      createContract,
+    ]
   );
 
   return dict;
