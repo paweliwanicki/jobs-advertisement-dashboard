@@ -1,4 +1,4 @@
-import { Company } from 'src/company/company.entity';
+import { Company } from 'src/dictionaries/company/company.entity';
 import {
   AfterInsert,
   AfterUpdate,

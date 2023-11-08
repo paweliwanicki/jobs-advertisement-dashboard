@@ -2,8 +2,8 @@
 
 !important @TODO
 
-1. Add auto company selection after creating a new one (OfferEditor).
-2. Rework Offers/Dictionaries to Contexts
+1. Fix issue with unique constrains when the company for editing offer is changed
+2. Add migrations for default database data like. contract/privacy statements
 
 ###
 

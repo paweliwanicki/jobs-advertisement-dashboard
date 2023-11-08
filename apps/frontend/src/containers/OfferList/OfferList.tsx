@@ -8,22 +8,14 @@ import OfferCard, {
 import { LoadingSpinner } from '../../components/common/LoadingSpinner/LoadingSpinner';
 import { useUser } from '../../hooks/useUser';
 import { Link } from 'react-router-dom';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
 import SvgIcon from '../../components/common/SvgIcon/SvgIcon';
+import { useOffer } from '../../hooks/useOffer';
 
 const OfferList = () => {
   const { fetch, isFetching } = useApi();
   const { user } = useUser();
-  const [offers, setOffers] = useState<OfferCardProps[]>([]);
-
-  const fetchOffers = useCallback(async () => {
-    const [fetchedOffers] = await fetch<OfferCardProps[]>(HttpMethod.GET, {
-      path: '/api/offers',
-    });
-    if (fetchedOffers.length) {
-      setOffers(fetchedOffers);
-    }
-  }, []);
+  const { offers, fetchOffers } = useOffer();
 
   const handleImportOffers = useCallback(async () => {
     const [offers] = await fetch<any[]>(HttpMethod.GET, {
@@ -39,13 +31,9 @@ const OfferList = () => {
     }
   }, []);
 
-  useEffect(() => {
-    fetchOffers();
-  }, []);
-
   return (
     <div className={classes.offerList}>
-      {isFetching && <LoadingSpinner />}
+      {isFetching && <LoadingSpinner message="Fetching offer list" />}
       <div className={classes.controlsBox}>
         {user?.isAdmin && (
           <Button

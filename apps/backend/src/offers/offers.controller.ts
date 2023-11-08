@@ -22,7 +22,7 @@ import { OfferDto } from './dtos/offer.dto';
 import { JwtAuthGuard } from 'src/authentication/guards/jwt-auth.guard';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { CompanyService } from '../company/company.service';
+import { CompanyService } from 'src/dictionaries/company/company.service';
 import { diskStorage } from 'multer';
 import { existsSync, mkdirSync } from 'fs';
 @Controller('offers')

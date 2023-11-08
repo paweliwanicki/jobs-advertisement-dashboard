@@ -4,8 +4,8 @@ import { Offer } from './offer.entity';
 import { Repository } from 'typeorm';
 import { UpdateOfferDto } from './dtos/update-offer.dto';
 import { OFFER_EXCEPTION_MESSAGES } from './offer-exception.messages';
-import { Company } from 'src/company/company.entity';
-import { CompanyService } from 'src/company/company.service';
+import { Company } from 'src/dictionaries/company/company.entity';
+import { CompanyService } from 'src/dictionaries/company/company.service';
 
 @Injectable()
 export class OffersService {

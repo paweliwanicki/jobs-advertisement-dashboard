@@ -8,13 +8,13 @@ import ContextMenu, {
 } from '../common/ContextMenu/ContextMenu';
 
 export type OfferCardProps = {
-  id: number;
+  id?: number;
   title: string;
-  company: Company;
+  company?: Company;
   contract: string;
   location: string;
-  createdAt: number;
-  unremovable: boolean;
+  createdAt?: number;
+  unremovable?: boolean;
 };
 
 const now = Math.floor(new Date().getTime() / 1000);
@@ -74,7 +74,9 @@ const OfferCard = ({
 
         <div className={classes.content}>
           <p>
-            <span>{getOfferAddedTime(createdAt)}</span>
+            <span>
+              {createdAt ? getOfferAddedTime(createdAt) : '---/---/---'}
+            </span>
             <SvgIcon id="icon-dot" width={4} height={4} />
             <span>{contract}</span>
           </p>

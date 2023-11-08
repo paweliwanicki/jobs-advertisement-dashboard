@@ -5,7 +5,7 @@ import { Offer } from './offer.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthenticationModule } from 'src/authentication/authentication.module';
 import { MulterModule } from '@nestjs/platform-express';
-import { CompanyModule } from 'src/company/company.module';
+import { CompanyModule } from 'src/dictionaries/company/company.module';
 
 @Module({
   controllers: [OffersController],

@@ -180,4 +180,12 @@
       }
     }
   }
+
+  .noOfferWarningBox {
+    margin: auto;
+    padding-top: 30px;
+    @include themeVariables.themify(themeVariables.$themes) {
+      color: themeVariables.themed('text-main-color');
+    }
+  }
 }

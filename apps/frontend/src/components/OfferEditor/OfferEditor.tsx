@@ -8,7 +8,7 @@ import { Editor } from '@tinymce/tinymce-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { SingleValue } from 'react-select';
 import { useTheme } from '../../hooks/useTheme';
-import { Offer, useOfferEditor } from '../../hooks/useOfferEditor';
+import { useOfferEditor } from '../../hooks/useOfferEditor';
 import { Link, useParams } from 'react-router-dom';
 import { LoadingSpinner } from '../common/LoadingSpinner/LoadingSpinner';
 import type { Option } from 'react-google-places-autocomplete/build/types';
@@ -18,20 +18,20 @@ import { HttpMethod } from '../../enums/HttpMethods';
 import { useApi } from '../../hooks/useApi';
 import UploadCompanyLogoModal from '../UploadCompanyLogoModal/UploadCompanyLogoModal';
 import { Company } from '../../types/Company';
-
-const CONTRACT_OPTIONS: Option[] = [
-  { value: '1/4 time', label: '1/4 time' },
-  { value: '1/3 time', label: '1/3 time' },
-  { value: '1/2 time', label: '1/2 time' },
-  { value: 'Full time', label: 'Full time' },
-];
+import { Offer } from '../../types/Offer';
+import { Contract } from '../../types/Contract';
 
 const OfferEditor = () => {
   let { id } = useParams();
   const { fetch } = useApi();
   const { theme } = useTheme();
   const editorRef = useRef<TinyMceEditor>();
-  const { companySelectOptions, createCompany } = useDictionaries();
+  const {
+    companySelectOptions,
+    contractSelectOptions,
+    createCompany,
+    createContract,
+  } = useDictionaries();
 
   const {
     errors,
@@ -70,8 +70,7 @@ const OfferEditor = () => {
   const [editorElementKey, setEditorElementKey] = useState<number>(0);
   const [initialEditorValue, setInitialEditorValue] = useState<string>('');
 
-  const [showNewCompanyModal, setShowNewCompanyModal] =
-    useState<boolean>(false);
+  const [showNewCompanyModal, setShowNewCompanyModal] = useState<boolean>(true);
 
   const handleTitleOnChange = useCallback(
     (title: string) => {
@@ -194,11 +193,26 @@ const OfferEditor = () => {
       name,
     };
     const company = await createCompany(newCompany);
-    setCompany({
-      label: company.name,
-      value: company.id,
-    });
-    handleShowNewCompanyLogoModal();
+    if (company?.id) {
+      setCompany({
+        label: company.name,
+        value: company.id,
+      });
+      handleShowNewCompanyLogoModal();
+    }
+  }, []);
+
+  const handleCreateNewContract = useCallback(async (name: string) => {
+    const newContract: Contract = {
+      name,
+    };
+    const contract = await createContract(newContract);
+    if (contract?.id) {
+      setContract({
+        label: contract.name,
+        value: contract.id,
+      });
+    }
   }, []);
 
   const handleShowNewCompanyLogoModal = useCallback(() => {
@@ -282,13 +296,14 @@ const OfferEditor = () => {
             <CreatableSelect
               id="contract-select"
               instanceId="contract"
-              options={CONTRACT_OPTIONS}
+              options={contractSelectOptions}
               className={`${classes.contractSelect} ${
                 contractIsValidated &&
                 (contractError ? classes.error : classes.valid)
               }`}
               placeholder="Contract"
               onChange={handleContractOnChange}
+              onCreateOption={handleCreateNewContract}
               value={contract}
               isClearable
             />

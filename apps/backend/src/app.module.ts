@@ -11,8 +11,9 @@ import { OffersModule } from './offers/offers.module';
 import { UsersModule } from './users/users.module';
 import { Offer } from './offers/offer.entity';
 import { MulterModule } from '@nestjs/platform-express';
-import { CompanyModule } from './company/company.module';
-import { Company } from './company/company.entity';
+import { Company } from './dictionaries/company/company.entity';
+import { DictionariesModule } from './dictionaries/dictionaries.module';
+import { Contract } from './dictionaries/contract/contract.entity';
 
 @Module({
   imports: [
@@ -31,7 +32,7 @@ import { Company } from './company/company.entity';
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
         synchronize: configService.get<boolean>('SYNCHRONIZE'),
-        entities: [User, Offer, Company],
+        entities: [User, Offer, Company, Contract],
       }),
     }),
     MulterModule.registerAsync({
@@ -43,7 +44,7 @@ import { Company } from './company/company.entity';
     }),
     AuthenticationModule,
     UsersModule,
-    CompanyModule,
+    DictionariesModule,
     OffersModule,
   ],
   controllers: [AppController],

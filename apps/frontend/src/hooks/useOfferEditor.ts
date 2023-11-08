@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { HttpMethod } from '../enums/HttpMethods';
 import { ResponseParams, useApi } from './useApi';
 import { useSnackBar } from './useSnackBar';
-import { Company } from '../types/Company';
+import { Offer } from '../types/Offer';
 
 const OFFER_STATUS_MESSAGES: Record<number, string> = {
   200: 'Offer has been updated successfuly!',
@@ -18,17 +18,11 @@ type OfferEditorInput =
   | 'CONTRACT'
   | 'DESCRIPTION';
 
-export type Offer = {
-  id?: number;
-  title: string;
-  company?: Company;
-  companyId: number; // fix to only Company!;
-  location: string;
-  contract: string;
-  description: string;
-  createdAt?: number;
-  companyLogo?: File;
-};
+type InputError = 'EMPTY';
+
+const INPUT_ERRORS_MESSAGES: Record<InputError, string> = {
+  EMPTY: 'Can not be empty!',
+} as const;
 
 type UseOfferEditor = {
   errors: {
@@ -59,12 +53,6 @@ type UseOfferEditor = {
   addOffer: (offer: Offer) => Promise<ResponseParams>;
   updateOffer: (offer: Offer) => Promise<ResponseParams>;
 };
-
-type InputError = 'EMPTY';
-
-const INPUT_ERRORS_MESSAGES: Record<InputError, string> = {
-  EMPTY: 'Can not be empty!',
-} as const;
 
 export const useOfferEditor = (): UseOfferEditor => {
   const { handleShowSnackBar } = useSnackBar();
