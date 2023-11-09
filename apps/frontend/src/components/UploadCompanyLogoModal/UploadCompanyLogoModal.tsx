@@ -4,8 +4,8 @@ import UploadFilesBox from '../common/UploadFilesBox/UploadFilesBox';
 import Modal from '../common/Modal/Modal';
 import Button from '../common/Button/Button';
 import { Option } from 'react-google-places-autocomplete/build/types';
-import { uploadCompanyLogo } from '../../hooks/useDictionaries';
 import { LoadingSpinner } from '../common/LoadingSpinner/LoadingSpinner';
+import { uploadCompanyLogo } from '../../providers/DictionaryProvider';
 
 type UploadCompanyLogoModalProps = {
   isShowing: boolean;

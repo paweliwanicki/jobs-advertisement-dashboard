@@ -70,7 +70,8 @@ const OfferEditor = () => {
   const [editorElementKey, setEditorElementKey] = useState<number>(0);
   const [initialEditorValue, setInitialEditorValue] = useState<string>('');
 
-  const [showNewCompanyModal, setShowNewCompanyModal] = useState<boolean>(true);
+  const [showNewCompanyModal, setShowNewCompanyModal] =
+    useState<boolean>(false);
 
   const handleTitleOnChange = useCallback(
     (title: string) => {

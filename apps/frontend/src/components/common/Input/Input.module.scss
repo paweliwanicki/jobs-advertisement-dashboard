@@ -1,5 +1,5 @@
-@use "../../../styles/variables.scss";
-@use "../../../styles/themeVariables.scss";
+@use '../../../styles/variables.scss';
+@use '../../../styles/themeVariables.scss';
 
 .inputLabel {
   display: flex;
@@ -28,7 +28,7 @@
     border-radius: 6px;
     padding-right: 10px;
     @include themeVariables.themify(themeVariables.$themes) {
-      background-color: themeVariables.themed("input-background");
+      background-color: themeVariables.themed('input-background');
     }
 
     .tooltipError {
@@ -56,6 +56,10 @@
       border-top-left-radius: inherit;
       border-bottom-left-radius: inherit;
 
+      // &:focus {
+      //   box-shadow: 0 0 0 1px variables.$violet;
+      // }
+
       &:-webkit-autofill,
       &:-webkit-autofill:hover,
       &:-webkit-autofill:focus {
@@ -64,9 +68,9 @@
         -webkit-box-shadow: 0 0 0px 1px inset;
         @include themeVariables.themify(themeVariables.$themes) {
           -webkit-box-shadow: 0 0 0px 40px
-            themeVariables.themed("input-background") inset !important;
+            themeVariables.themed('input-background') inset !important;
           -webkit-text-fill-color: themeVariables.themed(
-            "input-color"
+            'input-color'
           ) !important;
         }
       }
@@ -89,8 +93,8 @@
       }
 
       @include themeVariables.themify(themeVariables.$themes) {
-        background-color: themeVariables.themed("input-background");
-        color: themeVariables.themed("input-color");
+        background-color: themeVariables.themed('input-background');
+        color: themeVariables.themed('input-color');
       }
 
       border: none;
@@ -104,7 +108,7 @@
         font-family: variables.$font-family-light;
 
         @include themeVariables.themify(themeVariables.$themes) {
-          color: themeVariables.themed("input-color");
+          color: themeVariables.themed('input-color');
         }
       }
     }
