@@ -1,7 +1,11 @@
-import spinner from './spinner.svg';
-import classes from './LoadingSpinner.module.scss';
+import spinner from "./spinner.svg";
+import classes from "./LoadingSpinner.module.scss";
 
-export const LoadingSpinner = () => {
+type LoadingSpinnerProps = {
+  message?: string;
+};
+
+export const LoadingSpinner = ({ message }: LoadingSpinnerProps) => {
   return (
     <div className={classes.loadingSpinnerOverlay}>
       <img
@@ -9,6 +13,7 @@ export const LoadingSpinner = () => {
         src={spinner}
         alt="loading spinner"
       />
+      {message && <p>{message}</p>}
     </div>
   );
 };

@@ -6,13 +6,14 @@ import { useMotionAnimate } from 'motion-hooks';
 
 type ModalProps = {
   isOpen: boolean;
-  onClose: () => void;
   children?: ReactNode;
+  classNames?: string;
+  onClose: () => void;
 };
-const Modal = ({ isOpen, children, onClose }: ModalProps) => {
+const Modal = ({ isOpen, children, classNames, onClose }: ModalProps) => {
   const { play: openAnimation } = useMotionAnimate(
     `.${classes.modal}`,
-    { width: '600px', height: '70%', fontSize: '1em', opacity: 1 },
+    { width: '600px', height: 'fit-content', fontSize: '1em', opacity: 1 },
     {
       duration: 0.5,
       easing: [0.22, 0.03, 0.26, 1],
@@ -37,14 +38,14 @@ const Modal = ({ isOpen, children, onClose }: ModalProps) => {
   return (
     <ReactModal
       isOpen={isOpen}
-      className={classes.modal}
+      className={`${classes.modal} ${classNames}`}
       overlayClassName={classes.overlay}
       onRequestClose={handleModalClose}
       appElement={document.body}
       onAfterOpen={() => void openAnimation()}
     >
       <SvgIcon
-        id="icon-close"
+        id="icon-close-dark"
         classNames={classes.closeIcon}
         onClick={handleModalClose}
         width={32}

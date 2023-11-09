@@ -17,8 +17,8 @@ export class AuthenticationController {
   constructor(private readonly authenticationService: AuthenticationService) {}
 
   @Get('/getuser')
-  @UseGuards(JwtAuthGuard)
   @Serialize(UserDto)
+  @UseGuards(JwtAuthGuard)
   async getUser(@CurrentUser() user: User) {
     return user;
   }

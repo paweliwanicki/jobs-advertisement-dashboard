@@ -30,10 +30,10 @@ label.checkbox {
       width: 0;
 
       &.error {
-        outline: 1px solid variables.$error;
-        -webkit-box-shadow: 0px 0px 10px 0px variables.$error;
-        -moz-box-shadow: 0px 0px 10px 0px variables.$error;
-        box-shadow: 0px 0px 10px 0px variables.$error;
+        outline: 1px solid variables.$red;
+        -webkit-box-shadow: 0px 0px 10px 0px variables.$red;
+        -moz-box-shadow: 0px 0px 10px 0px variables.$red;
+        box-shadow: 0px 0px 10px 0px variables.$red;
       }
 
       &.valid {
@@ -91,10 +91,10 @@ label.checkbox {
       }
 
       &.error {
-        outline: 1px solid variables.$error;
-        -webkit-box-shadow: 0px 0px 10px 0px variables.$error;
-        -moz-box-shadow: 0px 0px 10px 0px variables.$error;
-        box-shadow: 0px 0px 10px 0px variables.$error;
+        outline: 1px solid variables.$red;
+        -webkit-box-shadow: 0px 0px 10px 0px variables.$red;
+        -moz-box-shadow: 0px 0px 10px 0px variables.$red;
+        box-shadow: 0px 0px 10px 0px variables.$red;
       }
 
       &.valid {

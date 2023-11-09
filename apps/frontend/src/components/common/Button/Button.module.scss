@@ -1,7 +1,7 @@
 @use '../../../styles/variables.scss';
 @use '../../../styles//themeVariables.scss';
 
-.button {
+button.button {
   transition: background-color 0.5s;
   border-radius: 5px;
   outline: none;
@@ -23,7 +23,6 @@
   }
 
   &.primary {
-    //background-color:  variables.$white;
     @include themeVariables.themify(themeVariables.$themes) {
       background-color: themeVariables.themed('button-primary-bg');
       color: themeVariables.themed('button-primary-color');
@@ -41,11 +40,25 @@
       background-color: themeVariables.themed('button-secondary-bg');
       color: themeVariables.themed('button-secondary-color');
     }
+
+    &:hover {
+      @include themeVariables.themify(themeVariables.$themes) {
+        background-color: themeVariables.themed('button-secondary-bg-hover');
+      }
+    }
   }
 
-  &:hover {
+  &.link {
+    padding: 20px 16px;
     @include themeVariables.themify(themeVariables.$themes) {
-      background-color: themeVariables.themed('button-secondary-bg-hover');
+      background-color: themeVariables.themed('button-link-bg');
+      color: themeVariables.themed('button-link-color');
+    }
+
+    &:hover {
+      @include themeVariables.themify(themeVariables.$themes) {
+        background-color: themeVariables.themed('button-link-bg-hover');
+      }
     }
   }
 }

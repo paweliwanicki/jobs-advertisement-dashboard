@@ -1,0 +1,84 @@
+@use '../../styles/variables.scss';
+@use '../../styles/themeVariables.scss';
+@use '../../styles/utils.scss';
+
+.offerCard {
+  width: 100%;
+  max-width: 350px;
+  height: 230px;
+  position: relative;
+  background-color: variables.$white;
+
+  a {
+    text-decoration: none;
+  }
+
+  @include themeVariables.themify(themeVariables.$themes) {
+    background-color: themeVariables.themed('offer-card-bg');
+  }
+
+  padding: 50px 32px 32px 32px;
+  border-radius: 6px;
+  line-height: normal;
+  cursor: pointer;
+
+  .cardActionsBox {
+    width: auto;
+    position: absolute;
+    right: 30px;
+    top: 15px;
+
+    // a {
+    //   text-decoration: none;
+    //   color: inherit;
+    // }
+  }
+
+  .companyLogo {
+    position: absolute;
+    top: 0;
+    left: 32px;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    border-radius: 15px;
+  }
+
+  .content {
+    color: variables.$grey;
+    font-size: 16px;
+    display: flex;
+    flex-flow: column;
+    align-items: flex-start;
+    gap: 16px;
+    font-family: variables.$font-family-light;
+    height: 100%;
+
+    svg {
+      margin: 0 12px;
+    }
+
+    h3 {
+      font-size: 20px;
+      font-family: variables.$font-family-bold;
+      text-align: left;
+
+      @include themeVariables.themify(themeVariables.$themes) {
+        color: themeVariables.themed('offer-card-title-color');
+      }
+
+      @include utils.text-multi-line-ellipsis(1);
+    }
+
+    .locationBox {
+      margin-top: auto;
+      .location {
+        color: variables.$violet;
+        font-size: 14px;
+        font-family: variables.$font-family-bold;
+        text-align: left;
+        @include utils.text-multi-line-ellipsis(1);
+      }
+    }
+  }
+}

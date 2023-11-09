@@ -28,6 +28,3 @@ POST http://localhost:3000/api/auth/signout
 ### GET CURRENTLY SIGNED IN USER v2
 GET http://localhost:3000/api/auth/getuser
 
-
-### REFRESH JWT TOKEN
-GET http://localhost:3000/api/auth/refreshToken

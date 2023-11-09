@@ -8,7 +8,7 @@
   opacity: 0;
 
   .required {
-    color: variables.$error;
+    color: variables.$red;
   }
 
   > h2 {

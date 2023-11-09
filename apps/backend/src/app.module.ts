@@ -7,6 +7,13 @@ import { ValidationPipe } from '@nestjs/common';
 import { APP_PIPE } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { User } from './users/user.entity';
+import { OffersModule } from './offers/offers.module';
+import { UsersModule } from './users/users.module';
+import { Offer } from './offers/offer.entity';
+import { MulterModule } from '@nestjs/platform-express';
+import { Company } from './dictionaries/company/company.entity';
+import { DictionariesModule } from './dictionaries/dictionaries.module';
+import { Contract } from './dictionaries/contract/contract.entity';
 
 @Module({
   imports: [
@@ -25,10 +32,20 @@ import { User } from './users/user.entity';
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
         synchronize: configService.get<boolean>('SYNCHRONIZE'),
-        entities: [User],
+        entities: [User, Offer, Company, Contract],
       }),
     }),
+    MulterModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        dest: configService.get<string>('UPLOADS_DIR'),
+      }),
+      inject: [ConfigService],
+    }),
     AuthenticationModule,
+    UsersModule,
+    DictionariesModule,
+    OffersModule,
   ],
   controllers: [AppController],
   providers: [

@@ -1,10 +1,10 @@
-import { ReactNode, useCallback, useState } from 'react';
+import { ReactNode, useCallback, useState, useMemo } from 'react';
 import { useApi } from './useApi';
 import { useNavigate } from 'react-router-dom';
 import { RoutePath } from '../enums/RoutePath';
 import { HttpMethod } from '../enums/HttpMethods';
 import { useUser } from './useUser';
-import { User } from '../models/User';
+import { User } from '../types/User';
 
 type InputError =
   | 'EMPTY'
@@ -229,35 +229,35 @@ export const useSignForm = (): SignForm => {
     setTermsCheckIsValidated(false);
   }, []);
 
-  const clearValidationAndError = useCallback(
-    (input?: SignFormInput) => {
-      switch (input) {
-        case 'USERNAME':
+  const validationCleaners: Record<SignFormInput | 'ALL', () => void> =
+    useMemo(() => {
+      return {
+        USERNAME: () => {
           setUsernameError(undefined);
           setUsernameIsValidated(false);
-          break;
-        case 'PASSWORD':
+        },
+        PASSWORD: () => {
           setPasswordError(undefined);
           setPasswordIsValidated(false);
-          break;
-        case 'CONFIRM_PASSWORD':
+        },
+        CONFIRM_PASSWORD: () => {
           setConfirmPasswordError(undefined);
           setConfirmPasswordIsValidated(false);
-          break;
-        case 'TERMS':
+        },
+        TERMS: () => {
           setTermsError(false);
           setTermsCheckIsValidated(false);
-          break;
-
-        default: {
-          clearErrors();
+        },
+        ALL: () => {
           clearValidation();
-          break;
-        }
-      }
-    },
-    [clearErrors]
-  );
+          clearErrors();
+        },
+      };
+    }, []);
+
+  const clearValidationAndError = useCallback((input?: SignFormInput) => {
+    validationCleaners[input ?? 'ALL']();
+  }, []);
 
   return {
     message,

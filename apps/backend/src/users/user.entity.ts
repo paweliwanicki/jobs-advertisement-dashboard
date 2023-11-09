@@ -1,4 +1,5 @@
 import { Exclude } from 'class-transformer';
+import { Offer } from 'src/offers/offer.entity';
 import {
   AfterInsert,
   AfterUpdate,
@@ -6,6 +7,7 @@ import {
   Column,
   Entity,
   PrimaryGeneratedColumn,
+  OneToMany,
 } from 'typeorm';
 
 @Entity()
@@ -32,8 +34,8 @@ export class User {
   @Exclude()
   refreshToken: string;
 
-  // @OneToMany(() => JobOffer, (offer) => offer.user_id)
-  // offers: JobOffer[];
+  @OneToMany(() => Offer, (offer) => offer.createdBy)
+  offers: Offer[];
 
   @AfterInsert()
   logInsert() {

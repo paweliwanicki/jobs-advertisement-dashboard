@@ -1,11 +1,11 @@
-import Input from '../common/Input/Input';
-import classes from './SignInForm.module.scss';
-import { ChangeEvent, useCallback, useState, useEffect } from 'react';
-import Button from '../common/Button/Button';
-import Checkbox from '../common/Checkbox/Checkbox';
-import { useSignForm } from '../../hooks/useSignForm';
-import { useMotionAnimate } from 'motion-hooks';
-import PasswordInput from '../common/PasswordInput/PasswordInput';
+import Input from "../common/Input/Input";
+import classes from "./SignInForm.module.scss";
+import { ChangeEvent, useCallback, useState, useEffect } from "react";
+import Button from "../common/Button/Button";
+import Checkbox from "../common/Checkbox/Checkbox";
+import { useSignForm } from "../../hooks/useSignForm";
+import { useMotionAnimate } from "motion-hooks";
+import PasswordInput from "../common/PasswordInput/PasswordInput";
 
 type SignInFormProps = {
   onSubmit: (username: string, password: string) => void;
@@ -27,14 +27,14 @@ const SignInForm = ({ onSubmit }: SignInFormProps) => {
   const { usernameError, passwordError } = errors;
   const { usernameIsValidated, passwordIsValidated } = isValidated;
 
-  const [username, setUsername] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const [rememberMeIsChecked, setRememberMeIsChecked] =
     useState<boolean>(false);
 
   const handleUsernameOnChange = useCallback(
     (username: string) => {
-      usernameIsValidated && clearValidationAndError('USERNAME');
+      usernameIsValidated && clearValidationAndError("USERNAME");
       setUsername(username);
     },
     [usernameIsValidated, clearValidationAndError]
@@ -42,7 +42,7 @@ const SignInForm = ({ onSubmit }: SignInFormProps) => {
 
   const handlePasswordOnChange = useCallback(
     (password: string) => {
-      passwordIsValidated && clearValidationAndError('PASSWORD');
+      passwordIsValidated && clearValidationAndError("PASSWORD");
       setPassword(password);
     },
     [passwordIsValidated, clearValidationAndError]
@@ -57,7 +57,6 @@ const SignInForm = ({ onSubmit }: SignInFormProps) => {
 
   const handleFormOnSubmit = useCallback(
     (e: any) => {
-      console.log(e);
       e.preventDefault();
       const isValid = validateSignInForm(username, password);
       if (!isValid) {
@@ -99,6 +98,7 @@ const SignInForm = ({ onSubmit }: SignInFormProps) => {
           onChange={handlePasswordOnChange}
           placeholder="Your password"
           isValidated={passwordIsValidated}
+          label="Password"
         />
 
         <div className={classes.rememberMeBox}>
