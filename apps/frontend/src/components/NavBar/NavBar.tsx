@@ -6,8 +6,24 @@ import { Link } from 'react-router-dom';
 import { Tooltip } from 'react-tooltip';
 import { useTheme } from '../../hooks/useTheme';
 import { useUser } from '../../hooks/useUser';
+import ContextMenu, {
+  ContextMenuOption,
+} from '../common/ContextMenu/ContextMenu';
+import { useSignForm } from '../../hooks/useSignForm';
 
 const NavBar = () => {
+  const { handleSignOut } = useSignForm();
+
+  const USER_MENU_OPTIONS: ContextMenuOption[] = [
+    {
+      label: <Link to={`/user/`}>User Panel</Link>,
+    },
+    {
+      label: 'Sign out',
+      action: () => handleSignOut(),
+    },
+  ];
+
   const { user } = useUser();
   const { theme, setTheme } = useTheme();
   const handleChangeThemeContext = () => {
@@ -31,14 +47,14 @@ const NavBar = () => {
             rightLabel={<SvgIcon id="icon-moon" height={18} width={18} />}
           />
           {user ? (
-            <Link to="/user">
-              <SvgIcon
-                id="icon-user"
-                height={48}
-                width={48}
-                classNames={classes.userAvatar}
-              />
-            </Link>
+            <ContextMenu
+              classNames={classes.userContextMenu}
+              options={USER_MENU_OPTIONS}
+              id="user-menu"
+              iconId="icon-user"
+              width={48}
+              height={48}
+            />
           ) : (
             <Link to="login">
               <SvgIcon

@@ -1,14 +1,12 @@
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useUser } from '../../hooks/useUser';
 import Button from '../common/Button/Button';
 import classes from './UserPanel.module.scss';
-import { useApi } from '../../hooks/useApi';
 import { useSignForm } from '../../hooks/useSignForm';
-import { HttpMethod } from '../../enums/HttpMethods';
+import { Link } from 'react-router-dom';
 
 export const UserPanel = () => {
   const { user } = useUser();
-  const { fetch } = useApi();
   const { handleSignOut } = useSignForm();
 
   const createdAtDate = useMemo(
@@ -21,22 +19,33 @@ export const UserPanel = () => {
     [user]
   );
 
-  const handleGetProfile = useCallback(async () => {
-    await fetch(HttpMethod.GET, {
-      path: '/api/auth/getuser',
-    });
-  }, []);
-
   return (
     <div className={classes.userPanel}>
-      <div>Registered at: {`${createdAtDate}`}</div>
-      <Button variant="secondary" onClick={handleSignOut}>
-        Sign off
-      </Button>
+      <div className={classes.userMenu}>
+        {user?.isAdmin && (
+          <Link to="/dict">
+            <Button variant="primary">Dictionaries</Button>
+          </Link>
+        )}
 
-      <Button variant="primary" onClick={handleGetProfile}>
-        Get profile
-      </Button>
+        {user && (
+          <Link to="/offers/my">
+            <Button variant="primary">My offers</Button>
+          </Link>
+        )}
+      </div>
+
+      <div className={classes.userProfileDetails}>
+        <p>Registered at: {`${createdAtDate}`}</p>
+        <p>Active offers: {100}</p>
+        <p>Archived offers: {20}</p>
+      </div>
+
+      <div className={classes.moreActions}>
+        <Button variant="secondary" onClick={handleSignOut}>
+          Sign off
+        </Button>
+      </div>
     </div>
   );
 };

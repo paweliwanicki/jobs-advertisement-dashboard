@@ -1,0 +1,30 @@
+@use '../../styles/themeVariables.scss';
+@use '../../styles/variables.scss';
+
+.dicitonariesContainer {
+  color: black;
+  height: 100%;
+  text-align: left;
+  display: flex;
+
+  :global {
+    .react-tabs {
+      flex-grow: 1;
+      display: flex;
+      flex-flow: column;
+
+      .react-tabs__tab-list {
+        margin-bottom: 0;
+      }
+
+      .react-tabs__tab-panel {
+        flex-grow: 1;
+        padding: 15px;
+
+        @include themeVariables.themify(themeVariables.$themes) {
+          background-color: themeVariables.themed('input-background');
+        }
+      }
+    }
+  }
+}

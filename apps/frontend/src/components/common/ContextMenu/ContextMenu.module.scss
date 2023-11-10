@@ -12,6 +12,7 @@
     position: absolute;
     top: 30px;
     right: 0px;
+    padding-left: 0;
 
     @include themeVariables.themify(themeVariables.$themes) {
       color: themeVariables.themed('context-menu-option-color');
@@ -24,21 +25,39 @@
     }
 
     .option {
+      // min-width: 110px;
       margin: 0 10px;
       padding: 10px 0;
-      border-bottom: 1px solid;
+      // border-bottom: 1px solid;
       opacity: 0;
       height: 0;
+      text-decoration: none;
+      list-style: none;
+      line-height: 24px;
+      letter-spacing: 0.5px;
+      box-shadow: 0 -1px 0 #000;
+      white-space: nowrap;
+
+      &:first-child {
+        box-shadow: none;
+      }
+
+      &:hover {
+        color: variables.$violet;
+        text-shadow: 0px 0px 1px variables.$violet;
+        // font-family: variables.$font-family-bold;
+      }
 
       a {
         text-decoration: none;
         @include themeVariables.themify(themeVariables.$themes) {
           color: themeVariables.themed('context-menu-option-color');
         }
-      }
 
-      &:last-child {
-        border-bottom: none;
+        &:hover {
+          color: inherit;
+          font-family: inherit;
+        }
       }
     }
   }

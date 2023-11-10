@@ -10,11 +10,21 @@ export type ContextMenuOption = {
 
 type ContextMenuProps = {
   id: string;
-  iconId?: string;
   options: ContextMenuOption[];
+  classNames?: string;
+  iconId?: string;
+  width?: number;
+  height?: number;
 };
 
-const ContextMenu = ({ options, id, iconId }: ContextMenuProps) => {
+const ContextMenu = ({
+  options,
+  id,
+  iconId,
+  classNames = '',
+  width = 24,
+  height = 24,
+}: ContextMenuProps) => {
   const { play: openAnimation } = useMotionAnimate(
     `#${id} .${classes.optionsList}`,
     { height: 'auto' },
@@ -57,6 +67,11 @@ const ContextMenu = ({ options, id, iconId }: ContextMenuProps) => {
     setIsOpen((open) => !open);
   }, [isOpen]);
 
+  const handleOptionAction = useCallback((option: ContextMenuOption) => {
+    option && option.action?.();
+    setIsOpen((open) => !open);
+  }, []);
+
   useEffect(() => {
     if (isOpen) {
       openAnimation();
@@ -68,23 +83,27 @@ const ContextMenu = ({ options, id, iconId }: ContextMenuProps) => {
   }, [isOpen]);
 
   return (
-    <div id={id} className={classes.contextMenuBox}>
+    <div id={id} className={`${classNames} ${classes.contextMenuBox}`}>
       <SvgIcon
         id={iconId ? iconId : 'icon-settings'}
-        width={24}
-        height={24}
+        width={width}
+        height={height}
         onClick={handleSetIsOpen}
       />
 
-      <div className={classes.optionsList}>
-        {options.map((option: ContextMenuOption) => {
+      <ul className={classes.optionsList} style={{ top: height + 5 }}>
+        {options.map((option: ContextMenuOption, index: number) => {
           return (
-            <div onClick={option.action} className={classes.option}>
+            <li
+              onClick={() => handleOptionAction(option)}
+              className={classes.option}
+              key={`${index}-${option.label}`}
+            >
               <p>{option.label}</p>
-            </div>
+            </li>
           );
         })}
-      </div>
+      </ul>
     </div>
   );
 };
