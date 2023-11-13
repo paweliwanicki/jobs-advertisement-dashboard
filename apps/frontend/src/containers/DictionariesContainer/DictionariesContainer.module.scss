@@ -1,5 +1,5 @@
-@use '../../styles/themeVariables.scss';
-@use '../../styles/variables.scss';
+@use "../../styles/themeVariables.scss";
+@use "../../styles/variables.scss";
 
 .dicitonariesContainer {
   color: black;
@@ -15,14 +15,29 @@
 
       .react-tabs__tab-list {
         margin-bottom: 0;
+
+        @include themeVariables.themify(themeVariables.$themes) {
+          border-color: themeVariables.themed("offer-input-border-color");
+        }
+
+        .react-tabs__tab--selected {
+          @include themeVariables.themify(themeVariables.$themes) {
+            border-color: themeVariables.themed("offer-input-border-color");
+          }
+        }
       }
 
       .react-tabs__tab-panel {
         flex-grow: 1;
         padding: 15px;
-
+    
         @include themeVariables.themify(themeVariables.$themes) {
-          background-color: themeVariables.themed('input-background');
+          border-left: 1px solid themeVariables.themed("offer-input-border-color");
+          border-right: 1px solid themeVariables.themed("offer-input-border-color");
+          border-bottom: 1px solid themeVariables.themed("offer-input-border-color");
+        }
+        @include themeVariables.themify(themeVariables.$themes) {
+          background-color: themeVariables.themed("input-background");
         }
       }
     }
