@@ -10,7 +10,7 @@ type ModalProps = {
   classNames?: string;
   onClose: () => void;
 };
-const Modal = ({ isOpen, children, classNames, onClose }: ModalProps) => {
+const Modal = ({ isOpen, children, classNames = '', onClose }: ModalProps) => {
   const { play: openAnimation } = useMotionAnimate(
     `.${classes.modal}`,
     { width: '600px', height: 'fit-content', fontSize: '1em', opacity: 1 },
@@ -22,7 +22,7 @@ const Modal = ({ isOpen, children, classNames, onClose }: ModalProps) => {
 
   const { play: closeAnimation } = useMotionAnimate(
     `.${classes.modal}`,
-    { width: '0', height: '0', fontSize: '0', opacity: 0 },
+    { width: '100px', height: '200px', fontSize: '0', opacity: 0 },
     {
       duration: 0.5,
       easing: [0.22, 0.03, 0.26, 1],
@@ -43,6 +43,9 @@ const Modal = ({ isOpen, children, classNames, onClose }: ModalProps) => {
       onRequestClose={handleModalClose}
       appElement={document.body}
       onAfterOpen={() => void openAnimation()}
+      parentSelector={() =>
+        document.getElementById('layout-container') as HTMLElement
+      }
     >
       <SvgIcon
         id="icon-close-dark"

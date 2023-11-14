@@ -54,19 +54,17 @@ const DictionaryProvider = ({ children }: DictionaryProviderProps) => {
       path: '/api/dict/company/',
     });
 
-    console.log(response);
     if (response.statusCode === 200) {
       setCompanies(allCompanies);
       setCompanySelectOptions(generateSelectOptions(allCompanies));
     }
   }, []);
 
-  const createCompany = useCallback(async (company: Company) => {
+  const addUpdateCompany = useCallback(async (company: Company) => {
     const [newCompany, response] = await fetch<Company>(HttpMethod.POST, {
       path: '/api/dict/company/',
       payload: JSON.stringify(company),
     });
-    console.log(response);
     if (response.statusCode === 201) {
       await getCompanies();
     }
@@ -78,16 +76,35 @@ const DictionaryProvider = ({ children }: DictionaryProviderProps) => {
       path: '/api/dict/contract/',
     });
     if (response.statusCode === 200) {
-      console.log(allContracts);
       setContracts(allContracts);
       setContractSelectOptions(generateSelectOptions(allContracts));
     }
   }, []);
 
-  const createContract = useCallback(async (contract: Contract) => {
+  const addUpdateContract = useCallback(async (contract: Contract) => {
     const [newContract, response] = await fetch<Contract>(HttpMethod.POST, {
       path: '/api/dict/contract/',
       payload: JSON.stringify(contract),
+    });
+    if (response.statusCode === 201) {
+      await getContracts();
+    }
+    return newContract;
+  }, []);
+
+  const deleteCompany = useCallback(async (id: number) => {
+    const [newContract, response] = await fetch<Company>(HttpMethod.DELETE, {
+      path: `/api/dict/company/${id}`,
+    });
+    if (response.statusCode === 201) {
+      await getContracts();
+    }
+    return newContract;
+  }, []);
+
+  const deleteContract = useCallback(async (id: number) => {
+    const [newContract, response] = await fetch<Contract>(HttpMethod.DELETE, {
+      path: `/api/dict/contract/${id}`,
     });
     if (response.statusCode === 201) {
       await getContracts();
@@ -106,16 +123,20 @@ const DictionaryProvider = ({ children }: DictionaryProviderProps) => {
       companySelectOptions,
       contracts,
       contractSelectOptions,
-      createCompany,
-      createContract,
+      addUpdateCompany,
+      addUpdateContract,
+      deleteCompany,
+      deleteContract,
     }),
     [
       companies,
       companySelectOptions,
       contracts,
       contractSelectOptions,
-      createCompany,
-      createContract,
+      addUpdateCompany,
+      addUpdateContract,
+      deleteCompany,
+      deleteContract,
     ]
   );
 

@@ -21,6 +21,8 @@ $themes: (
     context-menu-bg-color: variables.$very-light-grey,
     context-menu-border-color: variables.$midnight,
     context-menu-option-color: variables.$dark-grey,
+    table-border-color: variables.$light-grey,
+    table-text-color: variables.$very-dark-blue,
   ),
 
   dark: (
@@ -45,6 +47,8 @@ $themes: (
     context-menu-bg-color: variables.$dark-blue,
     context-menu-border-color: variables.$light-grey,
     context-menu-option-color: variables.$white,
+    table-border-color: variables.$midnight,
+    table-text-color: variables.$light-grey,
   ),
 );
 

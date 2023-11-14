@@ -1,14 +1,14 @@
-import Footer from "../../components/Footer/Footer";
-import NavBar from "../../components/NavBar/NavBar";
-import classes from "./Layout.module.scss";
-import SnackBar from "../../components/common/SnackBar/SnackBar";
-import { Outlet } from "react-router-dom";
-import { useTheme } from "../../hooks/useTheme";
+import Footer from '../../components/Footer/Footer';
+import NavBar from '../../components/NavBar/NavBar';
+import classes from './Layout.module.scss';
+import SnackBar from '../../components/common/SnackBar/SnackBar';
+import { Outlet } from 'react-router-dom';
+import { useTheme } from '../../hooks/useTheme';
 
 const Layout = () => {
   const { theme } = useTheme();
   return (
-    <div className={`${classes.layout} theme-${theme}`}>
+    <div id="layout-container" className={`${classes.layout} theme-${theme}`}>
       <SnackBar />
       <NavBar />
       <main>

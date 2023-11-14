@@ -29,8 +29,8 @@ const OfferEditor = () => {
   const {
     companySelectOptions,
     contractSelectOptions,
-    createCompany,
-    createContract,
+    addUpdateCompany,
+    addUpdateContract,
   } = useDictionaries();
 
   const {
@@ -193,7 +193,7 @@ const OfferEditor = () => {
     const newCompany: Company = {
       name,
     };
-    const company = await createCompany(newCompany);
+    const company = await addUpdateCompany(newCompany);
     if (company?.id) {
       setCompany({
         label: company.name,
@@ -207,7 +207,7 @@ const OfferEditor = () => {
     const newContract: Contract = {
       name,
     };
-    const contract = await createContract(newContract);
+    const contract = await addUpdateContract(newContract);
     if (contract?.id) {
       setContract({
         label: contract.name,

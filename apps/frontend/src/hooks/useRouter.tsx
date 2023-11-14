@@ -50,7 +50,11 @@ const router = createBrowserRouter([
       },
       {
         path: RoutePath.DICTIONARIES,
-        element: <DictionariesContainer />,
+        element: (
+          <AuthGuard>
+            <DictionariesContainer />
+          </AuthGuard>
+        ),
       },
     ],
   },

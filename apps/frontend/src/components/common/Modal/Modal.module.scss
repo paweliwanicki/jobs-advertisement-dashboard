@@ -27,6 +27,8 @@
     padding: 25px;
     border-radius: 6px;
     opacity: 0;
+    min-height: 100px;
+    min-width: 100px;
 
     .closeIcon {
       cursor: pointer;
@@ -34,5 +36,11 @@
       right: 5px;
       top: 5px;
     }
+  }
+}
+
+:global {
+  .ReactModalPortal {
+    position: absolute;
   }
 }
