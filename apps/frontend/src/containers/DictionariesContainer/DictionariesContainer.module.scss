@@ -8,9 +8,23 @@
   height: 100%;
   text-align: left;
   display: flex;
+  flex-flow: column;
+
+  h4 {
+    font-family: variables.$font-family-light;
+    font-size: 13px;
+    white-space: wrap;
+    color: variables.$grey;
+    margin-bottom: 35px;
+  }
 
   h2 {
     margin-bottom: 40px;
+    font-family: variables.$font-family-bold;
+  }
+
+  button {
+    margin-bottom: 25px;
   }
 
   :global {

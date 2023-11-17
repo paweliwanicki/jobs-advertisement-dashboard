@@ -27,7 +27,11 @@ export class CompanyService {
   }
 
   async getAll() {
-    return await this.companyRepository.find();
+    return await this.companyRepository.find({
+      order: {
+        name: 'asc',
+      },
+    });
   }
 
   async update(id: number, attrs: Partial<Company>) {

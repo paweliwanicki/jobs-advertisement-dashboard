@@ -4,6 +4,7 @@ import { Option } from 'react-google-places-autocomplete/build/types';
 import { Contract } from '../types/Contract';
 
 type DictionaryContextType = {
+  isFetching: boolean;
   companies: Company[];
   companySelectOptions: Option[];
   contracts: Contract[];
@@ -15,6 +16,7 @@ type DictionaryContextType = {
 };
 
 export const DictionaryContext = createContext<DictionaryContextType>({
+  isFetching: false,
   companies: [],
   companySelectOptions: [],
   contracts: [],

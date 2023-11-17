@@ -1,4 +1,5 @@
 @use '../../../styles/variables.scss';
+@use '../../../styles/themeVariables.scss';
 
 .overlay {
   background-color: #00000042;
@@ -10,31 +11,49 @@
   z-index: 10;
 
   .modal {
-    position: absolute;
     height: auto;
-    top: 50%;
+    top: 150%;
     left: 50%;
     right: auto;
     bottom: auto;
-    margin-right: -50%;
     transform: translate(-50%, -50%);
-    background-color: variables.$very-light-grey;
-    color: variables.$midnight;
-    font-size: 0;
-    width: 0;
-    height: 0;
+
+    &:focus-visible {
+      outline: none;
+    }
+
+    @include themeVariables.themify(themeVariables.$themes) {
+      background-color: themeVariables.themed('background');
+      color: themeVariables.themed('text-main-color');
+    }
+
+    -webkit-box-shadow: 8px 8px 24px 0px variables.$dark-grey;
+    -moz-box-shadow: 8px 8px 24px 0px variables.$dark-grey;
+    box-shadow: 8px 8px 24px 0px variables.$dark-grey;
+    border-color: variables.$light-grey;
+
     position: relative;
     padding: 25px;
     border-radius: 6px;
-    opacity: 0;
     min-height: 100px;
-    min-width: 100px;
+    min-width: 320px;
+    max-width: 600px;
+
+    .title {
+      font-family: variables.$font-family-bold;
+      font-size: 20px;
+      position: relative;
+      bottom: 13px;
+      text-align: left;
+      margin-bottom: 20px;
+      text-transform: capitalize;
+    }
 
     .closeIcon {
       cursor: pointer;
       position: absolute;
-      right: 5px;
-      top: 5px;
+      right: 15px;
+      top: 10px;
     }
   }
 }

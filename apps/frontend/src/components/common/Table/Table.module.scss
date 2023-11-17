@@ -3,9 +3,11 @@
 
 .commonTable {
   border-collapse: collapse;
+  width: 100%;
 
   th {
     text-transform: capitalize;
+    font-family: variables.$font-family-bold;
   }
 
   th,
@@ -25,10 +27,16 @@
     > svg {
       vertical-align: sub;
       cursor: pointer;
-      margin-right: 10px;
+      margin-left: 10px;
 
-      &:last-child {
-        margin-right: 0px;
+      &:first-child {
+        margin-left: 0px;
+      }
+    }
+
+    :global {
+      .react-tooltip {
+        text-transform: capitalize;
       }
     }
   }

@@ -3,17 +3,28 @@ import ReactModal from 'react-modal';
 import classes from './Modal.module.scss';
 import SvgIcon from '../SvgIcon/SvgIcon';
 import { useMotionAnimate } from 'motion-hooks';
+import { useTheme } from '../../../hooks/useTheme';
 
 type ModalProps = {
   isOpen: boolean;
+  title?: string;
   children?: ReactNode;
   classNames?: string;
   onClose: () => void;
 };
-const Modal = ({ isOpen, children, classNames = '', onClose }: ModalProps) => {
+const Modal = ({
+  isOpen,
+  children,
+  title,
+  classNames = '',
+  onClose,
+}: ModalProps) => {
+  const { theme } = useTheme();
   const { play: openAnimation } = useMotionAnimate(
     `.${classes.modal}`,
-    { width: '600px', height: 'fit-content', fontSize: '1em', opacity: 1 },
+    {
+      top: '50%',
+    },
     {
       duration: 0.5,
       easing: [0.22, 0.03, 0.26, 1],
@@ -22,7 +33,7 @@ const Modal = ({ isOpen, children, classNames = '', onClose }: ModalProps) => {
 
   const { play: closeAnimation } = useMotionAnimate(
     `.${classes.modal}`,
-    { width: '100px', height: '200px', fontSize: '0', opacity: 0 },
+    { top: '150%' },
     {
       duration: 0.5,
       easing: [0.22, 0.03, 0.26, 1],
@@ -48,13 +59,13 @@ const Modal = ({ isOpen, children, classNames = '', onClose }: ModalProps) => {
       }
     >
       <SvgIcon
-        id="icon-close-dark"
+        id={`icon-close${theme === 'dark' ? '' : '-dark'}`}
         classNames={classes.closeIcon}
         onClick={handleModalClose}
         width={32}
         height={32}
       />
-
+      <h3 className={classes.title}>{title}</h3>
       {children}
     </ReactModal>
   );

@@ -9,8 +9,8 @@ import { uploadCompanyLogo } from '../../providers/DictionaryProvider';
 
 type UploadCompanyLogoModalProps = {
   isShowing: boolean;
-  onShow: () => void;
   company?: Option;
+  onShow: () => void;
 };
 
 const UploadCompanyLogoModal = ({

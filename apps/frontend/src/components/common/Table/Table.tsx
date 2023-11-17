@@ -18,7 +18,7 @@ const Table = ({
   classNames = '',
 }: TableProps) => {
   const { theme } = useTheme();
-  return (
+  return data.length ? (
     <table id={id} className={`${classes.commonTable} ${classNames}`}>
       <thead>
         <tr>
@@ -26,42 +26,51 @@ const Table = ({
           {fields.map((field) => (
             <th key={`th-key-${field}`}>{field}</th>
           ))}
+          <th>...</th>
         </tr>
       </thead>
       <tbody>
         {data &&
           data.map((el: any, index: number) => (
             <tr key={`tr-key-${el.id}`}>
-              <td key={`td-key-${index}`}>{index + 1}</td>
+              <td width="50" key={`td-key-${index}`}>
+                {index + 1}.
+              </td>
 
               {fields.map((field) => (
                 <td key={`td-key-${field}-${el.id}`}>{el[field]}</td>
               ))}
 
-              {actions ? (
-                <td className={classes.actionsColumn}>
-                  {Object.entries(actions).map((action) => {
-                    const [key, callback] = action;
-                    return (
-                      <SvgIcon
-                        key={`icon-${el.id}-action-${key}`}
-                        id={`icon-${key}`}
-                        onClick={() => callback([id, el])}
-                        width={20}
-                        height={20}
-                        color={theme === 'dark' ? '#fff' : '#19202d'}
-                        hoverColor={theme === 'dark' ? '#eee' : '#696e76'}
-                      />
-                    );
-                  })}
+              {actions && (
+                <td
+                  key={`td-key-actions-${el.id}`}
+                  className={classes.actionsColumn}
+                  width={
+                    actions
+                      ? (Object.keys(actions).length * 35).toString()
+                      : '35'
+                  }
+                >
+                  {Object.entries(actions).map(([key, callback]) => (
+                    <SvgIcon
+                      key={`icon-${el.id}-action-${key}`}
+                      id={`icon-${key}`}
+                      elementId={`icon-action-${key}`}
+                      onClick={() => callback([id, el])}
+                      width={20}
+                      height={20}
+                      color={theme === 'dark' ? '#fff' : '#19202d'}
+                      hoverColor={theme === 'dark' ? '#eee' : '#696e76'}
+                    />
+                  ))}
                 </td>
-              ) : (
-                ''
               )}
             </tr>
           ))}
       </tbody>
     </table>
+  ) : (
+    <div className={classes.noData}>&#128683; No data</div>
   );
 };
 

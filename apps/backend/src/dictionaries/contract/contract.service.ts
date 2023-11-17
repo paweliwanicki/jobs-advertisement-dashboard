@@ -28,7 +28,11 @@ export class ContractService {
   }
 
   async getAll() {
-    return await this.contractRepository.find();
+    return await this.contractRepository.find({
+      order: {
+        name: 'asc',
+      },
+    });
   }
 
   async update(id: number, attrs: Partial<Contract>) {

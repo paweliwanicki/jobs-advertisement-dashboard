@@ -1,19 +1,18 @@
-import { useCallback, useMemo, useState, ReactNode } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import classes from './DictionariesContainer.module.scss';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 import { useDictionaries } from '../../hooks/useDictionaries';
 import Table from '../../components/common/Table/Table';
-import Modal from '../../components/common/Modal/Modal';
-import Input from '../../components/common/Input/Input';
-import Button from '../../components/common/Button/Button';
 import { Company } from '../../types/Company';
 import { Contract } from '../../types/Contract';
+import { DictionariesModal } from './DictionaryModal/DictionaryModal';
+import Button from '../../components/common/Button/Button';
 
 type DictionaryFields = 'NAME';
-type DictionaryActions = 'edit' | 'delete';
-type DictionaryTable = 'company' | 'contract';
-type DictionaryType = Company | Contract;
+export type DictionaryActions = 'edit' | 'delete';
+export type DictionaryTable = 'company' | 'contract';
+export type DictionaryType = Company | Contract;
 
 const DICTIONARY_FIELDS: Record<DictionaryFields, string> = {
   NAME: 'name',
@@ -21,14 +20,14 @@ const DICTIONARY_FIELDS: Record<DictionaryFields, string> = {
 
 export const DictionariesContainer = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [modalContent, setModalContent] = useState<ReactNode>();
-
-  const [editModalValue, setEditModalValue] = useState<string>();
+  const [modalContent, setModalContent] = useState<DictionaryActions>('edit');
 
   const [selectedItem, setSelectedItem] = useState<DictionaryType>();
-  const [selectedTable, setSelectedTable] = useState<DictionaryTable>();
+  const [selectedTable, setSelectedTable] =
+    useState<DictionaryTable>('company');
 
   const {
+    isFetching,
     companies,
     contracts,
     addUpdateCompany,
@@ -39,7 +38,7 @@ export const DictionariesContainer = () => {
 
   const handleDictionaryElementUpdate: Record<
     DictionaryTable,
-    (element: DictionaryType) => void
+    (element: DictionaryType) => Promise<DictionaryType> | undefined
   > = useMemo(() => {
     return {
       company: addUpdateCompany,
@@ -49,7 +48,7 @@ export const DictionariesContainer = () => {
 
   const handleDictionaryElementDelete: Record<
     DictionaryTable,
-    (id: number) => void
+    (id: number) => Promise<boolean> | undefined
   > = useMemo(() => {
     return {
       company: deleteCompany,
@@ -57,27 +56,21 @@ export const DictionariesContainer = () => {
     };
   }, [selectedItem]);
 
-  const handleShowModal = useCallback(() => {
-    setShowModal((isShowing) => !isShowing);
-  }, []);
+  const handleShowModal = () => setShowModal((showModal) => !showModal);
 
-  const handleSetEditModalValue = useCallback(
-    (value: string) => {
-      setEditModalValue(value);
+  const handleSaveEditModal = useCallback(
+    async (editModalValue: string) => {
+      if (editModalValue) {
+        const updObj: DictionaryType = {
+          id: selectedItem?.id,
+          name: editModalValue,
+        };
+
+        handleDictionaryElementUpdate[selectedTable as DictionaryTable](updObj);
+      }
     },
-    [selectedItem]
+    [selectedItem, selectedTable, modalContent, showModal]
   );
-
-  const handleSaveEditModal = useCallback(async () => {
-    if (editModalValue && selectedItem) {
-      const updObj: DictionaryType = {
-        id: selectedItem.id,
-        name: editModalValue,
-      };
-      console.log(selectedItem);
-      handleDictionaryElementUpdate[selectedTable as DictionaryTable](updObj);
-    }
-  }, []);
 
   const handleSaveDeleteModal = useCallback(() => {
     if (selectedItem && selectedItem.id) {
@@ -85,27 +78,37 @@ export const DictionariesContainer = () => {
         selectedItem.id
       );
     }
-  }, []);
+  }, [selectedItem, selectedTable, modalContent, showModal]);
 
   const handleEditAction = useCallback(
     ([table, value]: [DictionaryTable, DictionaryType]) => {
       setSelectedItem(value);
       setSelectedTable(table);
-      setEditModalValue(value.name);
-      setModalContent(editModalContent);
+      modalContent !== 'edit' && setModalContent('edit');
       handleShowModal();
     },
-    [selectedItem]
+    [selectedItem, selectedTable, modalContent, showModal]
   );
 
   const handleDeleteAction = useCallback(
     ([table, value]: [DictionaryTable, DictionaryType]) => {
       setSelectedItem(value);
       setSelectedTable(table);
-      setModalContent(deleteModalContent);
+      console.log(table);
+      modalContent !== 'delete' && setModalContent('delete');
       handleShowModal();
     },
-    [selectedItem]
+    [selectedItem, selectedTable, modalContent, showModal]
+  );
+
+  const handleAddNewAction = useCallback(
+    (table: DictionaryTable) => {
+      setSelectedTable(table);
+      setSelectedItem(undefined);
+      setModalContent('edit');
+      handleShowModal();
+    },
+    [selectedItem, selectedTable, modalContent, showModal]
   );
 
   const DICTIONARY_ACTIONS: Record<
@@ -116,59 +119,12 @@ export const DictionariesContainer = () => {
       edit: handleEditAction,
       delete: handleDeleteAction,
     }),
-    []
-  );
-
-  const editModalContent = useMemo(
-    () => (
-      <>
-        <Input
-          type="text"
-          size="small"
-          id="name"
-          label={
-            <span>
-              Name<span className={classes.required}>*</span>
-            </span>
-          }
-          // errorText={usernameError}
-          // hasError={!!usernameError}
-          onChange={handleSetEditModalValue}
-          placeholder="Your new username"
-          // isValidated={usernameIsValidated}
-          autoComplete="off"
-          value={editModalValue}
-        />
-        <Button variant="secondary" onClick={handleShowModal}>
-          Cancel
-        </Button>
-        <Button variant="primary" onClick={handleSaveEditModal}>
-          Save
-        </Button>
-      </>
-    ),
-    [selectedItem, editModalValue]
-  );
-
-  const deleteModalContent = useMemo(
-    () => (
-      <>
-        <h2>
-          Do you really want to delete: <strong>{selectedItem?.name}</strong>
-        </h2>
-        <Button variant="secondary" onClick={handleShowModal}>
-          Cancel
-        </Button>
-        <Button variant="primary" onClick={handleSaveDeleteModal}>
-          Delete
-        </Button>
-      </>
-    ),
-    [selectedItem]
+    [selectedItem, selectedTable, modalContent]
   );
 
   return (
     <div className={classes.dicitonariesContainer}>
+      <h2>Definitions management</h2>
       <Tabs>
         <TabList>
           <Tab>Company</Tab>
@@ -176,8 +132,17 @@ export const DictionariesContainer = () => {
         </TabList>
 
         <TabPanel>
-          <h2>List of your defined companies</h2>
-
+          <h4>
+            Here you will find definitions of the companies you can manage.
+            <br />
+            To create a new company definition click on the button 'Add New'.
+          </h4>
+          <Button
+            variant="secondary"
+            onClick={() => handleAddNewAction('company')}
+          >
+            Add New
+          </Button>
           <Table
             data={companies}
             fields={[DICTIONARY_FIELDS.NAME]}
@@ -186,8 +151,17 @@ export const DictionariesContainer = () => {
           />
         </TabPanel>
         <TabPanel>
-          <h2>List of your defined contracts</h2>
-
+          <h4>
+            Here you will find definitions of the contracts you can manage.
+            <br /> To create a new contract definition click on the button 'Add
+            New'.
+          </h4>
+          <Button
+            variant="secondary"
+            onClick={() => handleAddNewAction('contract')}
+          >
+            Add New
+          </Button>
           <Table
             data={contracts}
             fields={[DICTIONARY_FIELDS.NAME]}
@@ -196,13 +170,16 @@ export const DictionariesContainer = () => {
           />
         </TabPanel>
       </Tabs>
-      <Modal
-        isOpen={showModal}
+      <DictionariesModal
+        isFetching={isFetching}
+        action={modalContent}
+        isShowing={showModal}
+        selectedItem={selectedItem}
+        selectedTable={selectedTable}
         onClose={handleShowModal}
-        classNames={classes.editModal}
-      >
-        {modalContent}
-      </Modal>
+        onEdit={handleSaveEditModal}
+        onDelete={handleSaveDeleteModal}
+      />
     </div>
   );
 };
