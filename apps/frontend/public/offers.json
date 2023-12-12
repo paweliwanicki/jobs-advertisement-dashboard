@@ -1,9 +1,7 @@
 [
   {
-    "id": 1,
     "company": "Scoot",
-    "logo": "./assets/logos/scoot.svg",
-    "logoBackground": "hsl(36, 87%, 49%)",
+    "logoFileName": "scoot.svg",
     "position": "Senior Software Engineer",
     "postedAt": "5h ago",
     "contract": "Full Time",
@@ -31,10 +29,8 @@
     }
   },
   {
-    "id": 2,
     "company": "Blogr",
-    "logo": "./assets/logos/blogr.svg",
-    "logoBackground": "hsl(12, 79%, 52%)",
+    "logoFileName": "blogr.svg",
     "position": "Haskell and PureScript Dev",
     "postedAt": "20h ago",
     "contract": "Part Time",
@@ -62,13 +58,11 @@
     }
   },
   {
-    "id": 3,
     "company": "Vector",
-    "logo": "./assets/logos/vector.svg",
-    "logoBackground": "hsl(235, 10%, 23%)",
+    "logoFileName": "vector.svg",
     "position": "Midlevel Back End Engineer",
     "postedAt": "1d ago",
-    "contract": "Part Time",
+    "contract": "1/2 Time",
     "location": "Russia",
     "website": "https://example.com/vector",
     "apply": "https://example.com/vector/apply",
@@ -92,10 +86,8 @@
     }
   },
   {
-    "id": 4,
     "company": "Office Lite",
-    "logo": "./assets/logos/officelite.svg",
-    "logoBackground": "hsl(227, 62%, 48%)",
+    "logoFileName": "officelite.svg",
     "position": "Senior Application Engineer",
     "postedAt": "2d ago",
     "contract": "Full Time",
@@ -124,13 +116,11 @@
     }
   },
   {
-    "id": 5,
     "company": "Pod",
-    "logo": "./assets/logos/pod.svg",
-    "logoBackground": "hsl(216, 46%, 14%)",
+    "logoFileName": "pod.svg",
     "position": "Remote DevOps Engineer",
     "postedAt": "2d ago",
-    "contract": "Part Time",
+    "contract": "1/3 Time",
     "location": "Japan",
     "website": "https://example.com/pod",
     "apply": "https://example.com/pod/apply",
@@ -160,13 +150,11 @@
     }
   },
   {
-    "id": 6,
     "company": "Creative",
-    "logo": "./assets/logos/creative.svg",
-    "logoBackground": "hsl(295, 55%, 21%)",
+    "logoFileName": "creative.svg",
     "position": "Desktop Support Manager",
     "postedAt": "4d ago",
-    "contract": "Part Time",
+    "contract": "1/2 Time",
     "location": "Germany",
     "website": "https://example.com/creative",
     "apply": "https://example.com/creative/apply",
@@ -194,10 +182,8 @@
     }
   },
   {
-    "id": 7,
     "company": "Pomodoro",
-    "logo": "./assets/logos/pomodoro.svg",
-    "logoBackground": "hsl(254, 71%, 45%)",
+    "logoFileName": "pomodoro.svg",
     "position": "iOS Engineer",
     "postedAt": "1w ago",
     "contract": "Full Time",
@@ -225,10 +211,8 @@
     }
   },
   {
-    "id": 8,
     "company": "Maker",
-    "logo": "./assets/logos/maker.svg",
-    "logoBackground": "hsl(218, 58%, 31%)",
+    "logoFileName": "maker.svg",
     "position": "Senior EJB Developer",
     "postedAt": "1w ago",
     "contract": "Full Time",
@@ -256,10 +240,8 @@
     }
   },
   {
-    "id": 9,
     "company": "Coffeeroasters",
-    "logo": "./assets/logos/coffeeroasters.svg",
-    "logoBackground": "hsl(29, 60%, 87%)",
+    "logoFileName": "coffeeroasters.svg",
     "position": "Senior Frontend Developer",
     "postedAt": "1w ago",
     "contract": "Part Time",
@@ -287,10 +269,8 @@
     }
   },
   {
-    "id": 10,
     "company": "Mastercraft",
-    "logo": "./assets/logos/mastercraft.svg",
-    "logoBackground": "hsl(0, 0%, 12%)",
+    "logoFileName": "mastercraft.svg",
     "position": "App & Website Designer",
     "postedAt": "2w ago",
     "contract": "Freelance",
@@ -320,10 +300,8 @@
     }
   },
   {
-    "id": 11,
     "company": "Crowdfund",
-    "logo": "./assets/logos/crowdfund.svg",
-    "logoBackground": "hsl(157, 57%, 50%)",
+    "logoFileName": "crowdfund.svg",
     "position": "Fullstack Developer",
     "postedAt": "1mo ago",
     "contract": "Part Time",
@@ -353,10 +331,8 @@
     }
   },
   {
-    "id": 12,
     "company": "Typemaster",
-    "logo": "./assets/logos/typemaster.svg",
-    "logoBackground": "hsl(22, 89%, 52%)",
+    "logoFileName": "typemaster.svg",
     "position": "Technical Lead Engineer",
     "postedAt": "1mo ago",
     "contract": "Part Time",

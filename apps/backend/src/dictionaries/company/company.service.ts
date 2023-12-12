@@ -4,6 +4,8 @@ import { Company } from './company.entity';
 import { Repository } from 'typeorm';
 import { UpdateCompanyDto } from './dtos/update-company.dto';
 import { COMPANY_EXCEPTION_MESSAGES } from './company-exception.messages';
+import { ImportOfferDto } from 'src/offers/dtos/import-offer.dto';
+import { User } from 'src/users/user.entity';
 
 @Injectable()
 export class CompanyService {
@@ -11,10 +13,10 @@ export class CompanyService {
     @InjectRepository(Company) private companyRepository: Repository<Company>,
   ) {}
 
-  create(company: UpdateCompanyDto) {
+  async create(company: UpdateCompanyDto) {
     company.createdAt = Math.floor(new Date().getTime() / 1000);
     const newCompany = this.companyRepository.create(company);
-    return this.companyRepository.save(newCompany);
+    return await this.companyRepository.save(newCompany);
   }
 
   async findOneById(id: number) {
@@ -51,30 +53,24 @@ export class CompanyService {
     return this.companyRepository.remove(company);
   }
 
-  async importCompanies(body: any[]) {
-    const currentCompanies = await this.getAll();
-
-    if (body.length) {
-      body.map((offer: any) => {
-        const exist = currentCompanies.find(
-          (company: Company) => company.name === offer.company,
-        );
+  async importCompanies(data: ImportOfferDto[], user: User) {
+    console.warn('1 step - import definitions of companies');
+    if (data.length) {
+      data.forEach(async ({ company, logoFileName }: ImportOfferDto) => {
+        const exist = await this.findOne({ name: company });
         if (exist) {
-          console.warn(`${offer.company} is already exist!`);
-          return false;
+          console.warn(`${company} is already exist!`);
+          return;
         }
 
-        this.create({
-          name: offer.company,
-          logoFileName: offer.logo.split('/')[3],
-          createdBy: 1,
-        } as Company).then((company: Company) => {
-          currentCompanies.push(company);
-        });
+        return await this.create({
+          name: company,
+          logoFileName,
+          createdBy: user.id,
+        } as Company);
       });
     }
-
-    return currentCompanies;
+    console.warn('2 step - ending import definitions of companies');
   }
 
   async setCompanyLogo(companyId: number, file: Express.Multer.File) {

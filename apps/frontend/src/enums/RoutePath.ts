@@ -4,6 +4,7 @@ export enum RoutePath {
   DASHBOARD = '/dashboard',
   LOGIN = '/login',
   OFFER_EDITOR = '/offer/edit/:id?',
+  OFFER_MY = '/offer/my/',
   OFFER_PREVIEW = '/offer/:id',
   DICTIONARIES = '/dict/',
 }

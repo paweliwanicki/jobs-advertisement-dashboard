@@ -4,6 +4,8 @@ import { Contract } from './contract.entity';
 import { Repository } from 'typeorm';
 import { UpdateContractDto } from './dtos/update-contract.dto';
 import { CONTRACT_EXCEPTION_MESSAGES } from './contract-exception.messages';
+import { ImportOfferDto } from 'src/offers/dtos/import-offer.dto';
+import { User } from 'src/users/user.entity';
 
 @Injectable()
 export class ContractService {
@@ -12,10 +14,10 @@ export class ContractService {
     private contractRepository: Repository<Contract>,
   ) {}
 
-  create(contract: UpdateContractDto) {
+  async create(contract: UpdateContractDto) {
     contract.createdAt = Math.floor(new Date().getTime() / 1000);
     const newContract = this.contractRepository.create(contract);
-    return this.contractRepository.save(newContract);
+    return await this.contractRepository.save(newContract);
   }
 
   async findOneById(id: number) {
@@ -50,5 +52,24 @@ export class ContractService {
       throw new NotFoundException(CONTRACT_EXCEPTION_MESSAGES.NOT_FOUND);
     }
     return this.contractRepository.remove(contract);
+  }
+
+  async importContracts(data: ImportOfferDto[], user: User) {
+    console.warn('1 step - import definition of contracts');
+    if (data.length) {
+      data.forEach(async ({ contract }: ImportOfferDto) => {
+        const exist = await this.findOne({ name: contract });
+        if (exist) {
+          console.warn(`${contract} is already exist!`);
+          return;
+        }
+        return await this.create({
+          name: contract,
+          createdBy: user.id,
+          createdAt: Math.floor(new Date().getTime() / 1000),
+        } as Contract);
+      });
+    }
+    console.warn('2 step - ending import definition of contracts');
   }
 }

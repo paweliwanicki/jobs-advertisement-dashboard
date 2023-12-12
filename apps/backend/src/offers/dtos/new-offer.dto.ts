@@ -1,10 +1,8 @@
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Company } from 'src/dictionaries/company/company.entity';
+import { Contract } from 'src/dictionaries/contract/contract.entity';
 
-export class UpdateOfferDto {
-  @IsOptional()
-  id: number;
-
+export class NewOfferDto {
   @IsString()
   @IsNotEmpty()
   title: string;
@@ -17,13 +15,11 @@ export class UpdateOfferDto {
   @IsNotEmpty()
   location: string;
 
-  @IsNumber()
   @IsNotEmpty()
-  contractId: number;
+  contract: Contract;
 
-  @IsNumber()
   @IsNotEmpty()
-  companyId: number;
+  company: Company;
 
   @IsOptional()
   unremovable: boolean;
@@ -33,7 +29,4 @@ export class UpdateOfferDto {
 
   @IsOptional()
   createdBy: number;
-
-  @IsOptional()
-  company: Company;
 }

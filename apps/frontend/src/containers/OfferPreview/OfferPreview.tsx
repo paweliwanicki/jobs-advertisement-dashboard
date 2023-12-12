@@ -4,7 +4,7 @@ import Button from '../../components/common/Button/Button';
 import { useEffect } from 'react';
 import { getOfferAddedTime } from '../../components/OfferCard/OfferCard';
 import SvgIcon from '../../components/common/SvgIcon/SvgIcon';
-import { useOffer } from '../../hooks/useOffer';
+import { useOffer } from '../../contexts/offerContext';
 
 type OfferPreviewProps = {};
 
@@ -27,7 +27,14 @@ const OfferPreview = ({}: OfferPreviewProps) => {
         <>
           <section className={classes.offerDetailsSection}>
             <div className={classes.companyInfoBox}>
-              <img src={`/uploads/${company?.logoFileName}`} alt="company" />
+              <img
+                src={`/uploads/${
+                  company?.logoFileName
+                    ? company?.logoFileName
+                    : 'company_default_logo.jpeg'
+                }`}
+                alt="company"
+              />
               <div className={classes.companyInfo}>
                 <h3>{company?.name}</h3>
                 <a

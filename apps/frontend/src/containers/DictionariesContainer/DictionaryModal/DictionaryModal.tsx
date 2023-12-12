@@ -1,4 +1,10 @@
-import { useCallback, useMemo, useState, useEffect } from 'react';
+import {
+  useCallback,
+  useMemo,
+  useState,
+  useEffect,
+  KeyboardEvent,
+} from 'react';
 import classes from './DictionaryModal.module.scss';
 import 'react-tabs/style/react-tabs.css';
 import Modal from '../../../components/common/Modal/Modal';
@@ -98,6 +104,12 @@ export const DictionariesModal = ({
     [selectedItem]
   );
 
+  const handleEnterKey = ({ key }: KeyboardEvent<HTMLInputElement>) => {
+    if (key === 'Enter') {
+      handleSaveEditModal();
+    }
+  };
+
   const editModalContent = useMemo(
     () => (
       <>
@@ -117,6 +129,7 @@ export const DictionariesModal = ({
           // isValidated={usernameIsValidated}
           autoComplete="off"
           value={editModalValue}
+          onKeyDown={handleEnterKey}
         />
 
         <div className={classes.modalBtnBox}>

@@ -25,20 +25,27 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { CompanyService } from 'src/dictionaries/company/company.service';
 import { diskStorage } from 'multer';
 import { existsSync, mkdirSync } from 'fs';
+import { ContractService } from 'src/dictionaries/contract/contract.service';
+import { ImportOfferDto } from './dtos/import-offer.dto';
 @Controller('offers')
 export class OffersController {
   constructor(
     private offersService: OffersService,
     private companyService: CompanyService,
+    private contractService: ContractService,
   ) {}
 
   @Post()
   @UseGuards(JwtAuthGuard)
   async addOffer(@Body() body: UpdateOfferDto, @CurrentUser() user: User) {
-    const company = await this.companyService.findOneById(body.companyId);
+    const { companyId, contractId } = body;
+
+    const company = await this.companyService.findOneById(companyId);
+    const contract = await this.contractService.findOneById(contractId);
     const newOffer = {
       ...body,
       company,
+      contract,
       createdAt: Math.floor(new Date().getTime() / 1000),
       createdBy: user.id,
     };
@@ -70,12 +77,14 @@ export class OffersController {
   @Patch()
   @UseGuards(JwtAuthGuard)
   async updateOffer(@Body() body: UpdateOfferDto, @CurrentUser() user: User) {
-    const { id, companyId } = body;
+    const { id, companyId, contractId } = body;
 
     const company = await this.companyService.findOneById(companyId);
+    const contract = await this.contractService.findOneById(contractId);
     const updOffer = {
       ...body,
       company,
+      contract,
       modifiedAt: Math.floor(new Date().getTime() / 1000),
       modifiedBy: user.id,
     };
@@ -120,12 +129,12 @@ export class OffersController {
   @Post('/import')
   @Serialize(OfferDto)
   @UseGuards(JwtAuthGuard)
-  async importOffers(@Body() body: any, @CurrentUser() user: User) {
-    body.user = user;
-    console.warn('1 step - import companies');
-    await this.companyService.importCompanies(body);
-    console.warn('2 step - import offers');
-    await this.offersService.importOffers(body);
-    return true;
+  async importOffers(
+    @Body() data: ImportOfferDto[],
+    @CurrentUser() user: User,
+  ) {
+    this.companyService.importCompanies(data, user);
+    this.contractService.importContracts(data, user);
+    return await this.offersService.importOffers(data, user);
   }
 }

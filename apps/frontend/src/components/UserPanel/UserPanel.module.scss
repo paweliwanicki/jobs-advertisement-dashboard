@@ -16,9 +16,22 @@
 
   .userProfileDetails {
     text-align: left;
+
+    p {
+      span {
+        font-size: 15px;
+        font-family: variables.$font-family-bold;
+      }
+    }
   }
 
   .moreActions {
     margin-top: auto;
+
+    .btnSignOut {
+      display: inline-flex;
+      gap: 10px;
+      align-items: center;
+    }
   }
 }

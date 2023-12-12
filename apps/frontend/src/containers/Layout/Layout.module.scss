@@ -12,12 +12,12 @@
     width: 100%;
     max-width: 1190px;
     display: flex;
-    // align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     margin: 0 auto;
-    padding: 0 40px;
+    padding: 40px;
     flex-grow: 1;
     flex-flow: column;
+    margin-top: 160px;
   }
 }
 

@@ -1,4 +1,5 @@
 import { Company } from 'src/dictionaries/company/company.entity';
+import { Contract } from 'src/dictionaries/contract/contract.entity';
 import {
   AfterInsert,
   AfterUpdate,
@@ -6,8 +7,8 @@ import {
   Column,
   Entity,
   PrimaryGeneratedColumn,
-  OneToOne,
   JoinColumn,
+  ManyToOne,
 } from 'typeorm';
 
 @Entity()
@@ -25,9 +26,6 @@ export class Offer {
   location: string;
 
   @Column()
-  contract: string;
-
-  @Column()
   createdAt: number;
 
   @Column()
@@ -42,9 +40,13 @@ export class Offer {
   @Column({ default: false })
   unremovable: boolean;
 
-  @OneToOne(() => Company, (company) => company.offer)
+  @ManyToOne(() => Company, (company) => company.offer)
   @JoinColumn()
   company: Company;
+
+  @ManyToOne(() => Contract, (contract) => contract.offer)
+  @JoinColumn()
+  contract: Contract;
 
   @AfterInsert()
   logInsert() {

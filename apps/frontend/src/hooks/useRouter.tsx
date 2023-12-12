@@ -10,6 +10,7 @@ import { UserPanel } from '../components/UserPanel/UserPanel';
 import { RoutePath } from '../enums/RoutePath';
 import OfferPreview from '../containers/OfferPreview/OfferPreview';
 import { DictionariesContainer } from '../containers/DictionariesContainer/DictionariesContainer';
+import MyOffersList from '../containers/MyOffersList/MyOffersList';
 
 const history = createBrowserHistory();
 
@@ -53,6 +54,14 @@ const router = createBrowserRouter([
         element: (
           <AuthGuard>
             <DictionariesContainer />
+          </AuthGuard>
+        ),
+      },
+      {
+        path: RoutePath.OFFER_MY,
+        element: (
+          <AuthGuard>
+            <MyOffersList />
           </AuthGuard>
         ),
       },
