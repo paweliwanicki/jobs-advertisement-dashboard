@@ -1,14 +1,16 @@
-import Layout from "../containers/Layout/Layout";
-import Dashboard from "../containers/Dashboard/Dashboard";
-import LoginContainer from "../containers/LoginContainer/LoginContainer";
-import OfferEditor from "../components/OfferEditor/OfferEditor";
-import { createBrowserHistory } from "history";
-import { Navigate, createBrowserRouter } from "react-router-dom";
-import { Page404 } from "../404";
-import { AuthGuard } from "../guards/AuthGuard";
-import { UserPanel } from "../components/UserPanel/UserPanel";
-import { RoutePath } from "../enums/RoutePath";
-import OfferPreview from "../containers/OfferPreview/OfferPreview";
+import Layout from '../containers/Layout/Layout';
+import Dashboard from '../containers/Dashboard/Dashboard';
+import LoginContainer from '../containers/LoginContainer/LoginContainer';
+import OfferEditor from '../components/OfferEditor/OfferEditor';
+import { createBrowserHistory } from 'history';
+import { Navigate, createBrowserRouter } from 'react-router-dom';
+import { Page404 } from '../404';
+import { AuthGuard } from '../guards/AuthGuard';
+import { UserPanel } from '../components/UserPanel/UserPanel';
+import { RoutePath } from '../enums/RoutePath';
+import OfferPreview from '../containers/OfferPreview/OfferPreview';
+import { DictionariesContainer } from '../containers/DictionariesContainer/DictionariesContainer';
+import MyOffersList from '../containers/MyOffersList/MyOffersList';
 
 const history = createBrowserHistory();
 
@@ -45,10 +47,22 @@ const router = createBrowserRouter([
       },
       {
         path: RoutePath.OFFER_PREVIEW,
+        element: <OfferPreview />,
+      },
+      {
+        path: RoutePath.DICTIONARIES,
         element: (
-          // <AuthGuard>
-            <OfferPreview />
-          // </AuthGuard>
+          <AuthGuard>
+            <DictionariesContainer />
+          </AuthGuard>
+        ),
+      },
+      {
+        path: RoutePath.OFFER_MY,
+        element: (
+          <AuthGuard>
+            <MyOffersList />
+          </AuthGuard>
         ),
       },
     ],

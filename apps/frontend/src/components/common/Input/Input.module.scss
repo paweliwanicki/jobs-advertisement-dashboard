@@ -55,10 +55,11 @@
       padding-right: 5px;
       border-top-left-radius: inherit;
       border-bottom-left-radius: inherit;
-
-      // &:focus {
-      //   box-shadow: 0 0 0 1px variables.$violet;
-      // }
+      border: none;
+      outline: none;
+      flex-grow: 1;
+      border-radius: inherit;
+      flex-shrink: 0;
 
       &:-webkit-autofill,
       &:-webkit-autofill:hover,
@@ -96,12 +97,6 @@
         background-color: themeVariables.themed('input-background');
         color: themeVariables.themed('input-color');
       }
-
-      border: none;
-      outline: none;
-      flex-grow: 1;
-      border-radius: inherit;
-      flex-shrink: 0;
 
       &::placeholder {
         opacity: 0.5;

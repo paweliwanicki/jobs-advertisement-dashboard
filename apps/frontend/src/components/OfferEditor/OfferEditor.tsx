@@ -9,7 +9,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { SingleValue } from 'react-select';
 import { useTheme } from '../../hooks/useTheme';
 import { useOfferEditor } from '../../hooks/useOfferEditor';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { LoadingSpinner } from '../common/LoadingSpinner/LoadingSpinner';
 import type { Option } from 'react-google-places-autocomplete/build/types';
 import type { Editor as TinyMceEditor } from 'tinymce';
@@ -20,17 +20,21 @@ import UploadCompanyLogoModal from '../UploadCompanyLogoModal/UploadCompanyLogoM
 import { Company } from '../../types/Company';
 import { Offer } from '../../types/Offer';
 import { Contract } from '../../types/Contract';
+import { useRouter } from '../../hooks/useRouter';
 
 const OfferEditor = () => {
   let { id } = useParams();
   const { fetch } = useApi();
   const { theme } = useTheme();
+
+  const { history } = useRouter();
+  console.log(history);
   const editorRef = useRef<TinyMceEditor>();
   const {
     companySelectOptions,
     contractSelectOptions,
-    createCompany,
-    createContract,
+    addUpdateCompany,
+    addUpdateContract,
   } = useDictionaries();
 
   const {
@@ -193,7 +197,7 @@ const OfferEditor = () => {
     const newCompany: Company = {
       name,
     };
-    const company = await createCompany(newCompany);
+    const company = await addUpdateCompany(newCompany);
     if (company?.id) {
       setCompany({
         label: company.name,
@@ -207,7 +211,7 @@ const OfferEditor = () => {
     const newContract: Contract = {
       name,
     };
-    const contract = await createContract(newContract);
+    const contract = await addUpdateContract(newContract);
     if (contract?.id) {
       setContract({
         label: contract.name,
@@ -228,13 +232,13 @@ const OfferEditor = () => {
     id && fetchOffer(id);
   }, []);
 
+  //console.log(history.back());
+
   return (
     <div className={classes.offerEditorContainer}>
       <h2>Add new offer</h2>
       {(isLoading || isFetching) && (
-        <LoadingSpinner
-          message={isLoading ? 'Initialization text editor' : ''}
-        />
+        <LoadingSpinner message={isLoading ? 'Form loading' : ''} />
       )}
       <form onSubmit={handleSaveOffer}>
         <div className={classes.inputsBox}>
@@ -335,6 +339,7 @@ const OfferEditor = () => {
               }`}
               value={company}
               isClearable
+              isDisabled={!!id}
             />
           </label>
         </div>
@@ -378,9 +383,9 @@ const OfferEditor = () => {
           </div>
         </label>
         <div className={classes.actionsBox}>
-          <Link to="/dashboard">
-            <Button variant="secondary">Cancel</Button>
-          </Link>
+          <Button variant="secondary" onClick={history.back}>
+            Cancel
+          </Button>
           <Button variant="primary" disabled={isFetching} type="submit">
             Save
           </Button>

@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthenticationModule } from 'src/authentication/authentication.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { CompanyModule } from 'src/dictionaries/company/company.module';
+import { ContractModule } from 'src/dictionaries/contract/contract.module';
 
 @Module({
   controllers: [OffersController],
@@ -17,6 +18,7 @@ import { CompanyModule } from 'src/dictionaries/company/company.module';
     }),
     AuthenticationModule,
     CompanyModule,
+    ContractModule,
   ],
   exports: [OffersService],
 })

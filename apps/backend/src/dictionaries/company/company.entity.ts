@@ -33,7 +33,7 @@ export class Company {
   modifiedAt: number;
 
   @OneToMany(() => Offer, (offer) => offer.company)
-  offer: Offer[];
+  offer: Offer;
 
   @AfterInsert()
   logInsert() {

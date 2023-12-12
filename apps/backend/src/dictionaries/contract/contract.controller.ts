@@ -61,7 +61,8 @@ export class ContractController {
   @Delete('/:id')
   @UseGuards(JwtAuthGuard)
   removeOffer(@Param('id') id: string) {
-    return this.contractService.remove(parseInt(id));
+    const isDeleted = this.contractService.remove(parseInt(id));
+    return isDeleted ? true : false;
   }
 
   @Patch('/:id')

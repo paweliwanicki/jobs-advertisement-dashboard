@@ -1,10 +1,12 @@
-import OfferList from "../OfferList/OfferList";
-import classes from "./Dashboard.module.scss";
+import { useOffer } from '../../contexts/offerContext';
+import OfferList from '../OfferList/OfferList';
+import classes from './Dashboard.module.scss';
 
 const Dashboard = () => {
+  const { offers } = useOffer();
   return (
     <div className={classes.dashboard}>
-      <OfferList />
+      <OfferList offers={offers} />
     </div>
   );
 };

@@ -5,6 +5,7 @@ import { Company } from '../types/Company';
 import { Option } from 'react-google-places-autocomplete/build/types';
 import { Contract } from '../types/Contract';
 import { DictionaryContext } from '../contexts/dictionaryContext';
+import { useSnackBar } from '../hooks/useSnackBar';
 
 type DictionaryProviderProps = {
   children: ReactNode;
@@ -37,7 +38,9 @@ export const uploadCompanyLogo = async (file: Blob, companyId: number) => {
 };
 
 const DictionaryProvider = ({ children }: DictionaryProviderProps) => {
-  const { fetch } = useApi();
+  const { fetch, isFetching } = useApi();
+
+  const { handleShowSnackBar } = useSnackBar();
 
   const [companies, setCompanies] = useState<Company[]>([]);
   const [companySelectOptions, setCompanySelectOptions] = useState<Option[]>(
@@ -54,23 +57,38 @@ const DictionaryProvider = ({ children }: DictionaryProviderProps) => {
       path: '/api/dict/company/',
     });
 
-    console.log(response);
     if (response.statusCode === 200) {
       setCompanies(allCompanies);
       setCompanySelectOptions(generateSelectOptions(allCompanies));
     }
   }, []);
 
-  const createCompany = useCallback(async (company: Company) => {
+  const addUpdateCompany = useCallback(async (company: Company) => {
     const [newCompany, response] = await fetch<Company>(HttpMethod.POST, {
       path: '/api/dict/company/',
       payload: JSON.stringify(company),
     });
-    console.log(response);
     if (response.statusCode === 201) {
       await getCompanies();
+      handleShowSnackBar('Saved successfully!', 'success');
+    } else {
+      handleShowSnackBar('An error occurred. Update failed!', 'error');
     }
     return newCompany;
+  }, []);
+
+  const deleteCompany = useCallback(async (id: number) => {
+    const [, response] = await fetch<Company>(HttpMethod.DELETE, {
+      path: `/api/dict/company/${id}`,
+    });
+    if (response.statusCode === 200) {
+      await getCompanies();
+      handleShowSnackBar('Deleted successfully!', 'success');
+      return true;
+    } else {
+      handleShowSnackBar('An error occurred. The deletion failed!', 'error');
+    }
+    return false;
   }, []);
 
   const getContracts = useCallback(async () => {
@@ -78,21 +96,37 @@ const DictionaryProvider = ({ children }: DictionaryProviderProps) => {
       path: '/api/dict/contract/',
     });
     if (response.statusCode === 200) {
-      console.log(allContracts);
       setContracts(allContracts);
       setContractSelectOptions(generateSelectOptions(allContracts));
     }
   }, []);
 
-  const createContract = useCallback(async (contract: Contract) => {
+  const addUpdateContract = useCallback(async (contract: Contract) => {
     const [newContract, response] = await fetch<Contract>(HttpMethod.POST, {
       path: '/api/dict/contract/',
       payload: JSON.stringify(contract),
     });
     if (response.statusCode === 201) {
       await getContracts();
+      handleShowSnackBar('Saved successfully!', 'success');
+    } else {
+      handleShowSnackBar('An error occurred. Update failed!', 'error');
     }
     return newContract;
+  }, []);
+
+  const deleteContract = useCallback(async (id: number) => {
+    const [, response] = await fetch<Contract>(HttpMethod.DELETE, {
+      path: `/api/dict/contract/${id}`,
+    });
+    if (response.statusCode === 200) {
+      await getContracts();
+      handleShowSnackBar('Deleted successfully!', 'success');
+      return true;
+    } else {
+      handleShowSnackBar('An error occurred. The deletion failed!', 'error');
+    }
+    return false;
   }, []);
 
   useEffect(() => {
@@ -106,16 +140,22 @@ const DictionaryProvider = ({ children }: DictionaryProviderProps) => {
       companySelectOptions,
       contracts,
       contractSelectOptions,
-      createCompany,
-      createContract,
+      isFetching,
+      addUpdateCompany,
+      addUpdateContract,
+      deleteCompany,
+      deleteContract,
     }),
     [
       companies,
       companySelectOptions,
       contracts,
       contractSelectOptions,
-      createCompany,
-      createContract,
+      isFetching,
+      addUpdateCompany,
+      addUpdateContract,
+      deleteCompany,
+      deleteContract,
     ]
   );
 

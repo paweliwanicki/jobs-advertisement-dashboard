@@ -6,10 +6,13 @@ import { useUser } from '../../hooks/useUser';
 import ContextMenu, {
   ContextMenuOption,
 } from '../common/ContextMenu/ContextMenu';
+import { useCallback } from 'react';
+import { useOffer } from '../../contexts/offerContext';
 
 export type OfferCardProps = {
   id?: number;
   title: string;
+  showMenu?: boolean;
   company?: Company;
   contract: string;
   location: string;
@@ -43,17 +46,27 @@ const OfferCard = ({
   location,
   contract,
   createdAt,
+  showMenu = false,
 }: OfferCardProps) => {
+  const { removeOffer } = useOffer();
+  const handleRemoveOffer = useCallback((id?: number) => {
+    id && removeOffer(id);
+  }, []);
+
   const CONTEXT_MENU_OPTIONS: ContextMenuOption[] = [
     {
       label: <Link to={`/offer/edit/${id}`}>Edit</Link>,
+    },
+    {
+      label: 'Remove',
+      action: useCallback(() => handleRemoveOffer(id), []),
     },
   ];
 
   const { user } = useUser();
   return (
     <div className={classes.offerCard}>
-      {user?.isAdmin && (
+      {user && showMenu && (
         <div className={classes.cardActionsBox}>
           <ContextMenu
             options={CONTEXT_MENU_OPTIONS}

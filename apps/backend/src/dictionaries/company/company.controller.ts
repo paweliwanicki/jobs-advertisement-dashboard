@@ -61,7 +61,8 @@ export class CompanyController {
   @Delete('/:id')
   @UseGuards(JwtAuthGuard)
   removeOffer(@Param('id') id: string) {
-    return this.companyService.remove(parseInt(id));
+    const isDeleted = this.companyService.remove(parseInt(id));
+    return isDeleted ? true : false;
   }
 
   @Patch('/:id')

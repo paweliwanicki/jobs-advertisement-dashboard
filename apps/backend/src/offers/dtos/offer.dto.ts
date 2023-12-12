@@ -1,4 +1,6 @@
 import { Expose } from 'class-transformer';
+import { Company } from 'src/dictionaries/company/company.entity';
+import { Contract } from 'src/dictionaries/contract/contract.entity';
 
 export class OfferDto {
   @Expose()
@@ -10,9 +12,9 @@ export class OfferDto {
   @Expose()
   location: string;
   @Expose()
-  contract: string;
+  contract: Contract;
   @Expose()
-  companyId: number;
+  company: Company;
   @Expose()
   createdAt: number;
   @Expose()
@@ -23,6 +25,4 @@ export class OfferDto {
   modifiedBy: number;
   @Expose()
   unremovable: boolean;
-  @Expose()
-  company: string;
 }

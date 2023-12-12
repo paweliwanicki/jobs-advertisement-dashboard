@@ -1,10 +1,9 @@
 @use '../../styles/variables.scss';
 @use '../../styles/themeVariables.scss';
+@use '../../styles/utils.scss';
 
 .offerPreviewContainer {
   width: 100%;
-  position: relative;
-  top: -60px;
   display: flex;
   flex-flow: column;
   align-items: center;
@@ -13,6 +12,10 @@
   button {
     padding: 16px 28px;
     white-space: nowrap;
+
+    @include utils.respond-to(bp-small) {
+      padding: 12px 18px !important;
+    }
   }
 
   .offerDetailsSection {
@@ -33,9 +36,18 @@
         background-color: themeVariables.themed('input-background');
       }
 
+      @include utils.respond-to(bp-small) {
+        gap: 15px;
+      }
+
       img {
         width: 140px;
         height: 140px;
+
+        @include utils.respond-to(bp-small) {
+          width: 60px;
+          height: 60px;
+        }
       }
 
       a {
@@ -55,6 +67,9 @@
           @include themeVariables.themify(themeVariables.$themes) {
             color: themeVariables.themed('text-main-color');
           }
+          @include utils.respond-to(bp-small) {
+            font-size: 16px;
+          }
         }
 
         p {
@@ -72,6 +87,10 @@
 
       @include themeVariables.themify(themeVariables.$themes) {
         background-color: themeVariables.themed('input-background');
+      }
+
+      @include utils.respond-to(bp-small) {
+        padding: 24px 22px 24px 24px;
       }
 
       .offerInfoApplyBox {
@@ -134,12 +153,12 @@
 
   .offerFooter {
     position: relative;
-    bottom: -85px;
-    padding: 23px 5px;
+    bottom: -65px;
+    padding: 23px 40px;
     display: flex;
     align-items: center;
     margin-top: auto;
-    width: 100%;
+    width: calc(100dvw - 20px);
     border-top-left-radius: 6px;
     border-top-right-radius: 6px;
 

@@ -3,6 +3,8 @@ import { OfferContext } from '../contexts/offerContext';
 import { HttpMethod } from '../enums/HttpMethods';
 import { Offer } from '../types/Offer';
 import { useApi } from '../hooks/useApi';
+import { useUser } from '../hooks/useUser';
+import { useSnackBar } from '../hooks/useSnackBar';
 
 type OfferProviderProps = {
   children: ReactNode;
@@ -11,8 +13,13 @@ type OfferProviderProps = {
 const OfferProvider = ({ children }: OfferProviderProps) => {
   const { fetch, isFetching } = useApi();
 
+  const { handleShowSnackBar } = useSnackBar();
+
   const [selectedOffer, setSelectedOffer] = useState<Offer>();
   const [offers, setOffers] = useState<Offer[]>([]);
+  const [myOffers, setMyOffers] = useState<Offer[]>([]);
+
+  const { user } = useUser();
 
   const fetchOffers = useCallback(async () => {
     const [fetchedOffers, response] = await fetch<Offer[]>(HttpMethod.GET, {
@@ -36,20 +43,61 @@ const OfferProvider = ({ children }: OfferProviderProps) => {
     [selectedOffer]
   );
 
+  const removeOffer = useCallback(
+    async (id: number) => {
+      const [, response] = await fetch<Offer>(HttpMethod.DELETE, {
+        path: `/api/offers/${id}`,
+      });
+
+      if (response.statusCode === 200) {
+        fetchOffers();
+        handleShowSnackBar('Offer removed successfully', 'success');
+      } else {
+        handleShowSnackBar(
+          'There was an error when deleting the offer',
+          'error'
+        );
+      }
+    },
+    [selectedOffer]
+  );
+
+  const getMyOffers = useCallback(() => {
+    const myOffers = offers?.filter(
+      ({ createdBy }: Offer) => user?.id === createdBy
+    );
+    setMyOffers(myOffers);
+  }, [user, offers]);
+
   const contextValue = useMemo(
     () => ({
       selectedOffer,
       offers,
+      myOffers,
       isFetching,
       fetchOffer,
       fetchOffers,
+      getMyOffers,
+      removeOffer,
     }),
-    [selectedOffer, offers, isFetching, fetchOffer, fetchOffers]
+    [
+      selectedOffer,
+      offers,
+      myOffers,
+      isFetching,
+      fetchOffer,
+      fetchOffers,
+      removeOffer,
+    ]
   );
 
   useEffect(() => {
     fetchOffers();
   }, []);
+
+  useEffect(() => {
+    getMyOffers();
+  }, [offers]);
 
   return (
     <OfferContext.Provider value={contextValue}>

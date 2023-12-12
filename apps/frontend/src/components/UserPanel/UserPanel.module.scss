@@ -1,3 +1,37 @@
+@use '../../styles/variables.scss';
+
 .userPanel {
-  color: black;
+  color: variables.$midnight;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 30px;
+  height: 100%;
+  flex-flow: column;
+
+  .userMenu {
+    display: inline-flex;
+    gap: 20px;
+  }
+
+  .userProfileDetails {
+    text-align: left;
+
+    p {
+      span {
+        font-size: 15px;
+        font-family: variables.$font-family-bold;
+      }
+    }
+  }
+
+  .moreActions {
+    margin-top: auto;
+
+    .btnSignOut {
+      display: inline-flex;
+      gap: 10px;
+      align-items: center;
+    }
+  }
 }

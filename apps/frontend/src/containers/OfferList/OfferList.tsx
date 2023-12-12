@@ -8,14 +8,20 @@ import OfferCard, {
 import { LoadingSpinner } from '../../components/common/LoadingSpinner/LoadingSpinner';
 import { useUser } from '../../hooks/useUser';
 import { Link } from 'react-router-dom';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import SvgIcon from '../../components/common/SvgIcon/SvgIcon';
-import { useOffer } from '../../hooks/useOffer';
+import { useOffer } from '../../contexts/offerContext';
+import { Offer } from '../../types/Offer';
 
-const OfferList = () => {
+type OfferListProps = {
+  offers: Offer[];
+  showControls?: boolean;
+};
+
+const OfferList = ({ offers, showControls = false }: OfferListProps) => {
   const { fetch, isFetching } = useApi();
   const { user } = useUser();
-  const { offers, fetchOffers } = useOffer();
+  const { fetchOffers } = useOffer();
 
   const handleImportOffers = useCallback(async () => {
     const [offers] = await fetch<any[]>(HttpMethod.GET, {
@@ -26,31 +32,40 @@ const OfferList = () => {
       payload: JSON.stringify(offers),
     });
 
+    console.log(response);
     if (response.statusCode === 201) {
       fetchOffers();
     }
   }, []);
 
-  return (
-    <div className={classes.offerList}>
-      {isFetching && <LoadingSpinner message="Fetching offer list" />}
-      <div className={classes.controlsBox}>
-        {user?.isAdmin && (
-          <Button
-            variant="secondary"
-            onClick={handleImportOffers}
-            title="This button trigger import json file from /public folder. The file must be in the specified format otherwise it will throw an error."
-          >
-            Import offers
-          </Button>
-        )}
-        {user && (
+  const controlsBox = useMemo(() => {
+    return (
+      showControls &&
+      user && (
+        <div className={classes.controlsBox}>
+          {user.isAdmin && (
+            <Button
+              variant="secondary"
+              onClick={handleImportOffers}
+              title="This button trigger import json file from /public folder. The file must be in the specified format otherwise it will throw an error."
+            >
+              Import offers
+            </Button>
+          )}
           <Link to="/offer/edit">
             <Button variant="primary">Add offer</Button>
           </Link>
-        )}
-      </div>
+        </div>
+      )
+    );
+  }, [user]);
 
+  console.log(offers);
+
+  return (
+    <div className={classes.offerList}>
+      {isFetching && <LoadingSpinner message="Fetching offer list" />}
+      {controlsBox}
       <div className={classes.list}>
         {offers.length ? (
           offers.map(
@@ -72,6 +87,7 @@ const OfferList = () => {
                 contract={contract}
                 createdAt={createdAt}
                 unremovable={unremovable}
+                showMenu={showControls}
               />
             )
           )

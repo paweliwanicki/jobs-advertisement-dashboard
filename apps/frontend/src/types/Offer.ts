@@ -9,6 +9,7 @@ export type Offer = {
   contract: string;
   description: string;
   createdAt?: number;
+  createdBy?: number;
   unremovable?: boolean;
   companyLogo?: File;
 };

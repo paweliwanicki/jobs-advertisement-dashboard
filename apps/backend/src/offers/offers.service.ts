@@ -2,21 +2,24 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Offer } from './offer.entity';
 import { Repository } from 'typeorm';
-import { UpdateOfferDto } from './dtos/update-offer.dto';
 import { OFFER_EXCEPTION_MESSAGES } from './offer-exception.messages';
-import { Company } from 'src/dictionaries/company/company.entity';
 import { CompanyService } from 'src/dictionaries/company/company.service';
+import { ContractService } from 'src/dictionaries/contract/contract.service';
+import { ImportOfferDto } from './dtos/import-offer.dto';
+import { NewOfferDto } from './dtos/new-offer.dto';
+import { User } from 'src/users/user.entity';
 
 @Injectable()
 export class OffersService {
   constructor(
     private companyService: CompanyService,
+    private contractService: ContractService,
     @InjectRepository(Offer) private offerRepository: Repository<Offer>,
   ) {}
 
-  create(offer: UpdateOfferDto) {
+  async create(offer: NewOfferDto) {
     const newOffer = this.offerRepository.create(offer);
-    return this.offerRepository.save(newOffer);
+    return await this.offerRepository.save(newOffer);
   }
 
   async findOneById(id: number) {
@@ -65,32 +68,56 @@ export class OffersService {
     return this.offerRepository.remove(offer);
   }
 
-  async importOffers(body: any) {
+  async importOffers(data: ImportOfferDto[], user: User) {
     const offers = [];
-    const currentCompanies = await this.companyService.getAll();
-    if (body.length) {
-      body.map((offer: any) => {
-        const company = currentCompanies.find((company: Company) => {
-          return company.name === offer.company;
-        });
+    if (data.length) {
+      data.forEach(
+        async ({
+          company,
+          contract,
+          position,
+          location,
+          description,
+          role,
+          requirements,
+        }: ImportOfferDto) => {
+          const existingCompany = await this.companyService.findOne({
+            name: company,
+          });
 
-        const newOffer: any = {
-          company: company,
-          title: offer.position,
-          contract: offer.contract,
-          location: offer.location,
-          description: `${offer.description}
-                    ${offer.role.content}
-                    ${offer.role.items}
-                    ${offer.requirements.content}
-                    ${offer.requirements.items}`,
-          unremovable: true,
-          createdAt: Math.floor(new Date().getTime() / 1000),
-          createdBy: body.user.id,
-        };
-        this.create(newOffer);
-        offers.push(newOffer);
-      });
+          const existingContract = await this.contractService.findOne({
+            name: contract,
+          });
+
+          if (existingCompany && existingContract) {
+            const newOffer: NewOfferDto = {
+              title: position,
+              contract: existingContract,
+              company: existingCompany,
+              location: location,
+              description: `<p>${description}</p>
+              <p>${role.content}</p>
+              <br/>
+              <ul>
+              ${role.items.map((item: string) => `<li>${item}</li>`).join('')}
+              </ul>
+              <br/>
+              <p>\t${requirements.content}</p>
+              <br/>
+              <ul>
+              ${requirements.items
+                .map((item: string) => `<li>${item}</li>`)
+                .join('')}
+              </ul>`,
+              unremovable: true,
+              createdAt: Math.floor(new Date().getTime() / 1000),
+              createdBy: user.id,
+            };
+            return await this.create(newOffer);
+            //console.log(newOffer);
+          }
+        },
+      );
     }
     return offers;
   }

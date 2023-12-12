@@ -3,7 +3,11 @@
 .footer {
   background-color: variables.$violet;
   width: 100%;
-  max-width: 1110px;
+
+  .content {
+    max-width: 1110px;
+  }
+
   align-self: center;
   background-image: url('./bg-footer.svg');
   background-position: center;
