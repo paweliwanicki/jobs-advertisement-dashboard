@@ -1,0 +1,91 @@
+@use '../../styles/variables.scss';
+@use '../../styles/themeVariables.scss';
+
+.offerFilters {
+  width: 100%;
+  min-height: 80px;
+  position: -webkit-sticky; /* Required for Safari */
+  position: sticky;
+  top: 135px;
+  z-index: 99999;
+  background-color: variables.$very-light-grey;
+  margin-top: -65px;
+  padding-bottom: 30px;
+  border-top-right-radius: 6px;
+  border-top-left-radius: 6px;
+
+  @include themeVariables.themify(themeVariables.$themes) {
+    background-color: themeVariables.themed('filter-container-bg-color');
+  }
+
+  form {
+    border-bottom: 2px solid #d9dce26c;
+    label.showArchivedCheckbox {
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-start;
+      border-left: none !important;
+      gap: 15px;
+
+      @include themeVariables.themify(themeVariables.$themes) {
+        color: themeVariables.themed('text-main-color');
+      }
+    }
+
+    .filtersBox {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+
+      label {
+        margin-bottom: 0;
+        &:nth-child(1) {
+          border-top-left-radius: 6px;
+        }
+
+        &:nth-child(2) {
+          border-top-right-radius: 6px;
+        }
+
+        &:nth-child(n + 2) {
+          @include themeVariables.themify(themeVariables.$themes) {
+            border-left: 1px solid themeVariables.themed('filter-grid-bg-color');
+          }
+        }
+
+        &:nth-last-child(1) {
+          border-bottom-right-radius: 6px;
+        }
+
+        &:nth-last-child(2) {
+          border-bottom-left-radius: 6px;
+        }
+      }
+
+      .inputFilterBox {
+        border-radius: inherit;
+
+        @include themeVariables.themify(themeVariables.$themes) {
+          border-bottom: 1px solid themeVariables.themed('filter-grid-bg-color');
+        }
+      }
+    }
+
+    .filtersControls {
+      display: inline-flex;
+      padding: 30px 0;
+      justify-content: space-between;
+      width: 100%;
+
+      .buttonsBox {
+        justify-self: flex-end;
+        display: inline-flex;
+        gap: 15px;
+
+        button {
+          width: fit-content;
+          height: fit-content;
+        }
+      }
+    }
+  }
+}

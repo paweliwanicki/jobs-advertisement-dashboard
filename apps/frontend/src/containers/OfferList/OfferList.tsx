@@ -12,6 +12,7 @@ import { useCallback, useMemo } from 'react';
 import SvgIcon from '../../components/common/SvgIcon/SvgIcon';
 import { useOffer } from '../../contexts/offerContext';
 import { Offer } from '../../types/Offer';
+import OfferFilters from '../../components/OfferFilters/OfferFilters';
 
 type OfferListProps = {
   offers: Offer[];
@@ -64,20 +65,13 @@ const OfferList = ({ offers, showControls = false }: OfferListProps) => {
 
   return (
     <div className={classes.offerList}>
+      <OfferFilters />
       {isFetching && <LoadingSpinner message="Fetching offer list" />}
       {controlsBox}
       <div className={classes.list}>
         {offers.length ? (
           offers.map(
-            ({
-              id,
-              company,
-              title,
-              location,
-              contract,
-              createdAt,
-              unremovable,
-            }: OfferCardProps) => (
+            ({ id, company, title, location, contract, createdAt }: Offer) => (
               <OfferCard
                 key={`offer-${id}`}
                 id={id}
@@ -85,8 +79,7 @@ const OfferList = ({ offers, showControls = false }: OfferListProps) => {
                 company={company}
                 location={location}
                 contract={contract}
-                createdAt={createdAt}
-                unremovable={unremovable}
+                createdAt={createdAt ?? 0}
                 showMenu={showControls}
               />
             )

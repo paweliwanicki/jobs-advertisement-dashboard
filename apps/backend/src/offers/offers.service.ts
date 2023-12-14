@@ -26,7 +26,7 @@ export class OffersService {
     if (!id) return null;
     return await this.offerRepository.findOne({
       where: { id: id },
-      relations: { company: true },
+      relations: { company: true, contract: true },
     });
   }
 
@@ -37,14 +37,14 @@ export class OffersService {
   async findOne(where: any) {
     return await this.offerRepository.findOne({
       where: { ...where },
-      relations: { company: true },
+      relations: { company: true, contract: true },
     });
   }
 
   async findAll(where?: any) {
     return await this.offerRepository.find({
       where: { ...where },
-      relations: { company: true },
+      relations: { company: true, contract: true },
       order: {
         createdAt: 'DESC',
       },

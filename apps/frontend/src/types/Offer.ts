@@ -1,13 +1,13 @@
 import { Company } from './Company';
+import { Contract } from './Contract';
 
 export type Offer = {
   id?: number;
   title: string;
-  company?: Company;
-  companyId: number; // fix to only Company!;
+  company: Company;
   location: string;
-  contract: string;
   description: string;
+  contract: Contract;
   createdAt?: number;
   createdBy?: number;
   unremovable?: boolean;

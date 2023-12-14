@@ -32,7 +32,7 @@ const SvgIcon = ({
   const [fill, setFill] = useState<string>(color);
 
   const onMouseEnterHandler = useCallback(() => {
-    setFill(hoverColor);
+    setFill(hoverColor ? hoverColor : color);
   }, [hoverColor]);
 
   const onMouseLeaveHandler = useCallback(() => {

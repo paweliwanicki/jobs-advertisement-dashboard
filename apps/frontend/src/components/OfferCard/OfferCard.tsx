@@ -8,16 +8,16 @@ import ContextMenu, {
 } from '../common/ContextMenu/ContextMenu';
 import { useCallback } from 'react';
 import { useOffer } from '../../contexts/offerContext';
+import { Contract } from '../../types/Contract';
 
 export type OfferCardProps = {
   id?: number;
   title: string;
-  showMenu?: boolean;
-  company?: Company;
-  contract: string;
+  company: Company;
+  contract: Contract;
   location: string;
-  createdAt?: number;
-  unremovable?: boolean;
+  createdAt: number;
+  showMenu?: boolean;
 };
 
 const now = Math.floor(new Date().getTime() / 1000);
@@ -87,11 +87,9 @@ const OfferCard = ({
 
         <div className={classes.content}>
           <p>
-            <span>
-              {createdAt ? getOfferAddedTime(createdAt) : '---/---/---'}
-            </span>
+            <span>{getOfferAddedTime(createdAt)}</span>
             <SvgIcon id="icon-dot" width={4} height={4} />
-            <span>{contract}</span>
+            <span>{contract.name}</span>
           </p>
           <div>
             <h3>{title}</h3>

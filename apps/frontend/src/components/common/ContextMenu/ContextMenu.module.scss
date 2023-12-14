@@ -12,7 +12,7 @@
     top: 30px;
     right: 0px;
     padding-left: 0;
-    z-index: 1;
+    z-index: 999999999;
 
     @include themeVariables.themify(themeVariables.$themes) {
       color: themeVariables.themed('context-menu-option-color');
