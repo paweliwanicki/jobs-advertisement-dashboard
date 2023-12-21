@@ -7,13 +7,11 @@ import ValidationIcon from '../common/ValidationIcon/ValidationIcon';
 import { Editor } from '@tinymce/tinymce-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { SingleValue } from 'react-select';
-import { useTheme } from '../../hooks/useTheme';
 import { useOfferEditor } from '../../hooks/useOfferEditor';
 import { useParams } from 'react-router-dom';
 import { LoadingSpinner } from '../common/LoadingSpinner/LoadingSpinner';
 import type { Option } from 'react-google-places-autocomplete/build/types';
 import type { Editor as TinyMceEditor } from 'tinymce';
-import { useDictionaries } from '../../hooks/useDictionaries';
 import { HttpMethod } from '../../enums/HttpMethods';
 import { useApi } from '../../hooks/useApi';
 import UploadCompanyLogoModal from '../UploadCompanyLogoModal/UploadCompanyLogoModal';
@@ -21,6 +19,8 @@ import { Company } from '../../types/Company';
 import { Offer } from '../../types/Offer';
 import { Contract } from '../../types/Contract';
 import { useRouter } from '../../hooks/useRouter';
+import { useDictionaries } from '../../contexts/dictionaryContext';
+import { useTheme } from '../../contexts/themeContext';
 
 const OfferEditor = () => {
   let { id } = useParams();

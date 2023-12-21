@@ -27,6 +27,7 @@ import { diskStorage } from 'multer';
 import { existsSync, mkdirSync } from 'fs';
 import { ContractService } from 'src/dictionaries/contract/contract.service';
 import { ImportOfferDto } from './dtos/import-offer.dto';
+import { FiltersOfferDto } from './dtos/filters-offer.dto';
 @Controller('offers')
 export class OffersController {
   constructor(
@@ -63,8 +64,8 @@ export class OffersController {
     return offer;
   }
 
-  @Get()
-  async findOffers() {
+  @Post('/all')
+  async findOffers(@Body() filters: FiltersOfferDto) {
     return await this.offersService.findAll();
   }
 

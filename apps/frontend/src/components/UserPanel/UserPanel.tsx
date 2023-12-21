@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
-import { useUser } from '../../hooks/useUser';
 import Button from '../common/Button/Button';
 import classes from './UserPanel.module.scss';
 import { useSignForm } from '../../hooks/useSignForm';
 import { Link } from 'react-router-dom';
 import SvgIcon from '../common/SvgIcon/SvgIcon';
 import { useOffer } from '../../contexts/offerContext';
+import { useUser } from '../../contexts/userContext';
 
 export const UserPanel = () => {
   const { user } = useUser();

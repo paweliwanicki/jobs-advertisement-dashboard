@@ -3,7 +3,7 @@ import NavBar from '../../components/NavBar/NavBar';
 import classes from './Layout.module.scss';
 import SnackBar from '../../components/common/SnackBar/SnackBar';
 import { Outlet } from 'react-router-dom';
-import { useTheme } from '../../hooks/useTheme';
+import { useTheme } from '../../contexts/themeContext';
 
 const Layout = () => {
   const { theme } = useTheme();

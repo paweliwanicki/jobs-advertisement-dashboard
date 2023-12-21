@@ -1,4 +1,4 @@
-import { useTheme } from '../../../hooks/useTheme';
+import { useTheme } from '../../../contexts/themeContext';
 import SvgIcon from '../SvgIcon/SvgIcon';
 import classes from './Table.module.scss';
 

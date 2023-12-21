@@ -1,5 +1,6 @@
-@use '../../styles/variables.scss';
-@use '../../styles/themeVariables.scss';
+@use "../../styles/variables.scss";
+@use "../../styles/themeVariables.scss";
+@use "../../styles/utils.scss";
 
 .offerFilters {
   width: 100%;
@@ -11,11 +12,10 @@
   background-color: variables.$very-light-grey;
   margin-top: -65px;
   padding-bottom: 30px;
-  border-top-right-radius: 6px;
-  border-top-left-radius: 6px;
+  border-radius: 6px;
 
   @include themeVariables.themify(themeVariables.$themes) {
-    background-color: themeVariables.themed('filter-container-bg-color');
+    background-color: themeVariables.themed("filter-container-bg-color");
   }
 
   form {
@@ -28,7 +28,7 @@
       gap: 15px;
 
       @include themeVariables.themify(themeVariables.$themes) {
-        color: themeVariables.themed('text-main-color');
+        color: themeVariables.themed("text-main-color");
       }
     }
 
@@ -36,36 +36,69 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
 
+      @include utils.respond-to(bp-small) {
+        grid-template-columns: 1fr;
+      }
+
       label {
         margin-bottom: 0;
+
+        &:first-child {
+          @include utils.respond-to(bp-small) {
+            @include themeVariables.themify(themeVariables.$themes) {
+              border-bottom: 1px solid
+                themeVariables.themed("filter-grid-bg-color");
+            }
+          }
+        }
+
         &:nth-child(1) {
           border-top-left-radius: 6px;
+
+          @include utils.respond-to(bp-small) {
+            border-top-right-radius: 6px;
+          }
         }
 
         &:nth-child(2) {
           border-top-right-radius: 6px;
+
+          @include utils.respond-to(bp-small) {
+            border-top-right-radius: 0;
+          }
         }
 
-        &:nth-child(n + 2) {
+        &:nth-child(even) {
           @include themeVariables.themify(themeVariables.$themes) {
-            border-left: 1px solid themeVariables.themed('filter-grid-bg-color');
+            @include utils.respond-to(bp-small) {
+              border-left: none;
+            }
+            border-left: 1px solid themeVariables.themed("filter-grid-bg-color");
+          }
+        }
+
+        &:nth-child(n + 3) {
+          @include themeVariables.themify(themeVariables.$themes) {
+            border-top: 1px solid themeVariables.themed("filter-grid-bg-color");
+          }
+
+          @include utils.respond-to(bp-small) {
+            border-top: none;
           }
         }
 
         &:nth-last-child(1) {
           border-bottom-right-radius: 6px;
+          @include utils.respond-to(bp-small) {
+            border-bottom-left-radius: 6px;
+          }
         }
 
         &:nth-last-child(2) {
           border-bottom-left-radius: 6px;
-        }
-      }
-
-      .inputFilterBox {
-        border-radius: inherit;
-
-        @include themeVariables.themify(themeVariables.$themes) {
-          border-bottom: 1px solid themeVariables.themed('filter-grid-bg-color');
+          @include utils.respond-to(bp-small) {
+            border-bottom-left-radius: 0;
+          }
         }
       }
     }

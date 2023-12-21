@@ -1,8 +1,8 @@
 import { useCallback, useMemo, useState } from 'react';
 import { HttpMethod } from '../enums/HttpMethods';
 import { ResponseParams, useApi } from './useApi';
-import { useSnackBar } from './useSnackBar';
 import { Offer } from '../types/Offer';
+import { useSnackBar } from '../contexts/snackBarContext';
 
 const OFFER_STATUS_MESSAGES: Record<number, string> = {
   200: 'Offer has been updated successfuly!',

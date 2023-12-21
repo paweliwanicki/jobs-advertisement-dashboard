@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { HttpMethod } from '../enums/HttpMethods';
 
-type RequestOptions = {
+export type RequestOptions = {
   path: string;
   payload?: string;
   contentType?: string;

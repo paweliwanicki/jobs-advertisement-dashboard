@@ -3,7 +3,7 @@ import ReactModal from 'react-modal';
 import classes from './Modal.module.scss';
 import SvgIcon from '../SvgIcon/SvgIcon';
 import { useMotionAnimate } from 'motion-hooks';
-import { useTheme } from '../../../hooks/useTheme';
+import { useTheme } from '../../../contexts/themeContext';
 
 type ModalProps = {
   isOpen: boolean;

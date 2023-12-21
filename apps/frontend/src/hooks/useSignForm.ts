@@ -3,8 +3,8 @@ import { useApi } from './useApi';
 import { useNavigate } from 'react-router-dom';
 import { RoutePath } from '../enums/RoutePath';
 import { HttpMethod } from '../enums/HttpMethods';
-import { useUser } from './useUser';
 import { User } from '../types/User';
+import { useUser } from '../contexts/userContext';
 
 type InputError =
   | 'EMPTY'

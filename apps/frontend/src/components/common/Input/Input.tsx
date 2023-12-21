@@ -24,6 +24,7 @@ export type InputProps = {
   classNames?: string;
   inputRef?: MutableRefObject<HTMLInputElement | null>;
   onChange: (val: string) => void;
+  onBlur?: (val: string) => void;
   onKeyDown?: (event: KeyboardEvent<HTMLInputElement>) => void;
 };
 

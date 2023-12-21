@@ -5,7 +5,7 @@ import { Company } from '../types/Company';
 import { Option } from 'react-google-places-autocomplete/build/types';
 import { Contract } from '../types/Contract';
 import { DictionaryContext } from '../contexts/dictionaryContext';
-import { useSnackBar } from '../hooks/useSnackBar';
+import { useSnackBar } from '../contexts/snackBarContext';
 
 type DictionaryProviderProps = {
   children: ReactNode;
@@ -167,3 +167,4 @@ const DictionaryProvider = ({ children }: DictionaryProviderProps) => {
 };
 
 export default DictionaryProvider;
+

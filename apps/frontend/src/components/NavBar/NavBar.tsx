@@ -4,8 +4,8 @@ import Switch from '../common/Switch/Switch';
 import SvgIcon from '../common/SvgIcon/SvgIcon';
 import { Link } from 'react-router-dom';
 import { Tooltip } from 'react-tooltip';
-import { useTheme } from '../../hooks/useTheme';
-import { useUser } from '../../hooks/useUser';
+import { useTheme } from '../../contexts/themeContext';
+import { useUser } from '../../contexts/userContext';
 import ContextMenu, {
   ContextMenuOption,
 } from '../common/ContextMenu/ContextMenu';

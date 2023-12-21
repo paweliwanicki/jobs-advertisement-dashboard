@@ -2,12 +2,12 @@ import { useCallback, useMemo, useState } from 'react';
 import classes from './DictionariesContainer.module.scss';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
-import { useDictionaries } from '../../hooks/useDictionaries';
 import Table from '../../components/common/Table/Table';
 import { Company } from '../../types/Company';
 import { Contract } from '../../types/Contract';
 import { DictionariesModal } from './DictionaryModal/DictionaryModal';
 import Button from '../../components/common/Button/Button';
+import { useDictionaries } from '../../contexts/dictionaryContext';
 
 type DictionaryFields = 'NAME';
 export type DictionaryActions = 'edit' | 'delete';

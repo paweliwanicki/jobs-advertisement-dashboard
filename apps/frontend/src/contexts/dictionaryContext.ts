@@ -1,4 +1,4 @@
-import { createContext } from 'react';
+import { createContext, useContext } from 'react';
 import { Company } from '../types/Company';
 import { Option } from 'react-google-places-autocomplete/build/types';
 import { Contract } from '../types/Contract';
@@ -26,3 +26,6 @@ export const DictionaryContext = createContext<DictionaryContextType>({
   deleteContract: () => undefined,
   deleteCompany: () => undefined,
 });
+
+
+export const useDictionaries = () => useContext(DictionaryContext);

@@ -2,7 +2,7 @@ import classes from './OfferCard.module.scss';
 import SvgIcon from '../common/SvgIcon/SvgIcon';
 import { Link } from 'react-router-dom';
 import { Company } from '../../types/Company';
-import { useUser } from '../../hooks/useUser';
+import { useUser } from '../../contexts/userContext';
 import ContextMenu, {
   ContextMenuOption,
 } from '../common/ContextMenu/ContextMenu';
@@ -89,7 +89,7 @@ const OfferCard = ({
           <p>
             <span>{getOfferAddedTime(createdAt)}</span>
             <SvgIcon id="icon-dot" width={4} height={4} />
-            <span>{contract.name}</span>
+            <span>{contract?.name}</span>
           </p>
           <div>
             <h3>{title}</h3>

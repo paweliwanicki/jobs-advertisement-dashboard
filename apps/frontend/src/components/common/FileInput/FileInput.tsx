@@ -1,7 +1,7 @@
 import { ChangeEvent, ReactNode, useCallback, useState } from 'react';
 import classes from './FileInput.module.scss';
 import SvgIcon from '../SvgIcon/SvgIcon';
-import { useTheme } from '../../../hooks/useTheme';
+import { useTheme } from '../../../contexts/themeContext';
 
 type FileInputProps = {
   id?: string;

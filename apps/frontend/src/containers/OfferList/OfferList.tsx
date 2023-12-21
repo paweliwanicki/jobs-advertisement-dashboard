@@ -6,13 +6,13 @@ import OfferCard, {
   OfferCardProps,
 } from '../../components/OfferCard/OfferCard';
 import { LoadingSpinner } from '../../components/common/LoadingSpinner/LoadingSpinner';
-import { useUser } from '../../hooks/useUser';
 import { Link } from 'react-router-dom';
 import { useCallback, useMemo } from 'react';
 import SvgIcon from '../../components/common/SvgIcon/SvgIcon';
 import { useOffer } from '../../contexts/offerContext';
 import { Offer } from '../../types/Offer';
 import OfferFilters from '../../components/OfferFilters/OfferFilters';
+import { useUser } from '../../contexts/userContext';
 
 type OfferListProps = {
   offers: Offer[];
@@ -60,8 +60,6 @@ const OfferList = ({ offers, showControls = false }: OfferListProps) => {
       )
     );
   }, [user]);
-
-  console.log(offers);
 
   return (
     <div className={classes.offerList}>

@@ -60,7 +60,7 @@ const OfferPreview = ({}: OfferPreviewProps) => {
                   <p>
                     <span>{createdAt && getOfferAddedTime(createdAt)}</span>
                     <SvgIcon id="icon-dot" width={4} height={4} />
-                    <span>{contract}</span>
+                    <span>{contract?.name}</span>
                   </p>
                   <div>
                     <h3>{title}</h3>

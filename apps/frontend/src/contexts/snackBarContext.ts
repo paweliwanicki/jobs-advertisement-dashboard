@@ -1,4 +1,4 @@
-import { ReactNode, createContext } from "react";
+import { ReactNode, createContext, useContext } from "react";
 import { SnackBarVariant } from "../providers/SnackBarProvider";
 
 type SnackBarContextType = {
@@ -18,3 +18,6 @@ export const SnackBarContext = createContext<SnackBarContextType>({
   setContent: () => undefined,
   handleShowSnackBar: () => undefined,
 });
+
+export const useSnackBar = () => useContext(SnackBarContext);
+
