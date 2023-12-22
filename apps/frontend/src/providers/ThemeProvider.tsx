@@ -1,4 +1,4 @@
-import { ReactNode, useMemo, useState } from 'react';
+import { ReactNode, useContext, useMemo, useState } from 'react';
 import { Theme, ThemeContext } from '../contexts/themeContext';
 
 type ThemeProviderProps = {
@@ -35,3 +35,5 @@ const ThemeProvider = ({ children }: ThemeProviderProps) => {
 };
 
 export default ThemeProvider;
+
+export const useTheme = () => useContext(ThemeContext);

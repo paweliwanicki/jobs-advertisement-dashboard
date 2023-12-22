@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { HttpMethod } from '../enums/HttpMethods';
 import { ResponseParams, useApi } from './useApi';
 import { Offer } from '../types/Offer';
-import { useSnackBar } from '../contexts/snackBarContext';
+import { useSnackBar } from '../providers/SnackBarProvider';
 
 const OFFER_STATUS_MESSAGES: Record<number, string> = {
   200: 'Offer has been updated successfuly!',

@@ -1,26 +1,27 @@
-import classes from './OfferEditor.module.scss';
-import Input from '../common/Input/Input';
-import Button from '../common/Button/Button';
-import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
-import CreatableSelect from 'react-select/creatable';
-import ValidationIcon from '../common/ValidationIcon/ValidationIcon';
-import { Editor } from '@tinymce/tinymce-react';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { SingleValue } from 'react-select';
-import { useOfferEditor } from '../../hooks/useOfferEditor';
-import { useParams } from 'react-router-dom';
-import { LoadingSpinner } from '../common/LoadingSpinner/LoadingSpinner';
-import type { Option } from 'react-google-places-autocomplete/build/types';
-import type { Editor as TinyMceEditor } from 'tinymce';
-import { HttpMethod } from '../../enums/HttpMethods';
-import { useApi } from '../../hooks/useApi';
-import UploadCompanyLogoModal from '../UploadCompanyLogoModal/UploadCompanyLogoModal';
-import { Company } from '../../types/Company';
-import { Offer } from '../../types/Offer';
-import { Contract } from '../../types/Contract';
-import { useRouter } from '../../hooks/useRouter';
-import { useDictionaries } from '../../contexts/dictionaryContext';
-import { useTheme } from '../../contexts/themeContext';
+import classes from "./OfferEditor.module.scss";
+import Input from "../common/Input/Input";
+import Button from "../common/Button/Button";
+import ValidationIcon from "../common/ValidationIcon/ValidationIcon";
+import { Editor } from "@tinymce/tinymce-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { SingleValue } from "react-select";
+import { useOfferEditor } from "../../hooks/useOfferEditor";
+import { useParams } from "react-router-dom";
+import { LoadingSpinner } from "../common/LoadingSpinner/LoadingSpinner";
+import type { Option } from "react-google-places-autocomplete/build/types";
+import type { Editor as TinyMceEditor } from "tinymce";
+import { HttpMethod } from "../../enums/HttpMethods";
+import { useApi } from "../../hooks/useApi";
+import UploadCompanyLogoModal from "../UploadCompanyLogoModal/UploadCompanyLogoModal";
+import { Company } from "../../types/Company";
+import { Offer } from "../../types/Offer";
+import { Contract } from "../../types/Contract";
+import { useRouter } from "../../hooks/useRouter";
+import { useDictionaries } from "../../providers/DictionaryProvider";
+import { useTheme } from "../../providers/ThemeProvider";
+import GoogleLocationSelect from "../common/GoogleLocationSelect/GoogleLocationSelect";
+import CustomReactSelect from "../common/CustomReactSelect/CustomReactSelect";
+import SvgIcon from "../common/SvgIcon/SvgIcon";
 
 const OfferEditor = () => {
   let { id } = useParams();
@@ -28,7 +29,6 @@ const OfferEditor = () => {
   const { theme } = useTheme();
 
   const { history } = useRouter();
-  console.log(history);
   const editorRef = useRef<TinyMceEditor>();
   const {
     companySelectOptions,
@@ -66,20 +66,20 @@ const OfferEditor = () => {
   } = isValidated;
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [title, setTitle] = useState<string>('');
-  const [description, setDescription] = useState<string>('');
+  const [title, setTitle] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
   const [company, setCompany] = useState<Option | null>();
   const [location, setLocation] = useState<Option | null>();
   const [contract, setContract] = useState<Option | null>();
   const [editorElementKey, setEditorElementKey] = useState<number>(0);
-  const [initialEditorValue, setInitialEditorValue] = useState<string>('');
+  const [initialEditorValue, setInitialEditorValue] = useState<string>("");
 
   const [showNewCompanyModal, setShowNewCompanyModal] =
     useState<boolean>(false);
 
   const handleTitleOnChange = useCallback(
     (title: string) => {
-      titleIsValidated && clearValidationAndError('TITLE');
+      titleIsValidated && clearValidationAndError("TITLE");
       setTitle(title);
     },
     [titleIsValidated, clearValidationAndError]
@@ -87,7 +87,7 @@ const OfferEditor = () => {
 
   const handleCompanyOnChange = useCallback(
     (company: SingleValue<Option>) => {
-      companyIsValidated && clearValidationAndError('COMPANY');
+      companyIsValidated && clearValidationAndError("COMPANY");
       setCompany(company);
     },
     [companyIsValidated, clearValidationAndError]
@@ -95,7 +95,7 @@ const OfferEditor = () => {
 
   const handleLocationOnChange = useCallback(
     (location: SingleValue<Option>) => {
-      locationIsValidated && clearValidationAndError('LOCATION');
+      locationIsValidated && clearValidationAndError("LOCATION");
       setLocation(location);
     },
     [locationIsValidated, clearValidationAndError]
@@ -103,7 +103,7 @@ const OfferEditor = () => {
 
   const handleContractOnChange = useCallback(
     (contract: SingleValue<Option>) => {
-      contractIsValidated && clearValidationAndError('CONTRACT');
+      contractIsValidated && clearValidationAndError("CONTRACT");
       setContract(contract);
     },
     [contractIsValidated, clearValidationAndError]
@@ -111,7 +111,7 @@ const OfferEditor = () => {
 
   const handleDescriptionOnChange = useCallback(
     (description: string) => {
-      descriptionIsValidated && clearValidationAndError('DESCRIPTION');
+      descriptionIsValidated && clearValidationAndError("DESCRIPTION");
       setDescription(description);
     },
     [descriptionIsValidated, clearValidationAndError]
@@ -127,7 +127,7 @@ const OfferEditor = () => {
 
   const handleChangeTinyMCEStyles = useCallback(() => {
     setInitialEditorValue(description);
-    setEditorElementKey((key) => key + 1); // force tinymce rerender
+    setEditorElementKey((key) => key + 1); // force tinymce rerender after theme is changed
   }, [description]);
 
   const handleSaveOffer = useCallback(
@@ -135,18 +135,18 @@ const OfferEditor = () => {
       e.preventDefault();
       const isValid = validateOfferEditor(
         title,
-        company?.value ?? '',
-        location?.label ?? '',
-        contract?.value ?? '',
+        company?.value ?? "",
+        location?.label ?? "",
+        contract?.value ?? "",
         description
       );
 
       if (isValid) {
         const offer = {
           title,
-          id: parseInt(id ?? ''),
-          location: location?.label ?? '',
-          companyId: company?.value,
+          id: parseInt(id ?? ""),
+          location: location?.label ?? "",
+          company: company?.value,
           contract: contract?.value,
           description,
         };
@@ -169,12 +169,12 @@ const OfferEditor = () => {
     const { title, company, contract, location, description } = offer;
     setTitle(title);
     setCompany({
-      label: company?.name ?? '',
-      value: company?.id ?? '',
+      label: company?.name ?? "",
+      value: company?.id ?? "",
     });
     setContract({
-      label: contract,
-      value: contract,
+      label: contract?.name ?? "",
+      value: contract?.id ?? "",
     });
     setLocation({
       label: location,
@@ -232,23 +232,22 @@ const OfferEditor = () => {
     id && fetchOffer(id);
   }, []);
 
-  //console.log(history.back());
-
   return (
     <div className={classes.offerEditorContainer}>
-      <h2>Add new offer</h2>
+      <h2>Offer editor</h2>
       {(isLoading || isFetching) && (
-        <LoadingSpinner message={isLoading ? 'Form loading' : ''} />
+        <LoadingSpinner message={isLoading ? "Form loading" : ""} />
       )}
       <form onSubmit={handleSaveOffer}>
         <div className={classes.inputsBox}>
           <Input
             id="title"
+            icon={<SvgIcon id="icon-search" color="#5964e0" />}
             onChange={handleTitleOnChange}
             label="Title"
-            size="small"
+            size="medium"
             classNames={classes.inputBox}
-            placeholder="Work role"
+            placeholder="Title / position"
             errorText={titleError}
             hasError={!!titleError}
             isValidated={isValidated.titleIsValidated}
@@ -267,20 +266,18 @@ const OfferEditor = () => {
               />
             )}
             <p>Location</p>
-            <GooglePlacesAutocomplete
-              apiKey="AIzaSyBa7WIrBOkKT7YRiTJFzhFMYZfCTc_6iRY"
-              minLengthAutocomplete={3}
+            <GoogleLocationSelect
               selectProps={{
                 value: location,
-                id: 'location-select',
-                instanceId: 'location',
-                placeholder: 'Work location',
+                id: "location-select",
+                instanceId: "location",
+                placeholder: "Work location",
                 className: `${classes.locationSelect} ${
                   locationIsValidated &&
                   (locationError ? classes.error : classes.valid)
                 }`,
                 isClearable: true,
-                noOptionsMessage: () => 'Please type location...',
+                noOptionsMessage: () => "Please type location...",
                 onChange: handleLocationOnChange,
               }}
             />
@@ -298,8 +295,9 @@ const OfferEditor = () => {
               />
             )}
             <p>Contract</p>
-            <CreatableSelect
+            <CustomReactSelect 
               id="contract-select"
+              icon={<SvgIcon id="icon-contract" color="#5964e0" />}
               instanceId="contract"
               options={contractSelectOptions}
               className={`${classes.contractSelect} ${
@@ -326,8 +324,9 @@ const OfferEditor = () => {
                 classNames={classes.validationIcon}
               />
             )}
-            <CreatableSelect
+            <CustomReactSelect
               id="company-select"
+              icon={<SvgIcon id="icon-company" color="#5964e0" />}
               onChange={handleCompanyOnChange}
               onCreateOption={handleCreateNewCompany}
               placeholder="Company"
@@ -363,7 +362,7 @@ const OfferEditor = () => {
             <Editor
               key={`editor-${editorElementKey}`}
               id="offer-description"
-              apiKey="hobfut19zde8hcqzn78dkiv360ipccmckyz7o1cgshf3llrr"
+              apiKey={import.meta.env.VITE_TINYMCE_EDITOR_API_KEY}
               onInit={handleOnInitTinyMCE}
               value={description}
               initialValue={initialEditorValue}
@@ -372,12 +371,12 @@ const OfferEditor = () => {
                 height: 500,
                 menubar: true,
                 plugins:
-                  'preview code searchreplace autolink directionality visualblocks visualchars fullscreen image link media  codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists',
+                  "preview code searchreplace autolink directionality visualblocks visualchars fullscreen image link media  codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists",
                 toolbar:
-                  'formatselect | bold italic underline strikethrough | forecolor backcolor blockquote | link image media | alignleft aligncenter alignright alignjustify | numlist bullist outdent indent | removeformat | code',
+                  "formatselect | bold italic underline strikethrough | forecolor backcolor blockquote | link image media | alignleft aligncenter alignright alignjustify | numlist bullist outdent indent | removeformat | code",
                 image_advtab: true,
-                skin: theme === 'dark' ? 'oxide-dark' : 'oxide',
-                content_css: theme === 'dark' ? 'dark' : '',
+                skin: theme === "dark" ? "oxide-dark" : "oxide",
+                content_css: theme === "dark" ? "dark" : "",
               }}
             />
           </div>

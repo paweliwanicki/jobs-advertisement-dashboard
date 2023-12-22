@@ -1,11 +1,17 @@
-import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import {
+  ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { OfferContext } from "../contexts/offerContext";
 import { HttpMethod } from "../enums/HttpMethods";
 import { Offer } from "../types/Offer";
 import { RequestOptions, useApi } from "../hooks/useApi";
-import { useUser } from "../contexts/userContext";
-import { useSnackBar } from "../contexts/snackBarContext";
-import { OffersFilters } from "../hooks/useFilters";
+import { useSnackBar } from "./SnackBarProvider";
+import { OffersFiltersValues } from "../hooks/useFilters";
 
 type OfferProviderProps = {
   children: ReactNode;
@@ -18,30 +24,33 @@ const OfferProvider = ({ children }: OfferProviderProps) => {
 
   const [selectedOffer, setSelectedOffer] = useState<Offer>();
   const [offers, setOffers] = useState<Offer[]>([]);
-  const [filteredOffers, setFilteredOffers] = useState<Offer[]>([]);
+  const [filteredOffers, setFilteredOffers] = useState<Offer[] | undefined>();
   const [myOffers, setMyOffers] = useState<Offer[]>([]);
+  const [filteredMyOffers, setFilteredMyOffers] = useState<
+    Offer[] | undefined
+  >();
 
-  const { user } = useUser();
+  const fetchOffers = useCallback(async (filters?: OffersFiltersValues) => {
+    const requestOptions: RequestOptions = {
+      path: `/api/offers/all`,
+    };
+    if (filters) {
+      requestOptions.payload = JSON.stringify(filters);
+    }
+    const [fetchedOffers, response] = await fetch<Offer[]>(
+      HttpMethod.POST,
+      requestOptions
+    );
 
-  const fetchOffers = useCallback(
-    async (filters?: OffersFilters) => {
-      const requestOptions: RequestOptions = {
-        path: `/api/offers/all`,
-      };
+    if (response.statusCode === 201) {
       if (filters) {
-        requestOptions.payload = JSON.stringify(filters);
-      }
-      const [fetchedOffers, response] = await fetch<Offer[]>(
-        HttpMethod.POST,
-        requestOptions
-      );
-
-      if (response.statusCode === 201) {
+        setFilteredOffers(fetchedOffers);
+      } else {
         setOffers(fetchedOffers);
+        setFilteredOffers(undefined);
       }
-    },
-    [offers]
-  );
+    }
+  }, []);
 
   const fetchOffer = useCallback(
     async (id: number) => {
@@ -75,12 +84,32 @@ const OfferProvider = ({ children }: OfferProviderProps) => {
     [selectedOffer]
   );
 
-  const getMyOffers = useCallback(() => {
-    const myOffers = offers?.filter(
-      ({ createdBy }: Offer) => user?.id === createdBy
+  const getMyOffers = useCallback(async (filters?: OffersFiltersValues) => {
+    const requestOptions: RequestOptions = {
+      path: `/api/offers/my`,
+    };
+    if (filters) {
+      requestOptions.payload = JSON.stringify(filters);
+    }
+    const [fetchedOffers, response] = await fetch<Offer[]>(
+      HttpMethod.POST,
+      requestOptions
     );
-    setMyOffers(myOffers);
-  }, [user, offers]);
+
+    if (response.statusCode === 201) {
+      if (filters) {
+        setFilteredMyOffers(fetchedOffers);
+      } else {
+        setMyOffers(fetchedOffers);
+        setFilteredMyOffers(undefined);
+      }
+    }
+  }, []);
+
+  const clearFilteredOffers = useCallback(() => {
+    filteredOffers && setFilteredOffers(undefined);
+    filteredMyOffers && setFilteredMyOffers(undefined);
+  }, [filteredOffers, filteredMyOffers]);
 
   const contextValue = useMemo(
     () => ({
@@ -88,33 +117,35 @@ const OfferProvider = ({ children }: OfferProviderProps) => {
       offers,
       filteredOffers,
       myOffers,
+      filteredMyOffers,
       isFetching,
       fetchOffer,
       fetchOffers,
       getMyOffers,
       removeOffer,
       setFilteredOffers,
+      clearFilteredOffers,
     }),
     [
       selectedOffer,
       offers,
       filteredOffers,
       myOffers,
+      filteredMyOffers,
       isFetching,
       fetchOffer,
       fetchOffers,
+      getMyOffers,
       removeOffer,
       setFilteredOffers,
+      clearFilteredOffers,
     ]
   );
 
   useEffect(() => {
     fetchOffers();
-  }, []);
-
-  useEffect(() => {
     getMyOffers();
-  }, [offers]);
+  }, []);
 
   return (
     <OfferContext.Provider value={contextValue}>
@@ -124,3 +155,5 @@ const OfferProvider = ({ children }: OfferProviderProps) => {
 };
 
 export default OfferProvider;
+
+export const useOffer = () => useContext(OfferContext);

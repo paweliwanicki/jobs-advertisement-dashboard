@@ -1,4 +1,4 @@
-import { createContext, useContext } from 'react';
+import { createContext } from 'react';
 import { User } from '../types/User';
 
 type UserContextType = {
@@ -10,5 +10,3 @@ export const UserContext = createContext<UserContextType>({
   user: undefined,
   changeUser: () => undefined,
 });
-
-export const useUser = () => useContext(UserContext);

@@ -1,23 +1,29 @@
-import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsOptional, IsString } from 'class-validator';
+import { FindOperator } from 'typeorm';
 
 export class FiltersOfferDto {
   @IsString()
   @IsOptional()
-  position: string;
+  title: FindOperator<string>;
 
   @IsString()
   @IsOptional()
   location: string;
 
-  @IsNumber()
   @IsOptional()
-  contractId: number;
+  contract: {
+    id: number;
+  };
 
-  @IsNumber()
   @IsOptional()
-  companyId: number;
+  company: {
+    id: number;
+  };
 
   @IsBoolean()
   @IsOptional()
-  showArchived: boolean;
+  archived: boolean;
+
+  @IsOptional()
+  createdBy: number;
 }

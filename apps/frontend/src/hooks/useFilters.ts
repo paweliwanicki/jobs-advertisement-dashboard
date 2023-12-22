@@ -1,36 +1,50 @@
 import { useCallback, useState } from "react";
+import { useOffer } from "../providers/OfferProvider";
 
-export type OffersFilters = {
-  position?: string;
+export type OffersFiltersState = {
+  title?: string;
   location: any | null;
   company: any | null;
   contract: any | null;
-  showArchived: boolean;
+  archived: boolean;
+};
+
+export type OffersFiltersValues = {
+  title?: string;
+  location: string;
+  archived: boolean;
+  company?: {
+    id: number;
+  };
+  contract?: { id: number };
 };
 
 type FiltersType = {
-  getFiltersValues: () => OffersFilters;
-  handleSetPosition: (position: string) => void;
+  getFiltersValues: () => OffersFiltersValues;
+  getFiltersStates: () => OffersFiltersState;
+  handleSetTitle: (title: string) => void;
   handleSetLocation: (location: any) => void;
   handleSetCompany: (company: any) => void;
   handleSetContract: (contract: any) => void;
   handleSetShowArchived: (archived: boolean) => void;
-  handleClearFiltersValues: () => void;
+  handleClearFilters: () => void;
 };
 
 export const useFilters = (): FiltersType => {
-  const [position, setPosition] = useState<string>('');
+  const { clearFilteredOffers } = useOffer();
+
+  const [title, setTitle] = useState<string>("");
   const [location, setLocation] = useState<any | null>();
   const [company, setCompany] = useState<any | null>();
   const [contract, setContract] = useState<any | null>();
-  const [showArchived, setShowArchived] = useState<boolean>(false);
+  const [archived, setShowArchived] = useState<boolean>(false);
 
   const handleSetShowArchived = useCallback(() => {
     setShowArchived((isChecked) => !isChecked);
   }, []);
 
-  const handleSetPosition = useCallback((position: string) => {
-    setPosition(position);
+  const handleSetTitle = useCallback((title: string) => {
+    setTitle(title);
   }, []);
 
   const handleSetLocation = useCallback((location: string) => {
@@ -45,31 +59,50 @@ export const useFilters = (): FiltersType => {
     setContract(contract);
   }, []);
 
-  const handleClearFiltersValues = useCallback(() => {
-    setPosition("");
+  const handleClearFilters = useCallback(() => {
+    setTitle("");
     setLocation(null);
     setCompany(null);
     setContract(null);
     setShowArchived(false);
-  }, [position, location, company, contract, showArchived]);
+    clearFilteredOffers();
+  }, [title, location, company, contract, archived, clearFilteredOffers]);
 
   const getFiltersValues = useCallback(() => {
+    const values: OffersFiltersValues = {
+      archived,
+      title: title === "" ? undefined : title,
+      location: location?.value.description,
+    };
+    if (company) {
+      values.company = { id: company?.value };
+    }
+
+    if (contract) {
+      values.contract = { id: contract?.value };
+    }
+
+    return values;
+  }, [title, location, company, contract, archived]);
+
+  const getFiltersStates = useCallback(() => {
     return {
-      position,
+      title,
       location,
       company,
       contract,
-      showArchived,
+      archived,
     };
-  }, [position, location, company, contract, showArchived]);
+  }, [title, location, company, contract, archived]);
 
   return {
     getFiltersValues,
-    handleSetPosition,
+    getFiltersStates,
+    handleSetTitle,
     handleSetLocation,
     handleSetCompany,
     handleSetContract,
     handleSetShowArchived,
-    handleClearFiltersValues,
+    handleClearFilters,
   };
 };

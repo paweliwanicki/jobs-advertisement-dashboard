@@ -1,13 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Offer } from './offer.entity';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { OFFER_EXCEPTION_MESSAGES } from './offer-exception.messages';
 import { CompanyService } from 'src/dictionaries/company/company.service';
 import { ContractService } from 'src/dictionaries/contract/contract.service';
 import { ImportOfferDto } from './dtos/import-offer.dto';
 import { NewOfferDto } from './dtos/new-offer.dto';
 import { User } from 'src/users/user.entity';
+import { FiltersOfferDto } from './dtos/filters-offer.dto';
 
 @Injectable()
 export class OffersService {
@@ -34,16 +35,19 @@ export class OffersService {
     return this.offerRepository.find({ where: { createdBy } });
   }
 
-  async findOne(where: any) {
+  async findOne(where: FiltersOfferDto) {
     return await this.offerRepository.findOne({
-      where: { ...where },
+      where,
       relations: { company: true, contract: true },
     });
   }
 
-  async findAll(where?: any) {
+  async findAll(where: FiltersOfferDto) {
+    if (where.title) {
+      where.title = ILike(`%${where.title}%`);
+    }
     return await this.offerRepository.find({
-      where: { ...where },
+      where,
       relations: { company: true, contract: true },
       order: {
         createdAt: 'DESC',
@@ -114,7 +118,6 @@ export class OffersService {
               createdBy: user.id,
             };
             return await this.create(newOffer);
-            //console.log(newOffer);
           }
         },
       );

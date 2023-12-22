@@ -2,7 +2,7 @@ import classes from "./SnackBar.module.scss";
 import SvgIcon from "../SvgIcon/SvgIcon";
 import { useCallback, useEffect } from "react";
 import { useMotionAnimate } from "motion-hooks";
-import { useSnackBar } from "../../../contexts/snackBarContext";
+import { useSnackBar } from "../../../providers/SnackBarProvider";
 
 const SnackBar = () => {
   const { play: openAnimation } = useMotionAnimate(

@@ -22,7 +22,7 @@
   :global {
     .css-1fdsijx-ValueContainer,
     .css-art2ul-ValueContainer2 {
-      padding-left: 40px;
+      padding-left: 55px;
 
       .css-1dimb5e-singleValue {
         @include themeVariables.themify(themeVariables.$themes) {
@@ -48,7 +48,6 @@
 
       .css-1jqq78o-placeholder {
         text-align: left;
-        padding-left: 15px;
         opacity: 0.5;
         font-family: variables.$font-family-light;
 

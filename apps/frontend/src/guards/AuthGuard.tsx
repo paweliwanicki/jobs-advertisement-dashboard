@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { useUser } from '../contexts/userContext';
+import { useUser } from '../providers/UserProvider';
 
 type AuthGuardType = {
   children: ReactNode;

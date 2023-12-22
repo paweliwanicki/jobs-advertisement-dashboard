@@ -1,22 +1,21 @@
-import { ReactNode, useCallback } from "react";
+import { useCallback } from "react";
 import classes from "../CustomReactSelect/CustomReactSelect.module.scss";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { SingleValue } from "react-select";
 import { Option } from "react-google-places-autocomplete/build/types";
+import SvgIcon from "../SvgIcon/SvgIcon";
 
 type CustomReactSelectProps = {
   id?: string;
   value?: any;
   classNames?: string;
   isClearable?: boolean;
-  icon?: ReactNode;
   placeholder?: string;
   onChange: (selected: SingleValue<Option> | null) => void;
 };
 
 const GoogleLocationSelect = ({
   id,
-  icon,
   value,
   onChange,
 }: CustomReactSelectProps) => {
@@ -26,10 +25,15 @@ const GoogleLocationSelect = ({
 
   return (
     <label className={classes.customReactSelectLabel}>
-      <span className={classes.icon}>{icon}</span>
+      <span className={classes.icon}>
+        {<SvgIcon id="icon-location" color="#5964e0" />}
+      </span>
       <GooglePlacesAutocomplete
-        apiKey="AIzaSyBa7WIrBOkKT7YRiTJFzhFMYZfCTc_6iRY"
+        apiKey={import.meta.env.VITE_GOOGLE_LOCATION_API_KEY}
         minLengthAutocomplete={3}
+        apiOptions={{
+          language: "en",
+        }}
         selectProps={{
           value: value,
           id: id,

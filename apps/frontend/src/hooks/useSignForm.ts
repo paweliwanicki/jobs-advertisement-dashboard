@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { RoutePath } from '../enums/RoutePath';
 import { HttpMethod } from '../enums/HttpMethods';
 import { User } from '../types/User';
-import { useUser } from '../contexts/userContext';
+import { useUser } from '../providers/UserProvider';
 
 type InputError =
   | 'EMPTY'

@@ -1,6 +1,6 @@
-import { createContext, useContext } from 'react';
+import { createContext, useContext } from "react";
 
-export type Theme = 'light' | 'dark';
+export type Theme = "light" | "dark";
 
 type ThemeContextType = {
   theme: Theme;
@@ -8,9 +8,6 @@ type ThemeContextType = {
 };
 
 export const ThemeContext = createContext<ThemeContextType>({
-  theme: 'light',
+  theme: "light",
   setTheme: (theme: Theme) => theme,
 });
-
-
-export const useTheme = () => useContext(ThemeContext);

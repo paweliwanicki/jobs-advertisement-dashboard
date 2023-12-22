@@ -4,7 +4,7 @@ import Button from '../../components/common/Button/Button';
 import { useEffect } from 'react';
 import { getOfferAddedTime } from '../../components/OfferCard/OfferCard';
 import SvgIcon from '../../components/common/SvgIcon/SvgIcon';
-import { useOffer } from '../../contexts/offerContext';
+import { useOffer } from '../../providers/OfferProvider';
 
 type OfferPreviewProps = {};
 

@@ -38,6 +38,9 @@ export class Offer {
   modifiedAt: number;
 
   @Column({ default: false })
+  archived: boolean;
+
+  @Column({ default: false })
   unremovable: boolean;
 
   @ManyToOne(() => Company, (company) => company.offer)

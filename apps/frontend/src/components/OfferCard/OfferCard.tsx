@@ -2,12 +2,12 @@ import classes from './OfferCard.module.scss';
 import SvgIcon from '../common/SvgIcon/SvgIcon';
 import { Link } from 'react-router-dom';
 import { Company } from '../../types/Company';
-import { useUser } from '../../contexts/userContext';
+import { useUser } from '../../providers/UserProvider';
 import ContextMenu, {
   ContextMenuOption,
 } from '../common/ContextMenu/ContextMenu';
 import { useCallback } from 'react';
-import { useOffer } from '../../contexts/offerContext';
+import { useOffer } from '../../providers/OfferProvider';
 import { Contract } from '../../types/Contract';
 
 export type OfferCardProps = {

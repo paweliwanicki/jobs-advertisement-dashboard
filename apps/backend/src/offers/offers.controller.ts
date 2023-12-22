@@ -28,6 +28,7 @@ import { existsSync, mkdirSync } from 'fs';
 import { ContractService } from 'src/dictionaries/contract/contract.service';
 import { ImportOfferDto } from './dtos/import-offer.dto';
 import { FiltersOfferDto } from './dtos/filters-offer.dto';
+
 @Controller('offers')
 export class OffersController {
   constructor(
@@ -66,7 +67,17 @@ export class OffersController {
 
   @Post('/all')
   async findOffers(@Body() filters: FiltersOfferDto) {
-    return await this.offersService.findAll();
+    return await this.offersService.findAll(filters);
+  }
+
+  @Post('/my')
+  @UseGuards(JwtAuthGuard)
+  async findMyOffers(
+    @Body() filters: FiltersOfferDto,
+    @CurrentUser() user: User,
+  ) {
+    filters.createdBy = user.id;
+    return await this.offersService.findAll(filters);
   }
 
   @Delete('/:id')
@@ -96,14 +107,14 @@ export class OffersController {
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
-        destination: (req: any, file: any, cb: any) => {
+        destination: (req: never, file: never, cb: any) => {
           const uploadPath = 'uploads/';
           if (!existsSync(uploadPath)) {
             mkdirSync(uploadPath);
           }
           cb(null, uploadPath);
         },
-        filename: (req: any, file: any, cb: any) => {
+        filename: (req: never, file: any, cb: any) => {
           cb(null, `${file.originalname.replace(/\s/g, '_')}`);
         },
       }),

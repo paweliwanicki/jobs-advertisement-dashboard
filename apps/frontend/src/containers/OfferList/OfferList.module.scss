@@ -1,26 +1,25 @@
-@use '../../styles/variables.scss';
+@use "../../styles/variables.scss";
 
 .offerList {
   display: flex;
   flex-flow: column;
-  gap: 25px;
 
   .controlsBox {
     display: flex;
     align-items: flex-end;
     justify-content: flex-end;
     gap: 15px;
+    margin-bottom: 45px;
   }
 
   .list {
-    //margin-top: 25px;
     display: grid;
     grid-template-rows: auto;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    column-gap: 30px;
+    grid-template-columns: repeat(auto-fill, 350px);
     row-gap: 65px;
+    column-gap: 30px;
     width: 100%;
-    justify-items: center;
+    justify-content: space-between;
   }
 
   .noOffersWarningBox {

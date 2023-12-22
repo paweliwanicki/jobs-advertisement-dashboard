@@ -7,7 +7,7 @@ import { Company } from '../../types/Company';
 import { Contract } from '../../types/Contract';
 import { DictionariesModal } from './DictionaryModal/DictionaryModal';
 import Button from '../../components/common/Button/Button';
-import { useDictionaries } from '../../contexts/dictionaryContext';
+import { useDictionaries } from '../../providers/DictionaryProvider';
 
 type DictionaryFields = 'NAME';
 export type DictionaryActions = 'edit' | 'delete';

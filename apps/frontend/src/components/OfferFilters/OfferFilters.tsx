@@ -1,77 +1,80 @@
-import {
-  ChangeEvent,
-  FormEvent,
-  useCallback,
-} from "react";
+import { ChangeEvent, FormEvent, useCallback, useState } from "react";
 import Button from "../common/Button/Button";
 import Checkbox from "../common/Checkbox/Checkbox";
 import Input from "../common/Input/Input";
 import classes from "./OfferFilters.module.scss";
 import SvgIcon from "../common/SvgIcon/SvgIcon";
 import CustomReactSelect from "../common/CustomReactSelect/CustomReactSelect";
-import { useDictionaries } from "../../contexts/dictionaryContext";
+import { useDictionaries } from "../../providers/DictionaryProvider";
 import GoogleLocationSelect from "../common/GoogleLocationSelect/GoogleLocationSelect";
-import { useFilters } from "../../hooks/useFilters";
-import { useOffer } from "../../contexts/offerContext";
+import { OffersFiltersValues, useFilters } from "../../hooks/useFilters";
+import { useCollapse } from "react-collapsed";
 
-const OfferFilters = ({}) => {
+type OfferFiltersProps = {
+  onSubmit: (filters: OffersFiltersValues) => void;
+};
+
+const OfferFilters = ({ onSubmit }: OfferFiltersProps) => {
+  const [isExpanded, setExpanded] = useState<boolean>(false);
+  const { getCollapseProps, getToggleProps } = useCollapse();
+  const { companySelectOptions, contractSelectOptions } = useDictionaries();
+
   const {
-    handleSetPosition,
+    handleSetTitle,
     handleSetLocation,
     handleSetCompany,
     handleSetContract,
     handleSetShowArchived,
+    getFiltersStates,
     getFiltersValues,
-    handleClearFiltersValues,
+    handleClearFilters,
   } = useFilters();
 
-  const { fetchOffers } = useOffer();
-
-  const { position, location, company, contract, showArchived } =
-    getFiltersValues();
-
-  const { companySelectOptions, contractSelectOptions } = useDictionaries();
+  const { title, location, company, contract, archived } = getFiltersStates();
 
   const handleFilterFormOnSubmit = useCallback(
     async (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
       const filtersValues = getFiltersValues();
-      fetchOffers(filtersValues);
+      onSubmit(filtersValues);
     },
-    []
+    [getFiltersValues, onSubmit]
   );
 
-  const handlePositionOnChange = useCallback(
-    (position: string) => {
-      handleSetPosition(position);
+  const handleTitleOnChange = useCallback(
+    (title: string) => {
+      handleSetTitle(title);
     },
-    [position]
+    [title]
   );
 
   const handleShowArchivedOnChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
       handleSetShowArchived(event.target.checked);
     },
-    [showArchived]
+    [archived]
   );
+
+  const handleSetFiltersExpanded = useCallback(() => {
+    setExpanded((isExpanded) => !isExpanded);
+  }, []);
 
   return (
     <div className={classes.offerFilters}>
-      <form onSubmit={handleFilterFormOnSubmit}>
+      <form onSubmit={handleFilterFormOnSubmit} {...getCollapseProps()}>
         <div className={classes.filtersBox}>
           <Input
-            id="position"
-            onChange={handlePositionOnChange}
+            id="title"
+            onChange={handleTitleOnChange}
             classNames={classes.inputFilterBox}
             size="medium"
-            placeholder="Filter by position..."
+            placeholder="Filter by title..."
             icon={<SvgIcon id="icon-search" />}
-            value={position}
+            value={title}
           />
 
           <GoogleLocationSelect
             id="location-filter"
-            icon={<SvgIcon id="icon-location" color="#5964e0" />}
             onChange={handleSetLocation}
             value={location}
           />
@@ -98,10 +101,10 @@ const OfferFilters = ({}) => {
         </div>
 
         <div className={classes.filtersControls}>
-          <label className={classes.showArchivedCheckbox}>
+          <label className={classes.archivedCheckbox}>
             <Checkbox
               onChange={handleShowArchivedOnChange}
-              isChecked={showArchived}
+              isChecked={archived}
               id="checkbox-show-archived"
               size="medium"
             />
@@ -112,7 +115,7 @@ const OfferFilters = ({}) => {
             <Button
               variant="secondary"
               type="button"
-              onClick={handleClearFiltersValues}
+              onClick={handleClearFilters}
             >
               Clear
             </Button>
@@ -122,6 +125,15 @@ const OfferFilters = ({}) => {
           </div>
         </div>
       </form>
+      <button
+        className={classes.btnExpandFilters}
+        {...getToggleProps({
+          onClick: handleSetFiltersExpanded,
+        })}
+      >
+        {isExpanded ? "Hide fllters" : "Show filters"}
+        <SvgIcon id={isExpanded ? "arrow-drop-up" : "arrow-drop-down"} />
+      </button>
     </div>
   );
 };

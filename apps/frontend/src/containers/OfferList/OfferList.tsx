@@ -1,39 +1,45 @@
-import classes from './OfferList.module.scss';
-import Button from '../../components/common/Button/Button';
-import { useApi } from '../../hooks/useApi';
-import { HttpMethod } from '../../enums/HttpMethods';
+import classes from "./OfferList.module.scss";
+import Button from "../../components/common/Button/Button";
+import { useApi } from "../../hooks/useApi";
+import { HttpMethod } from "../../enums/HttpMethods";
 import OfferCard, {
   OfferCardProps,
-} from '../../components/OfferCard/OfferCard';
-import { LoadingSpinner } from '../../components/common/LoadingSpinner/LoadingSpinner';
-import { Link } from 'react-router-dom';
-import { useCallback, useMemo } from 'react';
-import SvgIcon from '../../components/common/SvgIcon/SvgIcon';
-import { useOffer } from '../../contexts/offerContext';
-import { Offer } from '../../types/Offer';
-import OfferFilters from '../../components/OfferFilters/OfferFilters';
-import { useUser } from '../../contexts/userContext';
+} from "../../components/OfferCard/OfferCard";
+import { LoadingSpinner } from "../../components/common/LoadingSpinner/LoadingSpinner";
+import { Link } from "react-router-dom";
+import { useCallback, useMemo } from "react";
+import SvgIcon from "../../components/common/SvgIcon/SvgIcon";
+import { useOffer } from "../../providers/OfferProvider";
+import { Offer } from "../../types/Offer";
+import OfferFilters from "../../components/OfferFilters/OfferFilters";
+import { useUser } from "../../providers/UserProvider";
 
 type OfferListProps = {
   offers: Offer[];
+  classNames?: string;
   showControls?: boolean;
+  onFilterSubmit: () => void;
 };
 
-const OfferList = ({ offers, showControls = false }: OfferListProps) => {
+const OfferList = ({
+  offers,
+  classNames = "",
+  showControls = false,
+  onFilterSubmit,
+}: OfferListProps) => {
   const { fetch, isFetching } = useApi();
   const { user } = useUser();
   const { fetchOffers } = useOffer();
 
   const handleImportOffers = useCallback(async () => {
     const [offers] = await fetch<any[]>(HttpMethod.GET, {
-      path: '/offers.json',
+      path: "/offers.json",
     });
     const [, response] = await fetch<OfferCardProps[]>(HttpMethod.POST, {
-      path: '/api/offers/import',
+      path: "/api/offers/import",
       payload: JSON.stringify(offers),
     });
 
-    console.log(response);
     if (response.statusCode === 201) {
       fetchOffers();
     }
@@ -63,10 +69,10 @@ const OfferList = ({ offers, showControls = false }: OfferListProps) => {
 
   return (
     <div className={classes.offerList}>
-      <OfferFilters />
+      <OfferFilters onSubmit={onFilterSubmit} />
       {isFetching && <LoadingSpinner message="Fetching offer list" />}
       {controlsBox}
-      <div className={classes.list}>
+      <div className={`${classes.list} ${classNames}`}>
         {offers.length ? (
           offers.map(
             ({ id, company, title, location, contract, createdAt }: Offer) => (

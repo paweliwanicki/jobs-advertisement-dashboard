@@ -1,11 +1,11 @@
-import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import { ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { HttpMethod } from '../enums/HttpMethods';
 import { useApi } from '../hooks/useApi';
 import { Company } from '../types/Company';
 import { Option } from 'react-google-places-autocomplete/build/types';
 import { Contract } from '../types/Contract';
 import { DictionaryContext } from '../contexts/dictionaryContext';
-import { useSnackBar } from '../contexts/snackBarContext';
+import { useSnackBar } from './SnackBarProvider';
 
 type DictionaryProviderProps = {
   children: ReactNode;
@@ -168,3 +168,4 @@ const DictionaryProvider = ({ children }: DictionaryProviderProps) => {
 
 export default DictionaryProvider;
 
+export const useDictionaries = () => useContext(DictionaryContext);

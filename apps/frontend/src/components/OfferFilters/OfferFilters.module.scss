@@ -4,23 +4,23 @@
 
 .offerFilters {
   width: 100%;
-  min-height: 80px;
   position: -webkit-sticky; /* Required for Safari */
   position: sticky;
   top: 135px;
   z-index: 99999;
   background-color: variables.$very-light-grey;
   margin-top: -65px;
-  padding-bottom: 30px;
+  margin-bottom: 30px;
   border-radius: 6px;
+  padding: 5px;
 
   @include themeVariables.themify(themeVariables.$themes) {
     background-color: themeVariables.themed("filter-container-bg-color");
   }
 
+  border-bottom: 2px solid #d9dce26c;
   form {
-    border-bottom: 2px solid #d9dce26c;
-    label.showArchivedCheckbox {
+    label.archivedCheckbox {
       display: inline-flex;
       align-items: center;
       justify-content: flex-start;
@@ -105,7 +105,7 @@
 
     .filtersControls {
       display: inline-flex;
-      padding: 30px 0;
+      padding: 30px 0 10px 0;
       justify-content: space-between;
       width: 100%;
 
@@ -119,6 +119,30 @@
           height: fit-content;
         }
       }
+    }
+  }
+  .btnExpandFilters {
+    padding: 10px 5px 10px 10px;
+    display: block;
+    margin-right: auto;
+    background-color: transparent;
+    outline: none;
+    border: none;
+    font-family: variables.$font-family-bold;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 14px;
+    @include themeVariables.themify(themeVariables.$themes) {
+      color: themeVariables.themed("text-main-color");
+    }
+
+    svg {
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    &:hover {
+      background-color: variables.$light-grey;
     }
   }
 }

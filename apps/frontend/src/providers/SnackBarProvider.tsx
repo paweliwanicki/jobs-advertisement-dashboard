@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useMemo, useState } from "react";
+import { ReactNode, useCallback, useContext, useMemo, useState } from "react";
 import { SnackBarContext } from "../contexts/snackBarContext";
 
 type SnackBarProviderProps = {
@@ -44,3 +44,5 @@ const SnackBarProvider = ({ children }: SnackBarProviderProps) => {
 };
 
 export default SnackBarProvider;
+
+export const useSnackBar = () => useContext(SnackBarContext);

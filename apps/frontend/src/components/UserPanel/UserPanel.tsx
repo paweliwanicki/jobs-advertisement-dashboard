@@ -4,8 +4,8 @@ import classes from './UserPanel.module.scss';
 import { useSignForm } from '../../hooks/useSignForm';
 import { Link } from 'react-router-dom';
 import SvgIcon from '../common/SvgIcon/SvgIcon';
-import { useOffer } from '../../contexts/offerContext';
-import { useUser } from '../../contexts/userContext';
+import { useOffer } from '../../providers/OfferProvider';
+import { useUser } from '../../providers/UserProvider';
 
 export const UserPanel = () => {
   const { user } = useUser();
