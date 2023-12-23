@@ -40,7 +40,7 @@ export class OffersController {
   @Post()
   @UseGuards(JwtAuthGuard)
   async addOffer(@Body() body: UpdateOfferDto, @CurrentUser() user: User) {
-    const { companyId, contractId } = body;
+    const { company: companyId, contract: contractId } = body;
 
     const company = await this.companyService.findOneById(companyId);
     const contract = await this.contractService.findOneById(contractId);
@@ -89,7 +89,7 @@ export class OffersController {
   @Patch()
   @UseGuards(JwtAuthGuard)
   async updateOffer(@Body() body: UpdateOfferDto, @CurrentUser() user: User) {
-    const { id, companyId, contractId } = body;
+    const { id, company: companyId, contract: contractId } = body;
 
     const company = await this.companyService.findOneById(companyId);
     const contract = await this.contractService.findOneById(contractId);

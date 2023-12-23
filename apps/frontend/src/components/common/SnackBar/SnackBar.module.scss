@@ -12,7 +12,7 @@
   padding: 10px 30px 10px 15px;
   border-radius: 6px;
   color: variables.$light-grey;
-  z-index: 998;
+  z-index: 20;
 
   &[data-variant="success"] {
     background-color: variables.$valid;

@@ -10,7 +10,10 @@ type CustomReactSelectProps = {
   isClearable?: boolean;
   icon?: ReactNode;
   placeholder?: string;
+  isDisabled?: boolean;
+  instanceId?: string;
   onChange: (selected: OptionsOrGroups<any, never> | undefined) => void;
+  onCreateOption?: (value: string) => Promise<any>;
 };
 
 const CustomReactSelect = ({
@@ -20,7 +23,9 @@ const CustomReactSelect = ({
   isClearable,
   placeholder,
   value,
+  instanceId,
   classNames = "",
+  isDisabled = false,
   onChange,
 }: CustomReactSelectProps) => {
   const handleSelection = useCallback(
@@ -43,6 +48,8 @@ const CustomReactSelect = ({
         value={value}
         isClearable={isClearable}
         placeholder={placeholder}
+        isDisabled={isDisabled}
+        instanceId={instanceId}
       />
     </label>
   );

@@ -45,6 +45,10 @@
   form {
     width: 100%;
 
+    label {
+      border-radius: 6px;
+    }
+
     button[type='submit'] {
       display: block;
       margin-left: auto;

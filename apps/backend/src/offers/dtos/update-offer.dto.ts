@@ -1,5 +1,4 @@
 import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
-import { Company } from 'src/dictionaries/company/company.entity';
 
 export class UpdateOfferDto {
   @IsOptional()
@@ -19,11 +18,11 @@ export class UpdateOfferDto {
 
   @IsNumber()
   @IsNotEmpty()
-  contractId: number;
+  contract: number;
 
   @IsNumber()
   @IsNotEmpty()
-  companyId: number;
+  company: number;
 
   @IsOptional()
   unremovable: boolean;
@@ -33,7 +32,4 @@ export class UpdateOfferDto {
 
   @IsOptional()
   createdBy: number;
-
-  @IsOptional()
-  company: Company;
 }

@@ -8,15 +8,22 @@ import SvgIcon from "../SvgIcon/SvgIcon";
 type CustomReactSelectProps = {
   id?: string;
   value?: any;
+  instanceId?: string;
   classNames?: string;
   isClearable?: boolean;
   placeholder?: string;
+  language?: string;
   onChange: (selected: SingleValue<Option> | null) => void;
 };
 
 const GoogleLocationSelect = ({
   id,
   value,
+  instanceId,
+  classNames = "",
+  isClearable = true,
+  language = "en",
+  placeholder = "location...",
   onChange,
 }: CustomReactSelectProps) => {
   const handleSelection = useCallback((items: SingleValue<Option> | null) => {
@@ -32,15 +39,15 @@ const GoogleLocationSelect = ({
         apiKey={import.meta.env.VITE_GOOGLE_LOCATION_API_KEY}
         minLengthAutocomplete={3}
         apiOptions={{
-          language: "en",
+          language,
         }}
         selectProps={{
-          value: value,
-          id: id,
-          instanceId: "location",
-          placeholder: "location...",
-          className: classes.customReactSelect,
-          isClearable: true,
+          value,
+          id,
+          instanceId,
+          placeholder,
+          isClearable,
+          className: `${classes.customReactSelect} ${classNames}`,
           noOptionsMessage: () => "Please type min 3 chars...",
           onChange: handleSelection,
         }}

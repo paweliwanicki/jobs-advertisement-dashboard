@@ -1,6 +1,6 @@
-@use '../../styles/variables.scss';
-@use '../../styles/themeVariables.scss';
-@use '../../styles/utils.scss';
+@use "../../styles/variables.scss";
+@use "../../styles/themeVariables.scss";
+@use "../../styles/utils.scss";
 
 .offerEditorContainer {
   width: 100%;
@@ -9,14 +9,14 @@
     border: 2px solid;
 
     @include themeVariables.themify(themeVariables.$themes) {
-      border-color: themeVariables.themed('offer-input-border-color');
+      border-color: themeVariables.themed("offer-input-border-color");
     }
   }
 
   h2,
   label {
     @include themeVariables.themify(themeVariables.$themes) {
-      color: themeVariables.themed('text-main-color');
+      color: themeVariables.themed("text-main-color");
     }
 
     text-align: left;
@@ -40,14 +40,14 @@
 
     .validationIcon {
       right: 70px;
-      top: 37px;
+      top: 45px;
     }
   }
 
   .validationIcon {
     position: absolute;
-    z-index: 20;
-    div[role='tooltip'] {
+    z-index: 9;
+    div[role="tooltip"] {
       width: fit-content;
       text-wrap: nowrap;
     }
@@ -101,63 +101,6 @@
     }
   }
 }
-
-// styles for react select
-// :global {
-//   #location-select,
-//   #company-select,
-//   #contract-select {
-//     height: 44px;
-//     .css-1fdsijx-ValueContainer,
-//     .css-art2ul-ValueContainer2 {
-//       padding-left: 15px;
-
-//       .css-1dimb5e-singleValue {
-//         @include themeVariables.themify(themeVariables.$themes) {
-//           color: themeVariables.themed('input-color');
-//         }
-//       }
-//     }
-
-//     .css-t3ipsp-control {
-//       box-shadow: none;
-//     }
-
-//     .css-13cymwt-control,
-//     .css-t3ipsp-control {
-//       border: 2px solid;
-//       height: 100%;
-//       border-radius: 6px;
-
-//       @include themeVariables.themify(themeVariables.$themes) {
-//         border-color: themeVariables.themed('offer-input-border-color');
-//         background-color: themeVariables.themed('input-background');
-//       }
-
-//       .css-1jqq78o-placeholder {
-//         opacity: 0.5;
-//         @include themeVariables.themify(themeVariables.$themes) {
-//           color: themeVariables.themed('input-color');
-//         }
-//       }
-//     }
-
-//     .css-1nmdiq5-menu {
-//       z-index: 10;
-
-//       @include themeVariables.themify(themeVariables.$themes) {
-//         color: themeVariables.themed('input-color');
-//         background-color: themeVariables.themed('input-background');
-//       }
-//     }
-
-//     .css-d7l1ni-option {
-//       @include themeVariables.themify(themeVariables.$themes) {
-//         background-color: themeVariables.themed('select-option-background');
-//       }
-//     }
-//   }
-// }
 
 .error {
   outline: 1px solid variables.$red;

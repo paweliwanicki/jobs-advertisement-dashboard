@@ -86,7 +86,7 @@ const OfferEditor = () => {
   );
 
   const handleCompanyOnChange = useCallback(
-    (company: SingleValue<Option>) => {
+    (company: any) => {
       companyIsValidated && clearValidationAndError("COMPANY");
       setCompany(company);
     },
@@ -96,13 +96,14 @@ const OfferEditor = () => {
   const handleLocationOnChange = useCallback(
     (location: SingleValue<Option>) => {
       locationIsValidated && clearValidationAndError("LOCATION");
+      console.log(location);
       setLocation(location);
     },
     [locationIsValidated, clearValidationAndError]
   );
 
   const handleContractOnChange = useCallback(
-    (contract: SingleValue<Option>) => {
+    (contract: any) => {
       contractIsValidated && clearValidationAndError("CONTRACT");
       setContract(contract);
     },
@@ -142,7 +143,7 @@ const OfferEditor = () => {
       );
 
       if (isValid) {
-        const offer = {
+        const offer: Offer = {
           title,
           id: parseInt(id ?? ""),
           location: location?.label ?? "",
@@ -176,10 +177,7 @@ const OfferEditor = () => {
       label: contract?.name ?? "",
       value: contract?.id ?? "",
     });
-    setLocation({
-      label: location,
-      value: location,
-    });
+    setLocation({ label: location, value: location });
     setInitialEditorValue(description);
     setDescription(description);
   }, []);
@@ -254,7 +252,7 @@ const OfferEditor = () => {
             value={title}
           />
           <label
-            htmlFor="react-select-location-input"
+            htmlFor="react-select-location-autocomplete-input"
             className={classes.locationLabel}
           >
             {locationIsValidated && (
@@ -267,19 +265,14 @@ const OfferEditor = () => {
             )}
             <p>Location</p>
             <GoogleLocationSelect
-              selectProps={{
-                value: location,
-                id: "location-select",
-                instanceId: "location",
-                placeholder: "Work location",
-                className: `${classes.locationSelect} ${
-                  locationIsValidated &&
-                  (locationError ? classes.error : classes.valid)
-                }`,
-                isClearable: true,
-                noOptionsMessage: () => "Please type location...",
-                onChange: handleLocationOnChange,
-              }}
+              value={location}
+              id="location-select"
+              classNames={`${classes.locationSelect} ${
+                locationIsValidated &&
+                (locationError ? classes.error : classes.valid)
+              }`}
+              onChange={handleLocationOnChange}
+              instanceId="location-autocomplete"
             />
           </label>
           <label
@@ -295,12 +288,12 @@ const OfferEditor = () => {
               />
             )}
             <p>Contract</p>
-            <CustomReactSelect 
+            <CustomReactSelect
               id="contract-select"
-              icon={<SvgIcon id="icon-contract" color="#5964e0" />}
               instanceId="contract"
+              icon={<SvgIcon id="icon-contract" color="#5964e0" />}
               options={contractSelectOptions}
-              className={`${classes.contractSelect} ${
+              classNames={`${classes.contractSelect} ${
                 contractIsValidated &&
                 (contractError ? classes.error : classes.valid)
               }`}
@@ -326,13 +319,13 @@ const OfferEditor = () => {
             )}
             <CustomReactSelect
               id="company-select"
+              instanceId="company"
               icon={<SvgIcon id="icon-company" color="#5964e0" />}
               onChange={handleCompanyOnChange}
               onCreateOption={handleCreateNewCompany}
               placeholder="Company"
-              instanceId="company"
               options={companySelectOptions}
-              className={`${classes.companySelect} ${
+              classNames={`${classes.companySelect} ${
                 companyIsValidated &&
                 (companyError ? classes.error : classes.valid)
               }`}

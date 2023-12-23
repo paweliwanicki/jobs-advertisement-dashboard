@@ -69,6 +69,9 @@ export class OffersService {
     if (!offer) {
       throw new NotFoundException(OFFER_EXCEPTION_MESSAGES.NOT_FOUND);
     }
+    if (offer.unremovable) {
+      throw new NotFoundException(OFFER_EXCEPTION_MESSAGES.UNREMOVABLE);
+    }
     return this.offerRepository.remove(offer);
   }
 

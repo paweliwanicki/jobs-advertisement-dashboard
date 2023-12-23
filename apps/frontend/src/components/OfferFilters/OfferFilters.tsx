@@ -75,6 +75,7 @@ const OfferFilters = ({ onSubmit }: OfferFiltersProps) => {
 
           <GoogleLocationSelect
             id="location-filter"
+            instanceId="location"
             onChange={handleSetLocation}
             value={location}
           />
@@ -82,6 +83,7 @@ const OfferFilters = ({ onSubmit }: OfferFiltersProps) => {
           <CustomReactSelect
             icon={<SvgIcon id="icon-company" color="#5964e0" />}
             id="company-filter"
+            instanceId="company"
             onChange={handleSetCompany}
             placeholder="company..."
             options={companySelectOptions}
@@ -92,6 +94,7 @@ const OfferFilters = ({ onSubmit }: OfferFiltersProps) => {
           <CustomReactSelect
             icon={<SvgIcon id="icon-contract" color="#5964e0" />}
             id="contract-filter"
+            instanceId="contract"
             onChange={handleSetContract}
             placeholder="contract..."
             options={contractSelectOptions}

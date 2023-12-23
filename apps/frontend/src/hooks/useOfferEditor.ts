@@ -121,7 +121,6 @@ export const useOfferEditor = (): UseOfferEditor => {
 
   const handleOfferResponse = useCallback((response: ResponseParams) => {
     const { statusCode } = response;
-
     const [message, error] = [
       OFFER_STATUS_MESSAGES[statusCode],
       statusCode !== 200 && statusCode !== 201,
