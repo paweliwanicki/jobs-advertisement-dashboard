@@ -1,4 +1,4 @@
-@use './variables.scss';
+@use "./variables.scss";
 
 $themes: (
   light: (
@@ -24,6 +24,8 @@ $themes: (
     table-text-color: variables.$very-dark-blue,
     filter-grid-bg-color: variables.$light-grey,
     filter-container-bg-color: variables.$very-light-grey,
+    pagination-bg-color: variables.$violet,
+    pagination-text-color: variables.$white,
   ),
 
   dark: (
@@ -51,6 +53,8 @@ $themes: (
     table-text-color: variables.$light-grey,
     filter-grid-bg-color: variables.$midnight,
     filter-container-bg-color: variables.$midnight,
+    pagination-bg-color: transparent,
+    pagination-text-color: variables.$very-light-grey,
   ),
 );
 
@@ -59,7 +63,7 @@ $themes: (
     :global(.theme-#{$theme}) & {
       $theme-map: () !global;
       @each $key, $submap in $map {
-        $value: map-get(map-get($themes, $theme), '#{$key}');
+        $value: map-get(map-get($themes, $theme), "#{$key}");
         $theme-map: map-merge(
           $theme-map,
           (

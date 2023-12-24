@@ -7,6 +7,18 @@
   height: 60px;
   border-radius: inherit;
 
+  &.small {
+    height: 38px;
+  }
+
+  &.medium {
+    height: 48px;
+  }
+
+  &.large {
+    height: 60px;
+  }
+
   .icon {
     position: absolute;
     z-index: 1;

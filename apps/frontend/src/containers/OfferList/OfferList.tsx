@@ -13,6 +13,7 @@ import { useOffer } from "../../providers/OfferProvider";
 import { Offer } from "../../types/Offer";
 import OfferFilters from "../../components/OfferFilters/OfferFilters";
 import { useUser } from "../../providers/UserProvider";
+import Pagination from "../../components/common/Pagination/Pagination";
 
 type OfferListProps = {
   offers: Offer[];
@@ -43,6 +44,14 @@ const OfferList = ({
     if (response.statusCode === 201) {
       fetchOffers();
     }
+  }, []);
+
+  const handleChangePage = useCallback((page: number) => {
+    const filters = {
+      page,
+    };
+    console.log(filters);
+    //fetchOffers(filters)
   }, []);
 
   const controlsBox = useMemo(() => {
@@ -95,6 +104,10 @@ const OfferList = ({
           </div>
         )}
       </div>
+      <Pagination onPageChange={handleChangePage} 
+      //totalItems={offers.length} 
+      totalItems={100} 
+      />
     </div>
   );
 };
