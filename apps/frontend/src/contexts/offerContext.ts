@@ -1,6 +1,6 @@
 import { createContext } from "react";
 import { Offer } from "../types/Offer";
-import { OffersFiltersValues } from "../hooks/useFilters";
+import { OffersFiltersValues } from "../providers/FiltersProvider";
 
 type OfferContextType = {
   selectedOffer?: Offer;

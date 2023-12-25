@@ -1,36 +1,44 @@
+import { useCallback, useMemo } from "react";
+import { HttpMethod } from "../../enums/HttpMethods";
+import { Link } from "react-router-dom";
 import classes from "./OfferList.module.scss";
 import Button from "../../components/common/Button/Button";
-import { useApi } from "../../hooks/useApi";
-import { HttpMethod } from "../../enums/HttpMethods";
+import SvgIcon from "../../components/common/SvgIcon/SvgIcon";
 import OfferCard, {
   OfferCardProps,
 } from "../../components/OfferCard/OfferCard";
 import { LoadingSpinner } from "../../components/common/LoadingSpinner/LoadingSpinner";
-import { Link } from "react-router-dom";
-import { useCallback, useMemo } from "react";
-import SvgIcon from "../../components/common/SvgIcon/SvgIcon";
-import { useOffer } from "../../providers/OfferProvider";
-import { Offer } from "../../types/Offer";
 import OfferFilters from "../../components/OfferFilters/OfferFilters";
-import { useUser } from "../../providers/UserProvider";
 import Pagination from "../../components/common/Pagination/Pagination";
+import { useUser } from "../../providers/UserProvider";
+import { useOffer } from "../../providers/OfferProvider";
+import { useApi } from "../../hooks/useApi";
+import { usePagination } from "../../hooks/usePagination";
+import { FiltersValuesType } from "../../contexts/filtersContext";
+import { Offer } from "../../types/Offer";
 
 type OfferListProps = {
   offers: Offer[];
   classNames?: string;
   showControls?: boolean;
-  onFilterSubmit: () => void;
 };
 
 const OfferList = ({
   offers,
   classNames = "",
   showControls = false,
-  onFilterSubmit,
 }: OfferListProps) => {
   const { fetch, isFetching } = useApi();
   const { user } = useUser();
   const { fetchOffers } = useOffer();
+
+  const {
+    activePage,
+    totalPages,
+    itemsPerPage,
+    handleSetPage,
+    handleSetItemsPerPage,
+  } = usePagination({ totalItems: offers.length });
 
   const handleImportOffers = useCallback(async () => {
     const [offers] = await fetch<any[]>(HttpMethod.GET, {
@@ -44,15 +52,14 @@ const OfferList = ({
     if (response.statusCode === 201) {
       fetchOffers();
     }
-  }, []);
+  }, [fetchOffers]);
 
-  const handleChangePage = useCallback((page: number) => {
-    const filters = {
-      page,
-    };
-    console.log(filters);
-    //fetchOffers(filters)
-  }, []);
+  const handleFilterList = useCallback(
+    (filters: FiltersValuesType) => {
+      fetchOffers(filters);
+    },
+    [fetchOffers]
+  );
 
   const controlsBox = useMemo(() => {
     return (
@@ -78,7 +85,12 @@ const OfferList = ({
 
   return (
     <div className={classes.offerList}>
-      <OfferFilters onSubmit={onFilterSubmit} />
+      <OfferFilters
+        onSubmit={handleFilterList}
+        totalItems={offers.length}
+        activePage={activePage}
+        itemsPerPage={itemsPerPage}
+      />
       {isFetching && <LoadingSpinner message="Fetching offer list" />}
       {controlsBox}
       <div className={`${classes.list} ${classNames}`}>
@@ -104,9 +116,13 @@ const OfferList = ({
           </div>
         )}
       </div>
-      <Pagination onPageChange={handleChangePage} 
-      //totalItems={offers.length} 
-      totalItems={100} 
+      <Pagination
+        onSubmit={handleFilterList}
+        onSetPage={handleSetPage}
+        onSetItemsPerPage={handleSetItemsPerPage}
+        activePage={activePage}
+        totalPages={totalPages}
+        itemsPerPage={itemsPerPage}
       />
     </div>
   );

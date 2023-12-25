@@ -11,7 +11,7 @@ import { HttpMethod } from "../enums/HttpMethods";
 import { Offer } from "../types/Offer";
 import { RequestOptions, useApi } from "../hooks/useApi";
 import { useSnackBar } from "./SnackBarProvider";
-import { OffersFiltersValues } from "../hooks/useFilters";
+import { OffersFiltersValues } from "./FiltersProvider";
 
 type OfferProviderProps = {
   children: ReactNode;

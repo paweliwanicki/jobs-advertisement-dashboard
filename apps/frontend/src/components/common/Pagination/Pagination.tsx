@@ -1,10 +1,11 @@
-import { useCallback, useState } from "react";
-import { usePagination } from "../../../hooks/usePagination";
+import { useCallback, useEffect, useState } from "react";
 import classes from "./Pagination.module.scss";
+import SvgIcon from "../SvgIcon/SvgIcon";
 import CustomReactSelect from "../CustomReactSelect/CustomReactSelect";
 import { SingleValue } from "react-select";
 import { Option } from "react-google-places-autocomplete/build/types";
-import SvgIcon from "../SvgIcon/SvgIcon";
+import { useFilters } from "../../../providers/FiltersProvider";
+import { FiltersValuesType } from "../../../contexts/filtersContext";
 
 export const ITEMS_PER_PAGE_OPTIONS = [
   { label: "12", value: 12 },
@@ -14,16 +15,23 @@ export const ITEMS_PER_PAGE_OPTIONS = [
 ] as const;
 
 type PaginationProps = {
-  totalItems: number;
-  onPageChange: (page: number) => void;
+  activePage: number;
+  totalPages: number;
+  itemsPerPage: number;
+  onSubmit: (filters: FiltersValuesType) => void;
+  onSetPage: (page: number) => void;
+  onSetItemsPerPage: (itemsPerPage: number) => void;
 };
 
-const Pagination = ({ totalItems, onPageChange }: PaginationProps) => {
-  const { activePage, totalPages, handleSetPage, handleSetItemsPerPage } =
-    usePagination({
-      totalItems,
-      onPageChange,
-    });
+const Pagination = ({
+  activePage,
+  totalPages,
+  itemsPerPage,
+  onSubmit,
+  onSetPage,
+  onSetItemsPerPage,
+}: PaginationProps) => {
+  const { getFiltersValues } = useFilters();
 
   const [selectedItemsPerPage, setSelectedItemsPerPage] = useState<
     SingleValue<Option>
@@ -31,14 +39,14 @@ const Pagination = ({ totalItems, onPageChange }: PaginationProps) => {
 
   const handleChangePage = useCallback(
     (page: number) => {
-      handleSetPage(page);
+      onSetPage(page);
     },
-    [handleSetPage]
+    [onSetPage]
   );
 
   const handleChangeItemsPerPage = useCallback((option: any) => {
     setSelectedItemsPerPage(option);
-    handleSetItemsPerPage(option?.value);
+    onSetItemsPerPage(option?.value);
   }, []);
 
   const renderPagesList = useCallback(() => {
@@ -77,6 +85,15 @@ const Pagination = ({ totalItems, onPageChange }: PaginationProps) => {
     });
     return pagesList;
   }, [activePage, totalPages]);
+
+  useEffect(() => {
+    const filtersValues = getFiltersValues();
+    const pagination = {
+      activePage,
+      itemsPerPage,
+    };
+    onSubmit({ ...filtersValues, ...pagination });
+  }, [activePage, itemsPerPage]);
 
   return totalPages ? (
     <div className={classes.pagination}>

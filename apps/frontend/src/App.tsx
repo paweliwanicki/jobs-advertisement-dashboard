@@ -7,6 +7,7 @@ import { useRouter } from "./hooks/useRouter";
 import UserProvider from "./providers/UserProvider";
 import OfferProvider from "./providers/OfferProvider";
 import DictionaryProvider from "./providers/DictionaryProvider";
+import FiltersProvider from "./providers/FiltersProvider";
 
 const { router } = useRouter();
 
@@ -18,7 +19,9 @@ export function App() {
           <SnackBarProvider>
             <DictionaryProvider>
               <OfferProvider>
-                <RouterProvider router={router} />
+                <FiltersProvider>
+                  <RouterProvider router={router} />
+                </FiltersProvider>
               </OfferProvider>
             </DictionaryProvider>
           </SnackBarProvider>

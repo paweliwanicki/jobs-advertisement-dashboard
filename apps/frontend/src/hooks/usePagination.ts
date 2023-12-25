@@ -1,8 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 
-export type PaginationType = {
+export type PaginationValues = {
   activePage: number;
   itemsPerPage: number;
+};
+
+export type PaginationType = PaginationValues & {
   totalPages: number;
   handleSetPage: (page: number) => void;
   handleSetItemsPerPage: (perPage: number) => void;
@@ -10,13 +13,9 @@ export type PaginationType = {
 
 type PaginationProps = {
   totalItems: number;
-    onPageChange: (page: number) => void;
 };
 
-export const usePagination = ({
-  totalItems,
-  onPageChange,
-}: PaginationProps) => {
+export const usePagination = ({ totalItems }: PaginationProps) => {
   const [activePage, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [itemsPerPage, setItemsPerPage] = useState<number>(12);
@@ -25,7 +24,6 @@ export const usePagination = ({
     (page: number) => {
       if (page >= 1 && page <= totalPages) {
         setPage(page);
-        onPageChange(page);
       }
     },
     [activePage, totalPages]

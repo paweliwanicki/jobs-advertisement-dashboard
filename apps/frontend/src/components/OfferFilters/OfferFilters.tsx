@@ -7,14 +7,22 @@ import SvgIcon from "../common/SvgIcon/SvgIcon";
 import CustomReactSelect from "../common/CustomReactSelect/CustomReactSelect";
 import { useDictionaries } from "../../providers/DictionaryProvider";
 import GoogleLocationSelect from "../common/GoogleLocationSelect/GoogleLocationSelect";
-import { OffersFiltersValues, useFilters } from "../../hooks/useFilters";
 import { useCollapse } from "react-collapsed";
+import { useFilters } from "../../providers/FiltersProvider";
+import { FiltersValuesType } from "../../contexts/filtersContext";
 
 type OfferFiltersProps = {
-  onSubmit: (filters: OffersFiltersValues) => void;
+  totalItems: number;
+  activePage: number;
+  itemsPerPage: number;
+  onSubmit: (filters: FiltersValuesType) => void;
 };
 
-const OfferFilters = ({ onSubmit }: OfferFiltersProps) => {
+const OfferFilters = ({
+  activePage,
+  itemsPerPage,
+  onSubmit,
+}: OfferFiltersProps) => {
   const [isExpanded, setExpanded] = useState<boolean>(false);
   const { getCollapseProps, getToggleProps } = useCollapse();
   const { companySelectOptions, contractSelectOptions } = useDictionaries();
@@ -36,9 +44,14 @@ const OfferFilters = ({ onSubmit }: OfferFiltersProps) => {
     async (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
       const filtersValues = getFiltersValues();
-      onSubmit(filtersValues);
+      const pagination = {
+        activePage,
+        itemsPerPage,
+      };
+
+      onSubmit({ ...filtersValues, ...pagination });
     },
-    [getFiltersValues, onSubmit]
+    [activePage, itemsPerPage, getFiltersValues, onSubmit]
   );
 
   const handleTitleOnChange = useCallback(
