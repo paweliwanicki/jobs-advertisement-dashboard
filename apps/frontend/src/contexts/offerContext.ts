@@ -5,6 +5,7 @@ import { OffersFiltersValues } from "../providers/FiltersProvider";
 type OfferContextType = {
   selectedOffer?: Offer;
   offers: Offer[];
+  countOffers: number;
   filteredOffers: Offer[] | undefined;
   myOffers: Offer[];
   filteredMyOffers: Offer[] | undefined;
@@ -19,6 +20,7 @@ type OfferContextType = {
 export const OfferContext = createContext<OfferContextType>({
   selectedOffer: undefined,
   offers: [],
+  countOffers: 0,
   filteredOffers: [],
   myOffers: [],
   filteredMyOffers: [],

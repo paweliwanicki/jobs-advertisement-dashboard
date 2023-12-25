@@ -24,6 +24,7 @@ const OfferProvider = ({ children }: OfferProviderProps) => {
 
   const [selectedOffer, setSelectedOffer] = useState<Offer>();
   const [offers, setOffers] = useState<Offer[]>([]);
+  const [countOffers, setCountOffers] = useState<number>(0);
   const [filteredOffers, setFilteredOffers] = useState<Offer[] | undefined>();
   const [myOffers, setMyOffers] = useState<Offer[]>([]);
   const [filteredMyOffers, setFilteredMyOffers] = useState<
@@ -37,16 +38,18 @@ const OfferProvider = ({ children }: OfferProviderProps) => {
     if (filters) {
       requestOptions.payload = JSON.stringify(filters);
     }
-    const [fetchedOffers, response] = await fetch<Offer[]>(
+    const [fetchedOffers, response] = await fetch<[Offer[], number]>(
       HttpMethod.POST,
       requestOptions
     );
 
     if (response.statusCode === 201) {
+      const [offers, count] = fetchedOffers;
+      setCountOffers(count);
       if (filters) {
-        setFilteredOffers(fetchedOffers);
+        setFilteredOffers(offers);
       } else {
-        setOffers(fetchedOffers);
+        setOffers(offers);
         setFilteredOffers(undefined);
       }
     }
@@ -81,7 +84,7 @@ const OfferProvider = ({ children }: OfferProviderProps) => {
         );
       }
     },
-    [selectedOffer]
+    [fetchOffers, selectedOffer]
   );
 
   const getMyOffers = useCallback(async (filters?: OffersFiltersValues) => {
@@ -115,6 +118,7 @@ const OfferProvider = ({ children }: OfferProviderProps) => {
     () => ({
       selectedOffer,
       offers,
+      countOffers,
       filteredOffers,
       myOffers,
       filteredMyOffers,
@@ -129,6 +133,7 @@ const OfferProvider = ({ children }: OfferProviderProps) => {
     [
       selectedOffer,
       offers,
+      countOffers,
       filteredOffers,
       myOffers,
       filteredMyOffers,

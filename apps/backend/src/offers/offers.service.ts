@@ -42,16 +42,22 @@ export class OffersService {
     });
   }
 
-  async findAll(where: FiltersOfferDto) {
+  async findAll(filters: FiltersOfferDto) {
+    const { activePage, itemsPerPage, ...where } = filters;
+
     if (where.title) {
       where.title = ILike(`%${where.title}%`);
     }
-    return await this.offerRepository.find({
+
+    return await this.offerRepository.findAndCount({
       where,
       relations: { company: true, contract: true },
       order: {
         createdAt: 'DESC',
       },
+      take: itemsPerPage ?? 12,
+      skip:
+        itemsPerPage && activePage > 1 ? itemsPerPage * (activePage - 1) : 0,
     });
   }
 

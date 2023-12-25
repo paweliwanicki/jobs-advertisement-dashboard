@@ -30,7 +30,7 @@ const OfferList = ({
 }: OfferListProps) => {
   const { fetch, isFetching } = useApi();
   const { user } = useUser();
-  const { fetchOffers } = useOffer();
+  const { fetchOffers, countOffers } = useOffer();
 
   const {
     activePage,
@@ -38,7 +38,7 @@ const OfferList = ({
     itemsPerPage,
     handleSetPage,
     handleSetItemsPerPage,
-  } = usePagination({ totalItems: offers.length });
+  } = usePagination({ totalItems: countOffers });
 
   const handleImportOffers = useCallback(async () => {
     const [offers] = await fetch<any[]>(HttpMethod.GET, {

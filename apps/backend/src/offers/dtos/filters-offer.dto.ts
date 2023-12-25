@@ -1,4 +1,4 @@
-import { IsBoolean, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
 import { FindOperator } from 'typeorm';
 
 export class FiltersOfferDto {
@@ -23,6 +23,14 @@ export class FiltersOfferDto {
   @IsBoolean()
   @IsOptional()
   archived: boolean;
+
+  @IsNumber()
+  @IsOptional()
+  activePage: number;
+
+  @IsNumber()
+  @IsOptional()
+  itemsPerPage: number;
 
   @IsOptional()
   createdBy: number;

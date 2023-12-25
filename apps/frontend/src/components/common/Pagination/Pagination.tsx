@@ -6,6 +6,7 @@ import { SingleValue } from "react-select";
 import { Option } from "react-google-places-autocomplete/build/types";
 import { useFilters } from "../../../providers/FiltersProvider";
 import { FiltersValuesType } from "../../../contexts/filtersContext";
+import { useOffer } from "../../../providers/OfferProvider";
 
 export const ITEMS_PER_PAGE_OPTIONS = [
   { label: "12", value: 12 },
@@ -32,6 +33,7 @@ const Pagination = ({
   onSetItemsPerPage,
 }: PaginationProps) => {
   const { getFiltersValues } = useFilters();
+  const { offers } = useOffer();
 
   const [selectedItemsPerPage, setSelectedItemsPerPage] = useState<
     SingleValue<Option>
@@ -87,12 +89,14 @@ const Pagination = ({
   }, [activePage, totalPages]);
 
   useEffect(() => {
-    const filtersValues = getFiltersValues();
-    const pagination = {
-      activePage,
-      itemsPerPage,
-    };
-    onSubmit({ ...filtersValues, ...pagination });
+    if (offers.length) {
+      const filtersValues = getFiltersValues();
+      const pagination = {
+        activePage,
+        itemsPerPage,
+      };
+      onSubmit({ ...filtersValues, ...pagination });
+    }
   }, [activePage, itemsPerPage]);
 
   return totalPages ? (
