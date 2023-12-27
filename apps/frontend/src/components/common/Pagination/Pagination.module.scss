@@ -46,7 +46,7 @@
       color: inherit;
 
       transition: all 0.3s ease-in;
-      
+
       &.active {
         @include themeVariables.themify(themeVariables.$themes) {
           background-color: themeVariables.themed("pagination-bg-color");
@@ -63,6 +63,10 @@
 
     .css-art2ul-ValueContainer2 {
       padding-left: 10px;
+    }
+
+    .css-1jj59y3-MenuList2 {
+      max-height: 110px;
     }
   }
 }

@@ -11,7 +11,7 @@ import { HttpMethod } from "../enums/HttpMethods";
 import { Offer } from "../types/Offer";
 import { RequestOptions, useApi } from "../hooks/useApi";
 import { useSnackBar } from "./SnackBarProvider";
-import { OffersFiltersValues } from "./FiltersProvider";
+import { FiltersValuesType } from "../contexts/filtersContext";
 
 type OfferProviderProps = {
   children: ReactNode;
@@ -19,7 +19,6 @@ type OfferProviderProps = {
 
 const OfferProvider = ({ children }: OfferProviderProps) => {
   const { fetch, isFetching } = useApi();
-
   const { handleShowSnackBar } = useSnackBar();
 
   const [selectedOffer, setSelectedOffer] = useState<Offer>();
@@ -31,7 +30,7 @@ const OfferProvider = ({ children }: OfferProviderProps) => {
     Offer[] | undefined
   >();
 
-  const fetchOffers = useCallback(async (filters?: OffersFiltersValues) => {
+  const fetchOffers = useCallback(async (filters?: FiltersValuesType) => {
     const requestOptions: RequestOptions = {
       path: `/api/offers/all`,
     };
@@ -87,23 +86,25 @@ const OfferProvider = ({ children }: OfferProviderProps) => {
     [fetchOffers, selectedOffer]
   );
 
-  const getMyOffers = useCallback(async (filters?: OffersFiltersValues) => {
+  const getMyOffers = useCallback(async (filters?: FiltersValuesType) => {
     const requestOptions: RequestOptions = {
       path: `/api/offers/my`,
     };
     if (filters) {
       requestOptions.payload = JSON.stringify(filters);
     }
-    const [fetchedOffers, response] = await fetch<Offer[]>(
+    const [fetchedOffers, response] = await fetch<[Offer[], number]>(
       HttpMethod.POST,
       requestOptions
     );
 
     if (response.statusCode === 201) {
+      const [offers, count] = fetchedOffers;
+      setCountOffers(count);
       if (filters) {
-        setFilteredMyOffers(fetchedOffers);
+        setFilteredMyOffers(offers);
       } else {
-        setMyOffers(fetchedOffers);
+        setMyOffers(offers);
         setFilteredMyOffers(undefined);
       }
     }
@@ -149,7 +150,6 @@ const OfferProvider = ({ children }: OfferProviderProps) => {
 
   useEffect(() => {
     fetchOffers();
-    getMyOffers();
   }, []);
 
   return (

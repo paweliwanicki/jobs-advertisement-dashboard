@@ -1,7 +1,7 @@
-import { ReactNode, useCallback, useEffect, useState } from 'react';
-import classes from './ContextMenu.module.scss';
-import SvgIcon from '../SvgIcon/SvgIcon';
-import { useMotionAnimate } from 'motion-hooks';
+import { ReactNode, useCallback, useEffect, useState } from "react";
+import classes from "./ContextMenu.module.scss";
+import SvgIcon from "../SvgIcon/SvgIcon";
+import { useMotionAnimate } from "motion-hooks";
 
 export type ContextMenuOption = {
   label: ReactNode;
@@ -21,43 +21,43 @@ const ContextMenu = ({
   options,
   id,
   iconId,
-  classNames = '',
+  classNames = "",
   width = 24,
   height = 24,
 }: ContextMenuProps) => {
   const { play: openAnimation } = useMotionAnimate(
     `#${id} .${classes.optionsList}`,
-    { height: 'auto' },
+    { height: "auto" },
     {
-      duration: 0.5,
-      easing: [0.22, 0.03, 0.26, 1],
+      duration: 0.4,
+      easing: "ease-in",
     }
   );
 
   const { play: closeAnimation } = useMotionAnimate(
     `#${id} .${classes.optionsList}`,
-    { height: '0px' },
+    { height: "0px" },
     {
-      duration: 0.5,
-      easing: [0.22, 0.03, 0.26, 1],
+      duration: 0.4,
+      easing: "ease-in",
     }
   );
 
   const { play: openMenuAnimation } = useMotionAnimate(
     `#${id} .${classes.option}`,
-    { opacity: 1, height: 'fit-content' },
+    { opacity: 1, height: "fit-content" },
     {
-      duration: 0.5,
-      easing: [0.22, 0.03, 0.26, 1],
+      duration: 0.4,
+      easing: "ease-in",
     }
   );
 
   const { play: closeMenuAnimation } = useMotionAnimate(
     `#${id} .${classes.option}`,
-    { opacity: 0, height: '0' },
+    { opacity: 0, height: "0" },
     {
-      duration: 0.2,
-      easing: [0.22, 0.03, 0.26, 1],
+      duration: 0.4,
+      easing: "ease-in",
     }
   );
 
@@ -83,28 +83,33 @@ const ContextMenu = ({
   }, [isOpen]);
 
   return (
-    <div id={id} className={`${classNames} ${classes.contextMenuBox}`}>
-      <SvgIcon
-        id={iconId ? iconId : 'icon-settings'}
-        width={width}
-        height={height}
-        onClick={handleSetIsOpen}
-      />
+    <>
+      <div id={id} className={`${classNames} ${classes.contextMenuBox}`}>
+        <SvgIcon
+          id={iconId ? iconId : "icon-settings"}
+          width={width}
+          height={height}
+          onClick={handleSetIsOpen}
+        />
 
-      <ul className={classes.optionsList} style={{ top: height + 5 }}>
-        {options.map((option: ContextMenuOption, index: number) => {
-          return (
-            <li
-              onClick={() => handleOptionAction(option)}
-              className={classes.option}
-              key={`${index}-${option.label}`}
-            >
-              <p>{option.label}</p>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
+        <ul className={classes.optionsList} style={{ top: height + 5 }}>
+          {options.map((option: ContextMenuOption, index: number) => {
+            return (
+              <li
+                onClick={() => handleOptionAction(option)}
+                className={classes.option}
+                key={`${index}-${option.label}`}
+              >
+                <p>{option.label}</p>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+      {isOpen && (
+        <div className={classes.overlay} onClick={handleSetIsOpen}></div>
+      )}
+    </>
   );
 };
 

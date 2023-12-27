@@ -6,11 +6,11 @@
   width: 100%;
   position: -webkit-sticky; /* Required for Safari */
   position: sticky;
-  top: 135px;
-  z-index: 99999;
+  top: 160px;
+  z-index: 1;
   background-color: variables.$very-light-grey;
-  margin-top: -65px;
-  margin-bottom: 30px;
+  margin-top: -60px;
+  margin-bottom: 35px;
   border-radius: 6px;
   padding: 5px;
 
@@ -33,6 +33,7 @@
     }
 
     .filtersBox {
+      margin-top:15px;
       display: grid;
       grid-template-columns: 1fr 1fr;
 
@@ -142,7 +143,9 @@
     }
 
     &:hover {
-      background-color: variables.$light-grey;
+      @include themeVariables.themify(themeVariables.$themes) {
+        background-color: themeVariables.themed("filter-collapse-btn-bg-color");
+      }
     }
   }
 }

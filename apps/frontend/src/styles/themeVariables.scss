@@ -26,6 +26,7 @@ $themes: (
     filter-container-bg-color: variables.$very-light-grey,
     pagination-bg-color: variables.$violet,
     pagination-text-color: variables.$white,
+    filter-collapse-btn-bg-color: variables.$light-grey,
   ),
 
   dark: (
@@ -55,6 +56,8 @@ $themes: (
     filter-container-bg-color: variables.$midnight,
     pagination-bg-color: transparent,
     pagination-text-color: variables.$very-light-grey,
+    filter-collapse-btn-bg-color: variables.$very-dark-blue,
+
   ),
 );
 

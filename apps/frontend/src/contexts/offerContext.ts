@@ -1,6 +1,6 @@
 import { createContext } from "react";
 import { Offer } from "../types/Offer";
-import { OffersFiltersValues } from "../providers/FiltersProvider";
+import { FiltersValuesType } from "./filtersContext";
 
 type OfferContextType = {
   selectedOffer?: Offer;
@@ -10,8 +10,8 @@ type OfferContextType = {
   myOffers: Offer[];
   filteredMyOffers: Offer[] | undefined;
   fetchOffer: (id: number) => void;
-  fetchOffers: (filters?: OffersFiltersValues) => void;
-  getMyOffers: (filters?: OffersFiltersValues) => void;
+  fetchOffers: (filters?: FiltersValuesType) => void;
+  getMyOffers: (filters?: FiltersValuesType) => void;
   removeOffer: (id: number) => void;
   setFilteredOffers: (offers: Offer[]) => void;
   clearFilteredOffers: () => void;

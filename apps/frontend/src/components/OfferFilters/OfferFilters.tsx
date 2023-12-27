@@ -10,6 +10,7 @@ import GoogleLocationSelect from "../common/GoogleLocationSelect/GoogleLocationS
 import { useCollapse } from "react-collapsed";
 import { useFilters } from "../../providers/FiltersProvider";
 import { FiltersValuesType } from "../../contexts/filtersContext";
+import { useTheme } from "../../providers/ThemeProvider";
 
 type OfferFiltersProps = {
   totalItems: number;
@@ -23,6 +24,7 @@ const OfferFilters = ({
   itemsPerPage,
   onSubmit,
 }: OfferFiltersProps) => {
+  const { theme } = useTheme();
   const [isExpanded, setExpanded] = useState<boolean>(false);
   const { getCollapseProps, getToggleProps } = useCollapse();
   const { companySelectOptions, contractSelectOptions } = useDictionaries();
@@ -148,7 +150,10 @@ const OfferFilters = ({
         })}
       >
         {isExpanded ? "Hide fllters" : "Show filters"}
-        <SvgIcon id={isExpanded ? "arrow-drop-up" : "arrow-drop-down"} />
+        <SvgIcon
+          id={isExpanded ? "arrow-drop-up" : "arrow-drop-down"}
+          color={theme === "dark" ? "white" : "#121721"}
+        />
       </button>
     </div>
   );

@@ -22,6 +22,7 @@ import { useTheme } from "../../providers/ThemeProvider";
 import GoogleLocationSelect from "../common/GoogleLocationSelect/GoogleLocationSelect";
 import CustomReactSelect from "../common/CustomReactSelect/CustomReactSelect";
 import SvgIcon from "../common/SvgIcon/SvgIcon";
+import InfoBox from "../common/InfoBox/InfoBox";
 
 const OfferEditor = () => {
   let { id } = useParams();
@@ -128,7 +129,7 @@ const OfferEditor = () => {
 
   const handleChangeTinyMCEStyles = useCallback(() => {
     setInitialEditorValue(description);
-    setEditorElementKey((key) => key + 1); // force tinymce rerender after theme is changed
+    setEditorElementKey((key) => key + 1); // force tinymce rerender after theme is changed (editor was not changing styles)
   }, [description]);
 
   const handleSaveOffer = useCallback(
@@ -232,7 +233,12 @@ const OfferEditor = () => {
 
   return (
     <div className={classes.offerEditorContainer}>
-      <h2>Offer editor</h2>
+      <h2>Offer Editor</h2>
+      <InfoBox variant="info">
+        Here you can add or edit your current job offers. <br />
+        The offer description allows you to create advanced templates using
+        HTML. In the form all fields are required!
+      </InfoBox>
       {(isLoading || isFetching) && (
         <LoadingSpinner message={isLoading ? "Form loading" : ""} />
       )}
@@ -242,7 +248,11 @@ const OfferEditor = () => {
             id="title"
             icon={<SvgIcon id="icon-search" color="#5964e0" />}
             onChange={handleTitleOnChange}
-            label="Title"
+            label={
+              <span>
+                Title<span className={classes.required}>*</span>
+              </span>
+            }
             size="medium"
             classNames={classes.inputBox}
             placeholder="Title / position"
@@ -263,7 +273,9 @@ const OfferEditor = () => {
                 classNames={classes.validationIcon}
               />
             )}
-            <p>Location</p>
+            <p>
+              Location<span className={classes.required}>*</span>
+            </p>
             <GoogleLocationSelect
               value={location}
               id="location-select"
@@ -287,7 +299,9 @@ const OfferEditor = () => {
                 classNames={classes.validationIcon}
               />
             )}
-            <p>Contract</p>
+            <p>
+              Contract<span className={classes.required}>*</span>
+            </p>
             <CustomReactSelect
               id="contract-select"
               instanceId="contract"
@@ -308,7 +322,9 @@ const OfferEditor = () => {
             htmlFor="react-select-company-input"
             className={classes.companyLabel}
           >
-            <p>Company</p>
+            <p>
+              Company<span className={classes.required}>*</span>
+            </p>
             {companyIsValidated && (
               <ValidationIcon
                 id="company-select"
@@ -337,7 +353,7 @@ const OfferEditor = () => {
         </div>
 
         <label htmlFor="offer-description" className={classes.tinymceLabel}>
-          Description
+          Description<span className={classes.required}>*</span>
           <div
             className={`${classes.tinymceEditorBox} ${
               descriptionIsValidated &&

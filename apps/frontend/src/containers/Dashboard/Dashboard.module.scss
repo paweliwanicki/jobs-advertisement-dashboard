@@ -9,5 +9,9 @@
 
   .mainOfferList {
     margin-top: 25px;
+
+    &.empty {
+      margin: auto;
+    }
   }
 }

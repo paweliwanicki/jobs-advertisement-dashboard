@@ -1,6 +1,6 @@
-@use '../../styles/variables.scss';
-@use '../../styles/themeVariables.scss';
-@use '../../styles/utils.scss';
+@use "../../styles/variables.scss";
+@use "../../styles/themeVariables.scss";
+@use "../../styles/utils.scss";
 
 .offerCard {
   width: 100%;
@@ -9,12 +9,51 @@
   position: relative;
   background-color: variables.$white;
 
+  .newBadge {
+    width: 50px;
+    height: 25px;
+    box-sizing: content-box;
+    padding: 10px 2px;
+    position: absolute;
+    background: linear-gradient(
+      90deg,
+      variables.$violet 0%,
+      variables.$light-violet 78%
+    );
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-align: center;
+    right: 15px;
+    top: -15px;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    font-family: variables.$font-family-bold;
+
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 0;
+      height: 0;
+      border-bottom: 13px solid variables.$white;
+      border-left: 28px solid transparent;
+      border-right: 28px solid transparent;
+    }
+  }
+
+  .offerArchivedIcon {
+    position: absolute;
+    right: 15px;
+    bottom: 15px;
+  }
+
   a {
     text-decoration: none;
   }
 
   @include themeVariables.themify(themeVariables.$themes) {
-    background-color: themeVariables.themed('offer-card-bg');
+    background-color: themeVariables.themed("offer-card-bg");
   }
 
   padding: 50px 32px 32px 32px;
@@ -27,11 +66,6 @@
     position: absolute;
     right: 30px;
     top: 15px;
-
-    // a {
-    //   text-decoration: none;
-    //   color: inherit;
-    // }
   }
 
   .companyLogo {
@@ -64,7 +98,7 @@
       text-align: left;
 
       @include themeVariables.themify(themeVariables.$themes) {
-        color: themeVariables.themed('offer-card-title-color');
+        color: themeVariables.themed("offer-card-title-color");
       }
 
       @include utils.text-multi-line-ellipsis(1);

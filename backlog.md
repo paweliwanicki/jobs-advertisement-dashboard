@@ -1,13 +1,10 @@
 ###
 
 !important @TODO
-
-1. Fix issue with unique constrains when the company for editing offer is changed
+1. fix count offers -> fix for pagination 
 2. Add migrations for default database data like. contract/privacy statements
 3. Fix animation for UploadCompanylogoModal
 4. Fix type of 'any' type where is possible (if not use unknown?)
-5. Fix context menu z-index
-6. add dotenv for api keys
 
 
 ###

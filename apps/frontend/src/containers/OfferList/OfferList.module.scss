@@ -3,6 +3,7 @@
 .offerList {
   display: flex;
   flex-flow: column;
+  flex-grow: 1;
 
   .controlsBox {
     display: flex;
@@ -21,6 +22,7 @@
     width: 100%;
     justify-content: space-between;
     justify-items: center;
+    margin: auto;
   }
 
   .noOffersWarningBox {

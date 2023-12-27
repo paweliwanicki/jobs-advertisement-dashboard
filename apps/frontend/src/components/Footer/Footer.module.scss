@@ -1,4 +1,4 @@
-@use '../../styles/variables.scss';
+@use "../../styles/variables.scss";
 
 .footer {
   background-color: variables.$violet;
@@ -9,12 +9,37 @@
   }
 
   align-self: center;
-  background-image: url('./bg-footer.svg');
+  background-image: url("./bg-footer.svg");
   background-position: center;
   background-size: cover;
-  height: 75px;
+  height: 90px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-top: auto;
+
+  ul {
+    list-style: none;
+
+    li {
+      cursor: pointer;
+      display: inline-flex;
+      padding: 15px;
+      font-family: variables.$font-family-bold;
+      transition: all 0.3s ease-in;
+      color: variables.$very-light-grey;
+
+      a {
+        align-items: center;
+        display: inline-flex;
+        gap: 8px;
+        color: inherit;
+        text-decoration: none;
+      }
+
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+  }
 }

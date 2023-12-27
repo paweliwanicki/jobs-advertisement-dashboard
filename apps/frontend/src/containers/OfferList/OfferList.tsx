@@ -17,20 +17,24 @@ import { usePagination } from "../../hooks/usePagination";
 import { FiltersValuesType } from "../../contexts/filtersContext";
 import { Offer } from "../../types/Offer";
 
+export type OfferListView = "MAIN" | "MY";
+
 type OfferListProps = {
   offers: Offer[];
   classNames?: string;
   showControls?: boolean;
+  view?: OfferListView;
 };
 
 const OfferList = ({
   offers,
   classNames = "",
   showControls = false,
+  view = "MAIN",
 }: OfferListProps) => {
   const { fetch, isFetching } = useApi();
   const { user } = useUser();
-  const { fetchOffers, countOffers } = useOffer();
+  const { fetchOffers, getMyOffers, countOffers } = useOffer();
 
   const {
     activePage,
@@ -56,10 +60,24 @@ const OfferList = ({
 
   const handleFilterList = useCallback(
     (filters: FiltersValuesType) => {
-      fetchOffers(filters);
+      listViewFetchOffers[view](filters);
     },
     [fetchOffers]
   );
+
+  const listViewFetchOffers: Record<
+    OfferListView,
+    (filters?: FiltersValuesType) => void
+  > = useMemo(() => {
+    return {
+      MAIN: (filters) => {
+        fetchOffers(filters);
+      },
+      MY: (filters) => {
+        getMyOffers(filters);
+      },
+    };
+  }, []);
 
   const controlsBox = useMemo(() => {
     return (
@@ -96,7 +114,15 @@ const OfferList = ({
       <div className={`${classes.list} ${classNames}`}>
         {offers.length ? (
           offers.map(
-            ({ id, company, title, location, contract, createdAt }: Offer) => (
+            ({
+              id,
+              company,
+              title,
+              location,
+              contract,
+              createdAt,
+              archived,
+            }: Offer) => (
               <OfferCard
                 key={`offer-${id}`}
                 id={id}
@@ -105,13 +131,14 @@ const OfferList = ({
                 location={location}
                 contract={contract}
                 createdAt={createdAt ?? 0}
+                archived={archived}
                 showMenu={showControls}
               />
             )
           )
         ) : (
           <div className={classes.noOffersWarningBox}>
-            <SvgIcon id="icon-error" color="black" width={64} height={64} />
+            <SvgIcon id="icon-error" color="#121721" width={64} height={64} />
             <h3>No jobs offers has been found!</h3>
           </div>
         )}

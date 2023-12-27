@@ -1,15 +1,19 @@
 import OfferList from "../OfferList/OfferList";
-import classes from "./MyOffersList.module.scss";
 import { useOffer } from "../../providers/OfferProvider";
+import { useEffect } from "react";
 
 const MyOffersList = () => {
   const { myOffers, filteredMyOffers, getMyOffers } = useOffer();
 
+  useEffect(() => {
+    getMyOffers();
+  }, []);
+
   return (
-    <div className={classes.myOffersList}>
+    <div>
       <OfferList
-        onFilterSubmit={getMyOffers}
         offers={filteredMyOffers ? filteredMyOffers : myOffers}
+        view="MY"
         showControls
       />
     </div>

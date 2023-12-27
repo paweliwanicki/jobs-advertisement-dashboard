@@ -1,6 +1,6 @@
-@use './fonts.scss';
-@use './styles/variables.scss';
-@use './styles/themeVariables.scss';
+@use "./fonts.scss";
+@use "./styles/variables.scss";
+@use "./styles/themeVariables.scss";
 
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -22,5 +22,5 @@ body {
   min-width: 320px;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
-  font-family: 'Kumbh Sans Regular', sans-serif;
+  font-family: "Kumbh Sans Regular", sans-serif;
 }

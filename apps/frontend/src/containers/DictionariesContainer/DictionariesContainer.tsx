@@ -1,30 +1,31 @@
-import { useCallback, useMemo, useState } from 'react';
-import classes from './DictionariesContainer.module.scss';
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import 'react-tabs/style/react-tabs.css';
-import Table from '../../components/common/Table/Table';
-import { Company } from '../../types/Company';
-import { Contract } from '../../types/Contract';
-import { DictionariesModal } from './DictionaryModal/DictionaryModal';
-import Button from '../../components/common/Button/Button';
-import { useDictionaries } from '../../providers/DictionaryProvider';
+import { useCallback, useMemo, useState } from "react";
+import classes from "./DictionariesContainer.module.scss";
+import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
+import "react-tabs/style/react-tabs.css";
+import Table from "../../components/common/Table/Table";
+import { Company } from "../../types/Company";
+import { Contract } from "../../types/Contract";
+import { DictionariesModal } from "./DictionaryModal/DictionaryModal";
+import Button from "../../components/common/Button/Button";
+import { useDictionaries } from "../../providers/DictionaryProvider";
+import InfoBox from "../../components/common/InfoBox/InfoBox";
 
-type DictionaryFields = 'NAME';
-export type DictionaryActions = 'edit' | 'delete';
-export type DictionaryTable = 'company' | 'contract';
+type DictionaryFields = "NAME";
+export type DictionaryActions = "edit" | "delete";
+export type DictionaryTable = "company" | "contract";
 export type DictionaryType = Company | Contract;
 
 const DICTIONARY_FIELDS: Record<DictionaryFields, string> = {
-  NAME: 'name',
+  NAME: "name",
 } as const;
 
 export const DictionariesContainer = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [modalContent, setModalContent] = useState<DictionaryActions>('edit');
+  const [modalContent, setModalContent] = useState<DictionaryActions>("edit");
 
   const [selectedItem, setSelectedItem] = useState<DictionaryType>();
   const [selectedTable, setSelectedTable] =
-    useState<DictionaryTable>('company');
+    useState<DictionaryTable>("company");
 
   const {
     isFetching,
@@ -84,7 +85,7 @@ export const DictionariesContainer = () => {
     ([table, value]: [DictionaryTable, DictionaryType]) => {
       setSelectedItem(value);
       setSelectedTable(table);
-      modalContent !== 'edit' && setModalContent('edit');
+      modalContent !== "edit" && setModalContent("edit");
       handleShowModal();
     },
     [selectedItem, selectedTable, modalContent, showModal]
@@ -95,7 +96,7 @@ export const DictionariesContainer = () => {
       setSelectedItem(value);
       setSelectedTable(table);
       console.log(table);
-      modalContent !== 'delete' && setModalContent('delete');
+      modalContent !== "delete" && setModalContent("delete");
       handleShowModal();
     },
     [selectedItem, selectedTable, modalContent, showModal]
@@ -105,7 +106,7 @@ export const DictionariesContainer = () => {
     (table: DictionaryTable) => {
       setSelectedTable(table);
       setSelectedItem(undefined);
-      setModalContent('edit');
+      setModalContent("edit");
       handleShowModal();
     },
     [selectedItem, selectedTable, modalContent, showModal]
@@ -132,14 +133,14 @@ export const DictionariesContainer = () => {
         </TabList>
 
         <TabPanel>
-          <h4>
+          <InfoBox variant="info">
             Here you will find definitions of the companies you can manage.
             <br />
             To create a new company definition click on the button 'Add New'.
-          </h4>
+          </InfoBox>
           <Button
             variant="secondary"
-            onClick={() => handleAddNewAction('company')}
+            onClick={() => handleAddNewAction("company")}
           >
             Add New
           </Button>
@@ -151,14 +152,15 @@ export const DictionariesContainer = () => {
           />
         </TabPanel>
         <TabPanel>
-          <h4>
+          <InfoBox variant="info">
             Here you will find definitions of the contracts you can manage.
             <br /> To create a new contract definition click on the button 'Add
             New'.
-          </h4>
+          </InfoBox>
+
           <Button
             variant="secondary"
-            onClick={() => handleAddNewAction('contract')}
+            onClick={() => handleAddNewAction("contract")}
           >
             Add New
           </Button>

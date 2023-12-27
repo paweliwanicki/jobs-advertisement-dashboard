@@ -8,7 +8,9 @@ const Dashboard = () => {
   return (
     <div className={classes.dashboard}>
       <OfferList
-        classNames={classes.mainOfferList}
+        classNames={`${classes.mainOfferList} ${
+          !offers.length ? classes.empty : ""
+        }`}
         offers={filteredOffers ? filteredOffers : offers}
       />
     </div>

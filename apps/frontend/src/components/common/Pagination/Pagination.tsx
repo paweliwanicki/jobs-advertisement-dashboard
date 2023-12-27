@@ -33,7 +33,7 @@ const Pagination = ({
   onSetItemsPerPage,
 }: PaginationProps) => {
   const { getFiltersValues } = useFilters();
-  const { offers } = useOffer();
+  const {offers} = useOffer();
 
   const [selectedItemsPerPage, setSelectedItemsPerPage] = useState<
     SingleValue<Option>
@@ -89,7 +89,8 @@ const Pagination = ({
   }, [activePage, totalPages]);
 
   useEffect(() => {
-    if (offers.length) {
+    if(offers.length) {
+
       const filtersValues = getFiltersValues();
       const pagination = {
         activePage,
@@ -117,8 +118,8 @@ const Pagination = ({
       <div className={classes.pagesList}>
         <SvgIcon
           id="double-left-arrow"
-          width={16}
-          height={16}
+          width={22}
+          height={22}
           viewBox="0 0 24 24"
           onClick={() => handleChangePage(1)}
         />
@@ -139,8 +140,8 @@ const Pagination = ({
         />
         <SvgIcon
           id="double-right-arrow"
-          width={16}
-          height={16}
+          width={22}
+          height={22}
           viewBox="0 0 24 24"
           onClick={() => handleChangePage(totalPages)}
         />

@@ -8,6 +8,7 @@ export type Offer = {
   location: string;
   description: string;
   contract: Contract;
+  archived: boolean;
   createdAt?: number;
   createdBy?: number;
   unremovable?: boolean;
