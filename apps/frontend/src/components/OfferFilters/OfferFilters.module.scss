@@ -1,13 +1,15 @@
-@use "../../styles/variables.scss";
-@use "../../styles/themeVariables.scss";
-@use "../../styles/utils.scss";
+@use '../../styles/variables.scss';
+@use '../../styles/themeVariables.scss';
+@use '../../styles/utils.scss';
+
+$border-bottom-color: #d9dce26c;
 
 .offerFilters {
   width: 100%;
   position: -webkit-sticky; /* Required for Safari */
   position: sticky;
   top: 160px;
-  z-index: 1;
+  z-index: 2;
   background-color: variables.$very-light-grey;
   margin-top: -60px;
   margin-bottom: 35px;
@@ -15,10 +17,10 @@
   padding: 5px;
 
   @include themeVariables.themify(themeVariables.$themes) {
-    background-color: themeVariables.themed("filter-container-bg-color");
+    background-color: themeVariables.themed('filter-container-bg-color');
   }
 
-  border-bottom: 2px solid #d9dce26c;
+  border-bottom: 2px solid $border-bottom-color;
   form {
     label.archivedCheckbox {
       display: inline-flex;
@@ -28,12 +30,12 @@
       gap: 15px;
 
       @include themeVariables.themify(themeVariables.$themes) {
-        color: themeVariables.themed("text-main-color");
+        color: themeVariables.themed('text-main-color');
       }
     }
 
     .filtersBox {
-      margin-top:15px;
+      margin-top: 15px;
       display: grid;
       grid-template-columns: 1fr 1fr;
 
@@ -48,7 +50,7 @@
           @include utils.respond-to(bp-small) {
             @include themeVariables.themify(themeVariables.$themes) {
               border-bottom: 1px solid
-                themeVariables.themed("filter-grid-bg-color");
+                themeVariables.themed('filter-grid-bg-color');
             }
           }
         }
@@ -74,13 +76,13 @@
             @include utils.respond-to(bp-small) {
               border-left: none;
             }
-            border-left: 1px solid themeVariables.themed("filter-grid-bg-color");
+            border-left: 1px solid themeVariables.themed('filter-grid-bg-color');
           }
         }
 
         &:nth-child(n + 3) {
           @include themeVariables.themify(themeVariables.$themes) {
-            border-top: 1px solid themeVariables.themed("filter-grid-bg-color");
+            border-top: 1px solid themeVariables.themed('filter-grid-bg-color');
           }
 
           @include utils.respond-to(bp-small) {
@@ -134,7 +136,7 @@
     border-radius: 6px;
     font-size: 14px;
     @include themeVariables.themify(themeVariables.$themes) {
-      color: themeVariables.themed("text-main-color");
+      color: themeVariables.themed('text-main-color');
     }
 
     svg {
@@ -144,7 +146,7 @@
 
     &:hover {
       @include themeVariables.themify(themeVariables.$themes) {
-        background-color: themeVariables.themed("filter-collapse-btn-bg-color");
+        background-color: themeVariables.themed('filter-collapse-btn-bg-color');
       }
     }
   }

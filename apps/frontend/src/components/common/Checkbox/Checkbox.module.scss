@@ -1,7 +1,12 @@
 @use '../../../styles/variables.scss';
+@use '../../../styles/utils.scss';
+@use '../../../styles/themeVariables.scss';
 
-$background-color_1: #e8e8ea;
-$background-color_2: #d5d8f7;
+// $background-color_1: variables.$pale-grey;
+// $background-color_2: variables.$pale-blue;
+
+// $background-color_1: variables.$dark-blue;
+// $background-color_2: variables.$midnight;
 
 label.checkbox {
   display: inline-flex;
@@ -57,7 +62,9 @@ label.checkbox {
       input {
         ~ {
           .checkmark {
-            background-color: $background-color_2;
+            @include themeVariables.themify(themeVariables.$themes) {
+              background-color: themeVariables.themed('checkbox-bg-color-2');
+            }
           }
         }
       }
@@ -117,7 +124,10 @@ label.checkbox {
         width: 20px;
       }
 
-      background-color: $background-color_1;
+      @include themeVariables.themify(themeVariables.$themes) {
+        background-color: themeVariables.themed('checkbox-bg-color-1');
+      }
+
       &:after {
         content: '';
         position: absolute;

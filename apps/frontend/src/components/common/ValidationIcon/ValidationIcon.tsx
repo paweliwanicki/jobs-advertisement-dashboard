@@ -1,8 +1,8 @@
-import SvgIcon from "../SvgIcon/SvgIcon";
-import classes from "./ValidationIcon.module.scss";
-import { Tooltip } from "react-tooltip";
-import { useMotionAnimate } from "motion-hooks";
-import { useEffect } from "react";
+import SvgIcon from '../SvgIcon/SvgIcon';
+import classes from './ValidationIcon.module.scss';
+import { Tooltip } from 'react-tooltip';
+import { useMotionAnimate } from 'motion-hooks';
+import { useEffect } from 'react';
 
 type ValidationIconProps = {
   id: string;
@@ -17,16 +17,16 @@ const ValidationIcon = ({
   hasError,
   errorText,
   validText,
-  classNames = "",
+  classNames = '',
 }: ValidationIconProps) => {
-  const showValidationInfo = errorText !== "" || validText !== "";
+  const showValidationInfo = errorText !== '' || validText !== '';
 
   const validationIconAnimation = useMotionAnimate(
     `.${classes.validationIcon}`,
     { opacity: 1 },
     {
       duration: 0.5,
-      easing: 'ease-in',
+      easing: 'linear',
     }
   );
 
@@ -41,7 +41,7 @@ const ValidationIcon = ({
     <div className={`${classes.validationIconBox} ${classNames}`}>
       <SvgIcon
         classNames={classes.validationIcon}
-        id={hasError ? "icon-error" : "icon-valid"}
+        id={hasError ? 'icon-error' : 'icon-valid'}
         elementId={`validation-icon-${id}`}
         color="#bb0909"
         hoverColor="#bb0909"
@@ -52,7 +52,7 @@ const ValidationIcon = ({
       <Tooltip
         anchorSelect={`#validation-icon-${id}`}
         place="bottom-end"
-        variant={hasError ? "error" : "success"}
+        variant={hasError ? 'error' : 'success'}
         content={hasError ? errorText : validText}
         className={classes.tooltipError}
       />

@@ -27,7 +27,7 @@ const Modal = ({
     },
     {
       duration: 0.5,
-      easing: 'ease-in',
+      easing: 'linear',
     }
   );
 
@@ -36,7 +36,7 @@ const Modal = ({
     { top: '150%' },
     {
       duration: 0.5,
-      easing: 'ease-in',
+      easing: 'linear',
     }
   );
 

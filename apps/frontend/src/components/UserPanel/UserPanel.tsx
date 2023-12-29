@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useEffect, useState } from 'react';
 import Button from '../common/Button/Button';
 import classes from './UserPanel.module.scss';
 import { useSignForm } from '../../hooks/useSignForm';
@@ -6,10 +6,12 @@ import { Link } from 'react-router-dom';
 import SvgIcon from '../common/SvgIcon/SvgIcon';
 import { useOffer } from '../../providers/OfferProvider';
 import { useUser } from '../../providers/UserProvider';
+import { Offer } from '../../types/Offer';
 
 export const UserPanel = () => {
   const { user } = useUser();
-  const { myOffers } = useOffer();
+  const { myOffers, countOffers, getMyOffers } = useOffer();
+  const [archivedOffers, setArchivedOffers] = useState<Offer[]>([]);
   const { handleSignOut } = useSignForm();
 
   const createdAtDate = useMemo(
@@ -21,6 +23,13 @@ export const UserPanel = () => {
         : '',
     [user]
   );
+
+  useEffect(() => {
+    if (!myOffers.length) getMyOffers();
+    console.log(myOffers);
+    console.log(myOffers.filter((el) => el.archived));
+    setArchivedOffers(myOffers.filter((el) => el.archived));
+  }, [myOffers]);
 
   return (
     <div className={classes.userPanel}>
@@ -42,10 +51,10 @@ export const UserPanel = () => {
           <span>Registered at:</span> {`${createdAtDate}`}
         </p>
         <p>
-          <span>Your active offers:</span> {myOffers.length}
+          <span>Your active offers:</span> {countOffers}
         </p>
         <p>
-          <span>Archived offers:</span> {20}
+          <span>Archived offers:</span> {archivedOffers.length}
         </p>
       </div>
 

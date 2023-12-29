@@ -1,4 +1,6 @@
-@use "../../styles/variables.scss";
+@use '../../styles/variables.scss';
+@use '../../styles/themeVariables.scss';
+@use '../../styles/utils.scss';
 
 .offerList {
   display: flex;
@@ -26,7 +28,10 @@
   }
 
   .noOffersWarningBox {
-    color: variables.$midnight;
+    text-align: center;
+    @include themeVariables.themify(themeVariables.$themes) {
+      color: themeVariables.themed('text-main-color');
+    }
     margin: auto;
     grid-column-start: 1;
     grid-column-end: 4;

@@ -49,7 +49,7 @@ const SignUpForm = ({ onSubmit }: SignUpFormProps) => {
     { opacity: 1 },
     {
       duration: 0.5,
-      easing: 'ease-in',
+      easing: 'linear',
     }
   );
 

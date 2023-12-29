@@ -1,6 +1,6 @@
-import { ReactNode, useCallback, useContext, useMemo, useState } from "react";
-import { useOffer } from "./OfferProvider";
-import { FiltersContext } from "../contexts/filtersContext";
+import { ReactNode, useCallback, useContext, useMemo, useState } from 'react';
+import { useOffer } from './OfferProvider';
+import { FiltersContext } from '../contexts/filtersContext';
 
 export type OffersFiltersState = {
   title?: string;
@@ -25,9 +25,9 @@ type FiltersProviderProps = {
 };
 
 const FiltersProvider = ({ children }: FiltersProviderProps) => {
-  const { clearFilteredOffers } = useOffer();
+  const { fetchOffers } = useOffer();
 
-  const [title, setTitle] = useState<string>("");
+  const [title, setTitle] = useState<string>('');
   const [location, setLocation] = useState<any | null>();
   const [company, setCompany] = useState<any | null>();
   const [contract, setContract] = useState<any | null>();
@@ -54,18 +54,18 @@ const FiltersProvider = ({ children }: FiltersProviderProps) => {
   }, []);
 
   const handleClearFilters = useCallback(() => {
-    setTitle("");
+    setTitle('');
     setLocation(null);
     setCompany(null);
     setContract(null);
     setShowArchived(false);
-    clearFilteredOffers();
-  }, [clearFilteredOffers]);
+    fetchOffers();
+  }, []);
 
   const getFiltersValues = useCallback(() => {
     const values: OffersFiltersValues = {
       archived,
-      title: title === "" ? undefined : title,
+      title: title === '' ? undefined : title,
       location: location?.value.description,
     };
     if (company) {

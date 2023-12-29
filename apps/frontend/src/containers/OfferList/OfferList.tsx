@@ -1,40 +1,38 @@
-import { useCallback, useMemo } from "react";
-import { HttpMethod } from "../../enums/HttpMethods";
-import { Link } from "react-router-dom";
-import classes from "./OfferList.module.scss";
-import Button from "../../components/common/Button/Button";
-import SvgIcon from "../../components/common/SvgIcon/SvgIcon";
+import { useCallback, useMemo } from 'react';
+import { HttpMethod } from '../../enums/HttpMethods';
+import { Link } from 'react-router-dom';
+import classes from './OfferList.module.scss';
+import Button from '../../components/common/Button/Button';
+import SvgIcon from '../../components/common/SvgIcon/SvgIcon';
 import OfferCard, {
   OfferCardProps,
-} from "../../components/OfferCard/OfferCard";
-import { LoadingSpinner } from "../../components/common/LoadingSpinner/LoadingSpinner";
-import OfferFilters from "../../components/OfferFilters/OfferFilters";
-import Pagination from "../../components/common/Pagination/Pagination";
-import { useUser } from "../../providers/UserProvider";
-import { useOffer } from "../../providers/OfferProvider";
-import { useApi } from "../../hooks/useApi";
-import { usePagination } from "../../hooks/usePagination";
-import { FiltersValuesType } from "../../contexts/filtersContext";
-import { Offer } from "../../types/Offer";
-
-export type OfferListView = "MAIN" | "MY";
+} from '../../components/OfferCard/OfferCard';
+import { LoadingSpinner } from '../../components/common/LoadingSpinner/LoadingSpinner';
+import OfferFilters from '../../components/OfferFilters/OfferFilters';
+import Pagination from '../../components/common/Pagination/Pagination';
+import { useUser } from '../../providers/UserProvider';
+import { useOffer } from '../../providers/OfferProvider';
+import { useApi } from '../../hooks/useApi';
+import { usePagination } from '../../hooks/usePagination';
+import { FiltersValuesType } from '../../contexts/filtersContext';
+import { Offer } from '../../types/Offer';
+import { useTheme } from '../../providers/ThemeProvider';
 
 type OfferListProps = {
   offers: Offer[];
   classNames?: string;
   showControls?: boolean;
-  view?: OfferListView;
 };
 
 const OfferList = ({
   offers,
-  classNames = "",
+  classNames = '',
   showControls = false,
-  view = "MAIN",
 }: OfferListProps) => {
+  const { theme } = useTheme();
   const { fetch, isFetching } = useApi();
   const { user } = useUser();
-  const { fetchOffers, getMyOffers, countOffers } = useOffer();
+  const { fetchOffers, countOffers } = useOffer();
 
   const {
     activePage,
@@ -46,10 +44,10 @@ const OfferList = ({
 
   const handleImportOffers = useCallback(async () => {
     const [offers] = await fetch<any[]>(HttpMethod.GET, {
-      path: "/offers.json",
+      path: '/offers.json',
     });
     const [, response] = await fetch<OfferCardProps[]>(HttpMethod.POST, {
-      path: "/api/offers/import",
+      path: '/api/offers/import',
       payload: JSON.stringify(offers),
     });
 
@@ -60,24 +58,11 @@ const OfferList = ({
 
   const handleFilterList = useCallback(
     (filters: FiltersValuesType) => {
-      listViewFetchOffers[view](filters);
+      handleSetPage(filters?.activePage);
+      fetchOffers(filters);
     },
-    [fetchOffers]
+    [fetchOffers, handleSetPage]
   );
-
-  const listViewFetchOffers: Record<
-    OfferListView,
-    (filters?: FiltersValuesType) => void
-  > = useMemo(() => {
-    return {
-      MAIN: (filters) => {
-        fetchOffers(filters);
-      },
-      MY: (filters) => {
-        getMyOffers(filters);
-      },
-    };
-  }, []);
 
   const controlsBox = useMemo(() => {
     return (
@@ -138,7 +123,12 @@ const OfferList = ({
           )
         ) : (
           <div className={classes.noOffersWarningBox}>
-            <SvgIcon id="icon-error" color="#121721" width={64} height={64} />
+            <SvgIcon
+              id="icon-error"
+              color={theme === 'dark' ? 'white' : '#19202d'}
+              width={64}
+              height={64}
+            />
             <h3>No jobs offers has been found!</h3>
           </div>
         )}

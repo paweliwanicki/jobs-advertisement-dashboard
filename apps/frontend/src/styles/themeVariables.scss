@@ -1,4 +1,4 @@
-@use "./variables.scss";
+@use './variables.scss';
 
 $themes: (
   light: (
@@ -20,6 +20,7 @@ $themes: (
     text-main-color: variables.$very-dark-blue,
     context-menu-bg-color: variables.$very-light-grey,
     context-menu-border-color: variables.$midnight,
+    context-menu-option-color: variables.$very-dark-blue,
     table-border-color: variables.$light-grey,
     table-text-color: variables.$very-dark-blue,
     filter-grid-bg-color: variables.$light-grey,
@@ -27,6 +28,8 @@ $themes: (
     pagination-bg-color: variables.$violet,
     pagination-text-color: variables.$white,
     filter-collapse-btn-bg-color: variables.$light-grey,
+    checkbox-bg-color-1: variables.$pale-grey,
+    checkbox-bg-color-2: variables.$pale-blue,
   ),
 
   dark: (
@@ -50,14 +53,16 @@ $themes: (
     select-option-background: variables.$grey,
     context-menu-bg-color: variables.$dark-blue,
     context-menu-border-color: variables.$light-grey,
+    context-menu-option-color: variables.$light-grey,
     table-border-color: variables.$midnight,
     table-text-color: variables.$light-grey,
     filter-grid-bg-color: variables.$midnight,
     filter-container-bg-color: variables.$midnight,
-    pagination-bg-color: transparent,
+    pagination-bg-color: variables.$dark-blue,
     pagination-text-color: variables.$very-light-grey,
     filter-collapse-btn-bg-color: variables.$very-dark-blue,
-
+    checkbox-bg-color-1: variables.$dark-blue,
+    checkbox-bg-color-2: variables.$very-dark-blue,
   ),
 );
 
@@ -66,7 +71,7 @@ $themes: (
     :global(.theme-#{$theme}) & {
       $theme-map: () !global;
       @each $key, $submap in $map {
-        $value: map-get(map-get($themes, $theme), "#{$key}");
+        $value: map-get(map-get($themes, $theme), '#{$key}');
         $theme-map: map-merge(
           $theme-map,
           (

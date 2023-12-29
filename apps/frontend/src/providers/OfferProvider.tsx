@@ -5,13 +5,13 @@ import {
   useEffect,
   useMemo,
   useState,
-} from "react";
-import { OfferContext } from "../contexts/offerContext";
-import { HttpMethod } from "../enums/HttpMethods";
-import { Offer } from "../types/Offer";
-import { RequestOptions, useApi } from "../hooks/useApi";
-import { useSnackBar } from "./SnackBarProvider";
-import { FiltersValuesType } from "../contexts/filtersContext";
+} from 'react';
+import { OfferContext } from '../contexts/offerContext';
+import { HttpMethod } from '../enums/HttpMethods';
+import { Offer } from '../types/Offer';
+import { RequestOptions, useApi } from '../hooks/useApi';
+import { useSnackBar } from './SnackBarProvider';
+import { FiltersValuesType } from '../contexts/filtersContext';
 
 type OfferProviderProps = {
   children: ReactNode;
@@ -24,17 +24,21 @@ const OfferProvider = ({ children }: OfferProviderProps) => {
   const [selectedOffer, setSelectedOffer] = useState<Offer>();
   const [offers, setOffers] = useState<Offer[]>([]);
   const [countOffers, setCountOffers] = useState<number>(0);
-  const [filteredOffers, setFilteredOffers] = useState<Offer[] | undefined>();
   const [myOffers, setMyOffers] = useState<Offer[]>([]);
-  const [filteredMyOffers, setFilteredMyOffers] = useState<
-    Offer[] | undefined
-  >();
+  //const [filteredOffers, setFilteredOffers] = useState<Offer[] | undefined>();
+  //const [countFilteredOffers, setCountFilteredOffers] = useState<number>(0);
+  //const [myOffers, setMyOffers] = useState<Offer[]>([]);
+  // const [filteredMyOffers, setFilteredMyOffers] = useState<
+  //   Offer[] | undefined
+  // >();
 
   const fetchOffers = useCallback(async (filters?: FiltersValuesType) => {
     const requestOptions: RequestOptions = {
       path: `/api/offers/all`,
     };
     if (filters) {
+      //const { company, location, position, contract } = filters;
+
       requestOptions.payload = JSON.stringify(filters);
     }
     const [fetchedOffers, response] = await fetch<[Offer[], number]>(
@@ -45,12 +49,12 @@ const OfferProvider = ({ children }: OfferProviderProps) => {
     if (response.statusCode === 201) {
       const [offers, count] = fetchedOffers;
       setCountOffers(count);
-      if (filters) {
-        setFilteredOffers(offers);
-      } else {
-        setOffers(offers);
-        setFilteredOffers(undefined);
-      }
+      // if (filters) {
+      //   setFilteredOffers(offers);
+      // } else {
+      setOffers(offers);
+      //   setFilteredOffers(undefined);
+      // }
     }
   }, []);
 
@@ -75,11 +79,11 @@ const OfferProvider = ({ children }: OfferProviderProps) => {
 
       if (response.statusCode === 200) {
         fetchOffers();
-        handleShowSnackBar("Offer removed successfully", "success");
+        handleShowSnackBar('Offer removed successfully', 'success');
       } else {
         handleShowSnackBar(
-          "There was an error when deleting the offer",
-          "error"
+          'There was an error when deleting the offer',
+          'error'
         );
       }
     },
@@ -101,50 +105,51 @@ const OfferProvider = ({ children }: OfferProviderProps) => {
     if (response.statusCode === 201) {
       const [offers, count] = fetchedOffers;
       setCountOffers(count);
-      if (filters) {
-        setFilteredMyOffers(offers);
-      } else {
-        setMyOffers(offers);
-        setFilteredMyOffers(undefined);
-      }
+      setMyOffers(offers);
+      // if (filters) {
+      //   setFilteredMyOffers(offers);
+      // } else {
+      //setMyOffers(offers);
+      //setFilteredMyOffers(undefined);
+      // }
     }
   }, []);
 
-  const clearFilteredOffers = useCallback(() => {
-    filteredOffers && setFilteredOffers(undefined);
-    filteredMyOffers && setFilteredMyOffers(undefined);
-  }, [filteredOffers, filteredMyOffers]);
+  // const clearFilteredOffers = useCallback(() => {
+  //   filteredOffers && setFilteredOffers(undefined);
+  //   filteredMyOffers && setFilteredMyOffers(undefined);
+  // }, [filteredOffers, filteredMyOffers]);
 
   const contextValue = useMemo(
     () => ({
       selectedOffer,
       offers,
       countOffers,
-      filteredOffers,
+      // filteredOffers,
       myOffers,
-      filteredMyOffers,
+      //filteredMyOffers,
       isFetching,
       fetchOffer,
       fetchOffers,
       getMyOffers,
       removeOffer,
-      setFilteredOffers,
-      clearFilteredOffers,
+      // setFilteredOffers,
+      // clearFilteredOffers,
     }),
     [
       selectedOffer,
       offers,
       countOffers,
-      filteredOffers,
+      // filteredOffers,
       myOffers,
-      filteredMyOffers,
+      //filteredMyOffers,
       isFetching,
       fetchOffer,
       fetchOffers,
       getMyOffers,
       removeOffer,
-      setFilteredOffers,
-      clearFilteredOffers,
+      // setFilteredOffers,
+      // clearFilteredOffers,
     ]
   );
 

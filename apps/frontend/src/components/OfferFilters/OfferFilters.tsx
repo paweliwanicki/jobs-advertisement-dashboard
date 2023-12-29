@@ -1,16 +1,16 @@
-import { ChangeEvent, FormEvent, useCallback, useState } from "react";
-import Button from "../common/Button/Button";
-import Checkbox from "../common/Checkbox/Checkbox";
-import Input from "../common/Input/Input";
-import classes from "./OfferFilters.module.scss";
-import SvgIcon from "../common/SvgIcon/SvgIcon";
-import CustomReactSelect from "../common/CustomReactSelect/CustomReactSelect";
-import { useDictionaries } from "../../providers/DictionaryProvider";
-import GoogleLocationSelect from "../common/GoogleLocationSelect/GoogleLocationSelect";
-import { useCollapse } from "react-collapsed";
-import { useFilters } from "../../providers/FiltersProvider";
-import { FiltersValuesType } from "../../contexts/filtersContext";
-import { useTheme } from "../../providers/ThemeProvider";
+import { ChangeEvent, FormEvent, useCallback, useState } from 'react';
+import Button from '../common/Button/Button';
+import Checkbox from '../common/Checkbox/Checkbox';
+import Input from '../common/Input/Input';
+import classes from './OfferFilters.module.scss';
+import SvgIcon from '../common/SvgIcon/SvgIcon';
+import CustomReactSelect from '../common/CustomReactSelect/CustomReactSelect';
+import { useDictionaries } from '../../providers/DictionaryProvider';
+import GoogleLocationSelect from '../common/GoogleLocationSelect/GoogleLocationSelect';
+import { useCollapse } from 'react-collapsed';
+import { useFilters } from '../../providers/FiltersProvider';
+import { useTheme } from '../../providers/ThemeProvider';
+import { FiltersValuesType } from '../../contexts/filtersContext';
 
 type OfferFiltersProps = {
   totalItems: number;
@@ -47,7 +47,7 @@ const OfferFilters = ({
       event.preventDefault();
       const filtersValues = getFiltersValues();
       const pagination = {
-        activePage,
+        activePage: 1,
         itemsPerPage,
       };
 
@@ -149,10 +149,10 @@ const OfferFilters = ({
           onClick: handleSetFiltersExpanded,
         })}
       >
-        {isExpanded ? "Hide fllters" : "Show filters"}
+        {isExpanded ? 'Hide fllters' : 'Show filters'}
         <SvgIcon
-          id={isExpanded ? "arrow-drop-up" : "arrow-drop-down"}
-          color={theme === "dark" ? "white" : "#121721"}
+          id={isExpanded ? 'arrow-drop-up' : 'arrow-drop-down'}
+          color={theme === 'dark' ? 'white' : '#121721'}
         />
       </button>
     </div>

@@ -1,25 +1,25 @@
-import classes from "./SnackBar.module.scss";
-import SvgIcon from "../SvgIcon/SvgIcon";
-import { useCallback, useEffect } from "react";
-import { useMotionAnimate } from "motion-hooks";
-import { useSnackBar } from "../../../providers/SnackBarProvider";
+import classes from './SnackBar.module.scss';
+import SvgIcon from '../SvgIcon/SvgIcon';
+import { useCallback, useEffect } from 'react';
+import { useMotionAnimate } from 'motion-hooks';
+import { useSnackBar } from '../../../providers/SnackBarProvider';
 
 const SnackBar = () => {
   const { play: openAnimation } = useMotionAnimate(
     `.${classes.snackBar}`,
-    { top: "15px" },
+    { top: '15px' },
     {
       duration: 0.5,
-      easing: 'ease-in',
+      easing: 'linear',
     }
   );
 
   const { play: closeAnimation } = useMotionAnimate(
     `.${classes.snackBar}`,
-    { top: "-200px" },
+    { top: '-200px' },
     {
       duration: 0.5,
-      easing: 'ease-in',
+      easing: 'linear',
     }
   );
 

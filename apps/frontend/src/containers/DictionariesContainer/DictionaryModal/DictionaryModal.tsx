@@ -48,7 +48,7 @@ export const DictionariesModal = ({
     { top: '150%' },
     {
       duration: 0.5,
-      easing: 'ease-in',
+      easing: 'linear',
     }
   );
 
