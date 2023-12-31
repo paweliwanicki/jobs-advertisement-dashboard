@@ -1,19 +1,17 @@
-import { ChangeEvent, FormEvent, useCallback, useState } from 'react';
-import Button from '../common/Button/Button';
-import Checkbox from '../common/Checkbox/Checkbox';
-import Input from '../common/Input/Input';
-import classes from './OfferFilters.module.scss';
-import SvgIcon from '../common/SvgIcon/SvgIcon';
-import CustomReactSelect from '../common/CustomReactSelect/CustomReactSelect';
-import { useDictionaries } from '../../providers/DictionaryProvider';
-import GoogleLocationSelect from '../common/GoogleLocationSelect/GoogleLocationSelect';
-import { useCollapse } from 'react-collapsed';
-import { useFilters } from '../../providers/FiltersProvider';
-import { useTheme } from '../../providers/ThemeProvider';
-import { FiltersValuesType } from '../../contexts/filtersContext';
+import { FormEvent, useCallback, useState, useEffect } from "react";
+import Button from "../common/Button/Button";
+import Input from "../common/Input/Input";
+import classes from "./OfferFilters.module.scss";
+import SvgIcon from "../common/SvgIcon/SvgIcon";
+import CustomReactSelect from "../common/CustomReactSelect/CustomReactSelect";
+import { useDictionaries } from "../../providers/DictionaryProvider";
+import GoogleLocationSelect from "../common/GoogleLocationSelect/GoogleLocationSelect";
+import { useCollapse } from "react-collapsed";
+import { useFilters } from "../../providers/FiltersProvider";
+import { useTheme } from "../../providers/ThemeProvider";
+import { FiltersValuesType } from "../../contexts/filtersContext";
 
 type OfferFiltersProps = {
-  totalItems: number;
   activePage: number;
   itemsPerPage: number;
   onSubmit: (filters: FiltersValuesType) => void;
@@ -34,13 +32,12 @@ const OfferFilters = ({
     handleSetLocation,
     handleSetCompany,
     handleSetContract,
-    handleSetShowArchived,
     getFiltersStates,
     getFiltersValues,
     handleClearFilters,
   } = useFilters();
 
-  const { title, location, company, contract, archived } = getFiltersStates();
+  const { title, location, company, contract } = getFiltersStates();
 
   const handleFilterFormOnSubmit = useCallback(
     async (event: FormEvent<HTMLFormElement>) => {
@@ -63,15 +60,12 @@ const OfferFilters = ({
     [title]
   );
 
-  const handleShowArchivedOnChange = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => {
-      handleSetShowArchived(event.target.checked);
-    },
-    [archived]
-  );
-
   const handleSetFiltersExpanded = useCallback(() => {
     setExpanded((isExpanded) => !isExpanded);
+  }, []);
+
+  useEffect(() => {
+    handleClearFilters();
   }, []);
 
   return (
@@ -119,16 +113,6 @@ const OfferFilters = ({
         </div>
 
         <div className={classes.filtersControls}>
-          <label className={classes.archivedCheckbox}>
-            <Checkbox
-              onChange={handleShowArchivedOnChange}
-              isChecked={archived}
-              id="checkbox-show-archived"
-              size="medium"
-            />
-            Show archived offers
-          </label>
-
           <div className={classes.buttonsBox}>
             <Button
               variant="secondary"
@@ -149,10 +133,10 @@ const OfferFilters = ({
           onClick: handleSetFiltersExpanded,
         })}
       >
-        {isExpanded ? 'Hide fllters' : 'Show filters'}
+        {isExpanded ? "Hide fllters" : "Show filters"}
         <SvgIcon
-          id={isExpanded ? 'arrow-drop-up' : 'arrow-drop-down'}
-          color={theme === 'dark' ? 'white' : '#121721'}
+          id={isExpanded ? "arrow-drop-up" : "arrow-drop-down"}
+          color={theme === "dark" ? "white" : "#121721"}
         />
       </button>
     </div>

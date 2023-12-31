@@ -1,25 +1,31 @@
-import classes from './NavBar.module.scss';
-import logoImage from '../../assets/logos/logo.png';
-import Switch from '../common/Switch/Switch';
-import SvgIcon from '../common/SvgIcon/SvgIcon';
-import { Link } from 'react-router-dom';
-import { Tooltip } from 'react-tooltip';
-import { useTheme } from '../../providers/ThemeProvider';
-import { useUser } from '../../providers/UserProvider';
+import classes from "./NavBar.module.scss";
+import logoImage from "../../assets/logos/logo.png";
+import Switch from "../common/Switch/Switch";
+import SvgIcon from "../common/SvgIcon/SvgIcon";
+import { Link, useNavigate } from "react-router-dom";
+import { Tooltip } from "react-tooltip";
+import { useTheme } from "../../providers/ThemeProvider";
+import { useUser } from "../../providers/UserProvider";
 import ContextMenu, {
   ContextMenuOption,
-} from '../common/ContextMenu/ContextMenu';
-import { useSignForm } from '../../hooks/useSignForm';
+} from "../common/ContextMenu/ContextMenu";
+import { useSignForm } from "../../hooks/useSignForm";
 
 const NavBar = () => {
   const { handleSignOut } = useSignForm();
+  const navigate = useNavigate();
 
   const USER_MENU_OPTIONS: ContextMenuOption[] = [
     {
-      label: <Link to={`/user/`}>User Panel</Link>,
+      label: "User Panel",
+      action: () => navigate("/user"),
     },
     {
-      label: 'Sign out',
+      label: "Archive",
+      action: () => navigate("/offer/archive"),
+    },
+    {
+      label: "Sign out",
       action: () => handleSignOut(),
     },
   ];
@@ -27,9 +33,9 @@ const NavBar = () => {
   const { user } = useUser();
   const { theme, setTheme } = useTheme();
   const handleChangeThemeContext = () => {
-    const newTheme = theme === 'dark' ? 'light' : 'dark';
+    const newTheme = theme === "dark" ? "light" : "dark";
     setTheme(newTheme);
-    localStorage.setItem('theme', newTheme);
+    localStorage.setItem("theme", newTheme);
   };
 
   return (
@@ -41,7 +47,7 @@ const NavBar = () => {
         <div className={classes.userMenu}>
           <Switch
             id="theme-switch"
-            checked={theme === 'dark'}
+            checked={theme === "dark"}
             onChange={handleChangeThemeContext}
             leftLabel={<SvgIcon id="icon-sun" height={22} width={22} />}
             rightLabel={<SvgIcon id="icon-moon" height={18} width={18} />}

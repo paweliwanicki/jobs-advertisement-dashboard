@@ -65,6 +65,12 @@ export class OffersController {
     return offer;
   }
 
+  @Post('/archive')
+  async findArchivedOffers(@Body() filters: FiltersOfferDto) {
+    filters.archived = true;
+    return await this.offersService.findAll(filters);
+  }
+
   @Post('/all')
   async findOffers(@Body() filters: FiltersOfferDto) {
     return await this.offersService.findAll(filters);
@@ -77,6 +83,17 @@ export class OffersController {
     @CurrentUser() user: User,
   ) {
     filters.createdBy = user.id;
+    return await this.offersService.findAll(filters);
+  }
+
+  @Post('/myArchive')
+  @UseGuards(JwtAuthGuard)
+  async findMyArchivedOffers(
+    @Body() filters: FiltersOfferDto,
+    @CurrentUser() user: User,
+  ) {
+    filters.createdBy = user.id;
+    filters.archived = true;
     return await this.offersService.findAll(filters);
   }
 

@@ -45,12 +45,6 @@ export class OffersService {
   async findAll(filters: FiltersOfferDto) {
     const { activePage, itemsPerPage, ...where } = filters;
 
-    // hide archived offers when FE doesn't send any filters
-    const { archived } = where;
-    if (archived === undefined) {
-      where.archived = false;
-    }
-
     if (where.title) {
       where.title = ILike(`%${where.title}%`);
     }

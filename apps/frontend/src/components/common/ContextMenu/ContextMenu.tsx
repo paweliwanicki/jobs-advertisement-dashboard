@@ -5,7 +5,7 @@ import { useMotionAnimate } from 'motion-hooks';
 
 export type ContextMenuOption = {
   label: ReactNode;
-  action?: () => void;
+  action?: () => unknown;
 };
 
 type ContextMenuProps = {
@@ -53,7 +53,7 @@ const ContextMenu = ({
 
   const handleOptionAction = useCallback(
     (option: ContextMenuOption) => {
-      setIsOpen((open) => !open);
+      handleSetIsOpen();
       option && option.action?.();
     },
     [isOpen]

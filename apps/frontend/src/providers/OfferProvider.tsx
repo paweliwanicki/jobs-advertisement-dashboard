@@ -1,17 +1,10 @@
-import {
-  ReactNode,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
-import { OfferContext } from '../contexts/offerContext';
-import { HttpMethod } from '../enums/HttpMethods';
-import { Offer } from '../types/Offer';
-import { RequestOptions, useApi } from '../hooks/useApi';
-import { useSnackBar } from './SnackBarProvider';
-import { FiltersValuesType } from '../contexts/filtersContext';
+import { ReactNode, useCallback, useContext, useMemo, useState } from "react";
+import { OfferContext } from "../contexts/offerContext";
+import { HttpMethod } from "../enums/HttpMethods";
+import { Offer } from "../types/Offer";
+import { RequestOptions, useApi } from "../hooks/useApi";
+import { useSnackBar } from "./SnackBarProvider";
+import { FiltersValuesType } from "../contexts/filtersContext";
 
 type OfferProviderProps = {
   children: ReactNode;
@@ -25,38 +18,29 @@ const OfferProvider = ({ children }: OfferProviderProps) => {
   const [offers, setOffers] = useState<Offer[]>([]);
   const [countOffers, setCountOffers] = useState<number>(0);
   const [myOffers, setMyOffers] = useState<Offer[]>([]);
-  //const [filteredOffers, setFilteredOffers] = useState<Offer[] | undefined>();
-  //const [countFilteredOffers, setCountFilteredOffers] = useState<number>(0);
-  //const [myOffers, setMyOffers] = useState<Offer[]>([]);
-  // const [filteredMyOffers, setFilteredMyOffers] = useState<
-  //   Offer[] | undefined
-  // >();
+  const [countMyArchivedOffers, setCountMyArchivedOffers] = useState<number>(0);
 
-  const fetchOffers = useCallback(async (filters?: FiltersValuesType) => {
-    const requestOptions: RequestOptions = {
-      path: `/api/offers/all`,
-    };
-    if (filters) {
-      //const { company, location, position, contract } = filters;
+  const fetchOffers = useCallback(
+    async (filters?: FiltersValuesType) => {
+      const requestOptions: RequestOptions = {
+        path: `/api/offers/all`,
+      };
+      if (filters) {
+        requestOptions.payload = JSON.stringify(filters);
+      }
+      const [fetchedOffers, response] = await fetch<[Offer[], number]>(
+        HttpMethod.POST,
+        requestOptions
+      );
 
-      requestOptions.payload = JSON.stringify(filters);
-    }
-    const [fetchedOffers, response] = await fetch<[Offer[], number]>(
-      HttpMethod.POST,
-      requestOptions
-    );
-
-    if (response.statusCode === 201) {
-      const [offers, count] = fetchedOffers;
-      setCountOffers(count);
-      // if (filters) {
-      //   setFilteredOffers(offers);
-      // } else {
-      setOffers(offers);
-      //   setFilteredOffers(undefined);
-      // }
-    }
-  }, []);
+      if (response.statusCode === 201) {
+        const [_offers, count] = fetchedOffers;
+        setCountOffers(count);
+        setOffers(_offers);
+      }
+    },
+    [offers]
+  );
 
   const fetchOffer = useCallback(
     async (id: number) => {
@@ -79,83 +63,114 @@ const OfferProvider = ({ children }: OfferProviderProps) => {
 
       if (response.statusCode === 200) {
         fetchOffers();
-        handleShowSnackBar('Offer removed successfully', 'success');
+        handleShowSnackBar("Offer removed successfully", "success");
       } else {
         handleShowSnackBar(
-          'There was an error when deleting the offer',
-          'error'
+          "There was an error when deleting the offer",
+          "error"
         );
       }
     },
     [fetchOffers, selectedOffer]
   );
 
-  const getMyOffers = useCallback(async (filters?: FiltersValuesType) => {
-    const requestOptions: RequestOptions = {
-      path: `/api/offers/my`,
-    };
-    if (filters) {
-      requestOptions.payload = JSON.stringify(filters);
-    }
-    const [fetchedOffers, response] = await fetch<[Offer[], number]>(
-      HttpMethod.POST,
-      requestOptions
-    );
+  const fetchArchivedOffers = useCallback(
+    async (filters?: FiltersValuesType) => {
+      const requestOptions: RequestOptions = {
+        path: `/api/offers/archive`,
+      };
+      if (filters) {
+        requestOptions.payload = JSON.stringify(filters);
+      }
+      const [fetchedOffers, response] = await fetch<[Offer[], number]>(
+        HttpMethod.POST,
+        requestOptions
+      );
 
-    if (response.statusCode === 201) {
-      const [offers, count] = fetchedOffers;
-      setCountOffers(count);
-      setMyOffers(offers);
-      // if (filters) {
-      //   setFilteredMyOffers(offers);
-      // } else {
-      //setMyOffers(offers);
-      //setFilteredMyOffers(undefined);
-      // }
-    }
-  }, []);
+      if (response.statusCode === 201) {
+        const [_offers, count] = fetchedOffers;
+        setCountOffers(count);
+        setOffers(_offers);
+      }
+    },
+    [offers]
+  );
 
-  // const clearFilteredOffers = useCallback(() => {
-  //   filteredOffers && setFilteredOffers(undefined);
-  //   filteredMyOffers && setFilteredMyOffers(undefined);
-  // }, [filteredOffers, filteredMyOffers]);
+  const fetchMyOffers = useCallback(
+    async (filters?: FiltersValuesType) => {
+      const requestOptions: RequestOptions = {
+        path: `/api/offers/my`,
+      };
+      if (filters) {
+        requestOptions.payload = JSON.stringify(filters);
+      }
+      const [fetchedOffers, response] = await fetch<[Offer[], number]>(
+        HttpMethod.POST,
+        requestOptions
+      );
+
+      if (response.statusCode === 201) {
+        const [_offers, count] = fetchedOffers;
+        setCountOffers(count);
+        setMyOffers(_offers);
+      }
+    },
+    [offers]
+  );
+
+  const fetchMyArchivedOffers = useCallback(
+    async (filters?: FiltersValuesType) => {
+      const requestOptions: RequestOptions = {
+        path: `/api/offers/myArchive`,
+      };
+      if (filters) {
+        requestOptions.payload = JSON.stringify(filters);
+      }
+      const [fetchedOffers, response] = await fetch<[Offer[], number]>(
+        HttpMethod.POST,
+        requestOptions
+      );
+
+      if (response.statusCode === 201) {
+        const [_offers, count] = fetchedOffers;
+        setCountMyArchivedOffers(count);
+        setCountOffers(count);
+        setOffers(_offers);
+      }
+    },
+    [offers]
+  );
 
   const contextValue = useMemo(
     () => ({
       selectedOffer,
       offers,
       countOffers,
-      // filteredOffers,
       myOffers,
-      //filteredMyOffers,
+      countMyArchivedOffers,
       isFetching,
       fetchOffer,
       fetchOffers,
-      getMyOffers,
+      fetchMyOffers,
+      fetchArchivedOffers,
+      fetchMyArchivedOffers,
       removeOffer,
-      // setFilteredOffers,
-      // clearFilteredOffers,
     }),
     [
       selectedOffer,
       offers,
       countOffers,
-      // filteredOffers,
       myOffers,
-      //filteredMyOffers,
+      countMyArchivedOffers,
       isFetching,
       fetchOffer,
       fetchOffers,
-      getMyOffers,
+      fetchMyOffers,
+      fetchArchivedOffers,
+      fetchMyArchivedOffers,
       removeOffer,
-      // setFilteredOffers,
-      // clearFilteredOffers,
     ]
   );
-
-  useEffect(() => {
-    fetchOffers();
-  }, []);
 
   return (
     <OfferContext.Provider value={contextValue}>

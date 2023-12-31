@@ -3,21 +3,13 @@ import { useOffer } from "../../providers/OfferProvider";
 import { useEffect } from "react";
 
 const MyOffersList = () => {
-  const { myOffers, filteredMyOffers, getMyOffers } = useOffer();
+  const { myOffers, fetchMyOffers } = useOffer();
 
   useEffect(() => {
-    getMyOffers();
+    fetchMyOffers();
   }, []);
 
-  return (
-    <div>
-      <OfferList
-        offers={filteredMyOffers ? filteredMyOffers : myOffers}
-        view="MY"
-        showControls
-      />
-    </div>
-  );
+  return <OfferList offers={myOffers} view="MY" />;
 };
 
 export default MyOffersList;

@@ -1,33 +1,31 @@
-import { createContext } from 'react';
-import { Offer } from '../types/Offer';
-import { FiltersValuesType } from './filtersContext';
+import { createContext } from "react";
+import { Offer } from "../types/Offer";
+import { FiltersValuesType } from "./filtersContext";
 
 type OfferContextType = {
   selectedOffer?: Offer;
   countOffers: number;
   offers: Offer[];
-  // filteredOffers: Offer[] | undefined;
   myOffers: Offer[];
-  // filteredMyOffers: Offer[] | undefined;
+  countMyArchivedOffers: number;
   fetchOffer: (id: number) => void;
   fetchOffers: (filters?: FiltersValuesType) => void;
-  getMyOffers: (filters?: FiltersValuesType) => void;
+  fetchMyOffers: (filters?: FiltersValuesType) => void;
+  fetchArchivedOffers: (filters?: FiltersValuesType) => void;
+  fetchMyArchivedOffers: (filters?: FiltersValuesType) => void;
   removeOffer: (id: number) => void;
-  // setFilteredOffers: (offers: Offer[]) => void;
-  // clearFilteredOffers: () => void;
 };
 
 export const OfferContext = createContext<OfferContextType>({
   selectedOffer: undefined,
   countOffers: 0,
   offers: [],
-  // filteredOffers: [],
   myOffers: [],
-  // filteredMyOffers: [],
+  countMyArchivedOffers: 0,
   fetchOffer: () => undefined,
   fetchOffers: () => undefined,
   removeOffer: () => undefined,
-  getMyOffers: () => undefined,
-  // setFilteredOffers: () => [],
-  // clearFilteredOffers: () => undefined,
+  fetchMyOffers: () => undefined,
+  fetchArchivedOffers: () => undefined,
+  fetchMyArchivedOffers: () => undefined,
 });

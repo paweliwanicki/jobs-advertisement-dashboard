@@ -1,13 +1,18 @@
-@use '../../styles/variables.scss';
-@use '../../styles/themeVariables.scss';
-@use '../../styles/utils.scss';
+@use "../../styles/variables.scss";
+@use "../../styles/themeVariables.scss";
+@use "../../styles/utils.scss";
 
 .offerList {
   display: flex;
   flex-flow: column;
   flex-grow: 1;
+  margin-top: 25px;
 
-  .controlsBox {
+  &.empty {
+    margin: auto;
+  }
+
+  .navigationBox {
     display: flex;
     align-items: flex-end;
     justify-content: flex-end;
@@ -30,7 +35,7 @@
   .noOffersWarningBox {
     text-align: center;
     @include themeVariables.themify(themeVariables.$themes) {
-      color: themeVariables.themed('text-main-color');
+      color: themeVariables.themed("text-main-color");
     }
     margin: auto;
     grid-column-start: 1;

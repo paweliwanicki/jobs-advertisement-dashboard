@@ -1,6 +1,6 @@
-@use '../../styles/variables.scss';
-@use '../../styles/themeVariables.scss';
-@use '../../styles/utils.scss';
+@use "../../styles/variables.scss";
+@use "../../styles/themeVariables.scss";
+@use "../../styles/utils.scss";
 
 $border-bottom-color: #d9dce26c;
 
@@ -17,7 +17,7 @@ $border-bottom-color: #d9dce26c;
   padding: 5px;
 
   @include themeVariables.themify(themeVariables.$themes) {
-    background-color: themeVariables.themed('filter-container-bg-color');
+    background-color: themeVariables.themed("filter-container-bg-color");
   }
 
   border-bottom: 2px solid $border-bottom-color;
@@ -30,7 +30,7 @@ $border-bottom-color: #d9dce26c;
       gap: 15px;
 
       @include themeVariables.themify(themeVariables.$themes) {
-        color: themeVariables.themed('text-main-color');
+        color: themeVariables.themed("text-main-color");
       }
     }
 
@@ -50,7 +50,7 @@ $border-bottom-color: #d9dce26c;
           @include utils.respond-to(bp-small) {
             @include themeVariables.themify(themeVariables.$themes) {
               border-bottom: 1px solid
-                themeVariables.themed('filter-grid-bg-color');
+                themeVariables.themed("filter-grid-bg-color");
             }
           }
         }
@@ -76,13 +76,13 @@ $border-bottom-color: #d9dce26c;
             @include utils.respond-to(bp-small) {
               border-left: none;
             }
-            border-left: 1px solid themeVariables.themed('filter-grid-bg-color');
+            border-left: 1px solid themeVariables.themed("filter-grid-bg-color");
           }
         }
 
         &:nth-child(n + 3) {
           @include themeVariables.themify(themeVariables.$themes) {
-            border-top: 1px solid themeVariables.themed('filter-grid-bg-color');
+            border-top: 1px solid themeVariables.themed("filter-grid-bg-color");
           }
 
           @include utils.respond-to(bp-small) {
@@ -107,10 +107,11 @@ $border-bottom-color: #d9dce26c;
     }
 
     .filtersControls {
-      display: inline-flex;
+      display: flex;
       padding: 30px 0 10px 0;
       justify-content: space-between;
       width: 100%;
+      justify-content: flex-end;
 
       .buttonsBox {
         justify-self: flex-end;
@@ -136,7 +137,7 @@ $border-bottom-color: #d9dce26c;
     border-radius: 6px;
     font-size: 14px;
     @include themeVariables.themify(themeVariables.$themes) {
-      color: themeVariables.themed('text-main-color');
+      color: themeVariables.themed("text-main-color");
     }
 
     svg {
@@ -146,7 +147,7 @@ $border-bottom-color: #d9dce26c;
 
     &:hover {
       @include themeVariables.themify(themeVariables.$themes) {
-        background-color: themeVariables.themed('filter-collapse-btn-bg-color');
+        background-color: themeVariables.themed("filter-collapse-btn-bg-color");
       }
     }
   }

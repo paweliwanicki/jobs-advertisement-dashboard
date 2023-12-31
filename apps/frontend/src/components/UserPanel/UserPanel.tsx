@@ -1,35 +1,26 @@
-import { useMemo, useEffect, useState } from 'react';
-import Button from '../common/Button/Button';
-import classes from './UserPanel.module.scss';
-import { useSignForm } from '../../hooks/useSignForm';
-import { Link } from 'react-router-dom';
-import SvgIcon from '../common/SvgIcon/SvgIcon';
-import { useOffer } from '../../providers/OfferProvider';
-import { useUser } from '../../providers/UserProvider';
-import { Offer } from '../../types/Offer';
+import { useMemo } from "react";
+import Button from "../common/Button/Button";
+import classes from "./UserPanel.module.scss";
+import { useSignForm } from "../../hooks/useSignForm";
+import { Link } from "react-router-dom";
+import SvgIcon from "../common/SvgIcon/SvgIcon";
+import { useOffer } from "../../providers/OfferProvider";
+import { useUser } from "../../providers/UserProvider";
 
 export const UserPanel = () => {
   const { user } = useUser();
-  const { myOffers, countOffers, getMyOffers } = useOffer();
-  const [archivedOffers, setArchivedOffers] = useState<Offer[]>([]);
+  const { countOffers, countMyArchivedOffers } = useOffer();
   const { handleSignOut } = useSignForm();
 
   const createdAtDate = useMemo(
     () =>
       user
-        ? new Date(user.createdAt * 1000).toLocaleString('pl-PL', {
-            timeZone: 'UTC',
+        ? new Date(user.createdAt * 1000).toLocaleString("pl-PL", {
+            timeZone: "UTC",
           })
-        : '',
+        : "",
     [user]
   );
-
-  useEffect(() => {
-    if (!myOffers.length) getMyOffers();
-    console.log(myOffers);
-    console.log(myOffers.filter((el) => el.archived));
-    setArchivedOffers(myOffers.filter((el) => el.archived));
-  }, [myOffers]);
 
   return (
     <div className={classes.userPanel}>
@@ -41,6 +32,9 @@ export const UserPanel = () => {
             </Link>
             <Link to="/offer/my">
               <Button variant="primary">My offers</Button>
+            </Link>
+            <Link to="/offer/my/archive">
+              <Button variant="primary">My Archive</Button>
             </Link>
           </>
         )}
@@ -54,7 +48,7 @@ export const UserPanel = () => {
           <span>Your active offers:</span> {countOffers}
         </p>
         <p>
-          <span>Archived offers:</span> {archivedOffers.length}
+          <span>Archived offers:</span> {countMyArchivedOffers}
         </p>
       </div>
 

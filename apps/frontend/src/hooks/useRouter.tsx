@@ -1,16 +1,19 @@
-import Layout from '../containers/Layout/Layout';
-import Dashboard from '../containers/Dashboard/Dashboard';
-import LoginContainer from '../containers/LoginContainer/LoginContainer';
-import OfferEditor from '../components/OfferEditor/OfferEditor';
-import { createBrowserHistory } from 'history';
-import { Navigate, createBrowserRouter } from 'react-router-dom';
-import { Page404 } from '../404';
-import { AuthGuard } from '../guards/AuthGuard';
-import { UserPanel } from '../components/UserPanel/UserPanel';
-import { RoutePath } from '../enums/RoutePath';
-import OfferPreview from '../containers/OfferPreview/OfferPreview';
-import { DictionariesContainer } from '../containers/DictionariesContainer/DictionariesContainer';
-import MyOffersList from '../containers/MyOffersList/MyOffersList';
+import Layout from "../containers/Layout/Layout";
+import Dashboard from "../containers/Dashboard/Dashboard";
+import LoginContainer from "../containers/LoginContainer/LoginContainer";
+import OfferEditor from "../components/OfferEditor/OfferEditor";
+import { createBrowserHistory } from "history";
+import { Navigate, createBrowserRouter } from "react-router-dom";
+import { Page404 } from "../404";
+import { AuthGuard } from "../guards/AuthGuard";
+import { UserPanel } from "../components/UserPanel/UserPanel";
+import { RoutePath } from "../enums/RoutePath";
+import OfferPreview from "../containers/OfferPreview/OfferPreview";
+import { DictionariesContainer } from "../containers/DictionariesContainer/DictionariesContainer";
+import MyOffersList from "../containers/MyOffersList/MyOffersList";
+import ArchivedOffersList from "../containers/ArchivedOffersList/ArchivedOffersList";
+import ArchivedMyOffersList from "../containers/ArchivedMyOffersList.tsx/ArchivedMyOffersList";
+
 
 const history = createBrowserHistory();
 
@@ -62,6 +65,22 @@ const router = createBrowserRouter([
         element: (
           <AuthGuard>
             <MyOffersList />
+          </AuthGuard>
+        ),
+      },
+      {
+        path: RoutePath.OFFER_ARCHIVE,
+        element: (
+          <AuthGuard>
+            <ArchivedOffersList />
+          </AuthGuard>
+        ),
+      },
+      {
+        path: RoutePath.OFFER_MY_ARCHIVE,
+        element: (
+          <AuthGuard>
+            <ArchivedMyOffersList />
           </AuthGuard>
         ),
       },

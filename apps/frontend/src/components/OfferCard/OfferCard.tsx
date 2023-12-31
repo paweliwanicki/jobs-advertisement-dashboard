@@ -10,6 +10,7 @@ import { useCallback } from "react";
 import { useOffer } from "../../providers/OfferProvider";
 import { Contract } from "../../types/Contract";
 import { Tooltip } from "react-tooltip";
+import { useTheme } from "../../providers/ThemeProvider";
 
 export type OfferCardProps = {
   id?: number;
@@ -51,6 +52,7 @@ const OfferCard = ({
   archived,
   showMenu = false,
 }: OfferCardProps) => {
+  const { theme } = useTheme();
   const { removeOffer } = useOffer();
   const { user } = useUser();
 
@@ -92,7 +94,7 @@ const OfferCard = ({
             width={24}
             height={24}
             viewBox="0 0 32 32"
-            color="#000"
+            color={theme === "dark" ? "#f4f6f8" : "#222f3e"  }
           />
           <Tooltip
             anchorSelect={`#icon-archive-offer-${id}`}

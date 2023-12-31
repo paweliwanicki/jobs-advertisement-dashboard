@@ -1,10 +1,11 @@
-import { useParams } from 'react-router-dom';
-import classes from './OfferPreview.module.scss';
-import Button from '../../components/common/Button/Button';
-import { useEffect } from 'react';
-import { getOfferAddedTime } from '../../components/OfferCard/OfferCard';
-import SvgIcon from '../../components/common/SvgIcon/SvgIcon';
-import { useOffer } from '../../providers/OfferProvider';
+import { useParams } from "react-router-dom";
+import classes from "./OfferPreview.module.scss";
+import Button from "../../components/common/Button/Button";
+import { useEffect } from "react";
+import { getOfferAddedTime } from "../../components/OfferCard/OfferCard";
+import SvgIcon from "../../components/common/SvgIcon/SvgIcon";
+import { useOffer } from "../../providers/OfferProvider";
+import InfoBox from "../../components/common/InfoBox/InfoBox";
 
 type OfferPreviewProps = {};
 
@@ -19,30 +20,36 @@ const OfferPreview = ({}: OfferPreviewProps) => {
     }
   }, [id]);
 
-  const offerDetails = { __html: selectedOffer?.description ?? '' };
+  const offerDetails = { __html: selectedOffer?.description ?? "" };
 
   return (
     <div className={classes.offerPreviewContainer}>
       {selectedOffer ? (
         <>
           <section className={classes.offerDetailsSection}>
+            {selectedOffer.archived && (
+              <InfoBox variant="info" classNames={classes.offerArchivedInfo}>
+                <SvgIcon id="icon-archive" width={32} height={32} color="#6e8098"/>
+                Offer is archived!
+              </InfoBox>
+            )}
             <div className={classes.companyInfoBox}>
               <img
                 src={`/uploads/${
                   company?.logoFileName
                     ? company?.logoFileName
-                    : 'company_default_logo.jpeg'
+                    : "company_default_logo.jpeg"
                 }`}
                 alt="company"
               />
               <div className={classes.companyInfo}>
                 <h3>{company?.name}</h3>
                 <a
-                  href={company?.website ?? 'www.defaultCompany.test.com'}
+                  href={company?.website ?? "www.defaultCompany.test.com"}
                   target="_blank"
                   rel="noreferrer noopener"
                 >
-                  {company?.website ?? 'www.defaultCompany.test.com'}
+                  {company?.website ?? "www.defaultCompany.test.com"}
                 </a>
               </div>
               <a

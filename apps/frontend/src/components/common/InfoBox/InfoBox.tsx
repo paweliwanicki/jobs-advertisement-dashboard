@@ -6,11 +6,18 @@ type InfoBoxVariant = "success" | "error" | "info";
 type InfoBoxProps = {
   children: ReactNode;
   variant: InfoBoxVariant;
+  classNames?: string;
 };
 
-const InfoBox = ({ children, variant = "info" }: InfoBoxProps) => {
+const InfoBox = ({
+  children,
+  classNames = "",
+  variant = "info",
+}: InfoBoxProps) => {
   return (
-    <div className={`${classes.infoBox} ${classes[variant]}`}>{children}</div>
+    <div className={`${classes.infoBox} ${classes[variant]} ${classNames}`}>
+      {children}
+    </div>
   );
 };
 

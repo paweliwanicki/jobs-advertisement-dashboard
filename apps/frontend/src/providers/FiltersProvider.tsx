@@ -1,19 +1,17 @@
-import { ReactNode, useCallback, useContext, useMemo, useState } from 'react';
-import { useOffer } from './OfferProvider';
-import { FiltersContext } from '../contexts/filtersContext';
+import { ReactNode, useCallback, useContext, useMemo, useState } from "react";
+import { useOffer } from "./OfferProvider";
+import { FiltersContext } from "../contexts/filtersContext";
 
 export type OffersFiltersState = {
   title?: string;
   location: any | null;
   company: any | null;
   contract: any | null;
-  archived: boolean;
 };
 
 export type OffersFiltersValues = {
   title?: string;
   location?: string;
-  archived: boolean;
   company?: {
     id: number;
   };
@@ -27,15 +25,10 @@ type FiltersProviderProps = {
 const FiltersProvider = ({ children }: FiltersProviderProps) => {
   const { fetchOffers } = useOffer();
 
-  const [title, setTitle] = useState<string>('');
+  const [title, setTitle] = useState<string>("");
   const [location, setLocation] = useState<any | null>();
   const [company, setCompany] = useState<any | null>();
   const [contract, setContract] = useState<any | null>();
-  const [archived, setShowArchived] = useState<boolean>(false);
-
-  const handleSetShowArchived = useCallback(() => {
-    setShowArchived((isChecked) => !isChecked);
-  }, []);
 
   const handleSetTitle = useCallback((title: string) => {
     setTitle(title);
@@ -54,18 +47,16 @@ const FiltersProvider = ({ children }: FiltersProviderProps) => {
   }, []);
 
   const handleClearFilters = useCallback(() => {
-    setTitle('');
+    setTitle("");
     setLocation(null);
     setCompany(null);
     setContract(null);
-    setShowArchived(false);
     fetchOffers();
   }, []);
 
   const getFiltersValues = useCallback(() => {
     const values: OffersFiltersValues = {
-      archived,
-      title: title === '' ? undefined : title,
+      title: title === "" ? undefined : title,
       location: location?.value.description,
     };
     if (company) {
@@ -77,7 +68,7 @@ const FiltersProvider = ({ children }: FiltersProviderProps) => {
     }
 
     return values;
-  }, [title, location, company, contract, archived]);
+  }, [title, location, company, contract]);
 
   const getFiltersStates = useCallback(() => {
     return {
@@ -85,9 +76,8 @@ const FiltersProvider = ({ children }: FiltersProviderProps) => {
       location,
       company,
       contract,
-      archived,
     };
-  }, [title, location, company, contract, archived]);
+  }, [title, location, company, contract]);
 
   const value = useMemo(
     () => ({
@@ -97,7 +87,6 @@ const FiltersProvider = ({ children }: FiltersProviderProps) => {
       handleSetLocation,
       handleSetCompany,
       handleSetContract,
-      handleSetShowArchived,
       handleClearFilters,
     }),
     [
@@ -107,7 +96,6 @@ const FiltersProvider = ({ children }: FiltersProviderProps) => {
       handleSetLocation,
       handleSetCompany,
       handleSetContract,
-      handleSetShowArchived,
       handleClearFilters,
     ]
   );

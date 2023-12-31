@@ -1,38 +1,48 @@
-import { useCallback, useMemo } from 'react';
-import { HttpMethod } from '../../enums/HttpMethods';
-import { Link } from 'react-router-dom';
-import classes from './OfferList.module.scss';
-import Button from '../../components/common/Button/Button';
-import SvgIcon from '../../components/common/SvgIcon/SvgIcon';
+import { useCallback, useMemo } from "react";
+import { HttpMethod } from "../../enums/HttpMethods";
+import { Link } from "react-router-dom";
+import classes from "./OfferList.module.scss";
+import Button from "../../components/common/Button/Button";
+import SvgIcon from "../../components/common/SvgIcon/SvgIcon";
 import OfferCard, {
   OfferCardProps,
-} from '../../components/OfferCard/OfferCard';
-import { LoadingSpinner } from '../../components/common/LoadingSpinner/LoadingSpinner';
-import OfferFilters from '../../components/OfferFilters/OfferFilters';
-import Pagination from '../../components/common/Pagination/Pagination';
-import { useUser } from '../../providers/UserProvider';
-import { useOffer } from '../../providers/OfferProvider';
-import { useApi } from '../../hooks/useApi';
-import { usePagination } from '../../hooks/usePagination';
-import { FiltersValuesType } from '../../contexts/filtersContext';
-import { Offer } from '../../types/Offer';
-import { useTheme } from '../../providers/ThemeProvider';
+} from "../../components/OfferCard/OfferCard";
+import { LoadingSpinner } from "../../components/common/LoadingSpinner/LoadingSpinner";
+import OfferFilters from "../../components/OfferFilters/OfferFilters";
+import Pagination from "../../components/common/Pagination/Pagination";
+import { useUser } from "../../providers/UserProvider";
+import { useOffer } from "../../providers/OfferProvider";
+import { useApi } from "../../hooks/useApi";
+import { usePagination } from "../../hooks/usePagination";
+import { FiltersValuesType } from "../../contexts/filtersContext";
+import { Offer } from "../../types/Offer";
+import { useTheme } from "../../providers/ThemeProvider";
+
+type OfferListView = "MAIN" | "ARCHIVE" | "MY" | "MY_ARCHIVE";
 
 type OfferListProps = {
   offers: Offer[];
+  view?: OfferListView;
   classNames?: string;
-  showControls?: boolean;
+  showNavigation?: boolean;
 };
 
 const OfferList = ({
   offers,
-  classNames = '',
-  showControls = false,
+  view = "MAIN",
+  classNames = "",
+  showNavigation = false,
 }: OfferListProps) => {
   const { theme } = useTheme();
   const { fetch, isFetching } = useApi();
   const { user } = useUser();
-  const { fetchOffers, countOffers } = useOffer();
+  const {
+    fetchOffers,
+    fetchMyOffers,
+    fetchArchivedOffers,
+    fetchMyArchivedOffers,
+    countOffers,
+  } = useOffer();
 
   const {
     activePage,
@@ -40,14 +50,16 @@ const OfferList = ({
     itemsPerPage,
     handleSetPage,
     handleSetItemsPerPage,
-  } = usePagination({ totalItems: countOffers });
+  } = usePagination({
+    totalItems: countOffers,
+  });
 
   const handleImportOffers = useCallback(async () => {
     const [offers] = await fetch<any[]>(HttpMethod.GET, {
-      path: '/offers.json',
+      path: "/offers.json",
     });
     const [, response] = await fetch<OfferCardProps[]>(HttpMethod.POST, {
-      path: '/api/offers/import',
+      path: "/api/offers/import",
       payload: JSON.stringify(offers),
     });
 
@@ -56,19 +68,31 @@ const OfferList = ({
     }
   }, [fetchOffers]);
 
+  const fetchOfferForView: Record<
+    OfferListView,
+    (filters: FiltersValuesType) => void
+  > = useMemo(() => {
+    return {
+      MAIN: fetchOffers,
+      MY: fetchMyOffers,
+      ARCHIVE: fetchArchivedOffers,
+      MY_ARCHIVE: fetchMyArchivedOffers,
+    };
+  }, [fetchOffers, fetchMyOffers, fetchArchivedOffers, fetchMyArchivedOffers]);
+
   const handleFilterList = useCallback(
     (filters: FiltersValuesType) => {
       handleSetPage(filters?.activePage);
-      fetchOffers(filters);
+      fetchOfferForView[view]?.(filters);
     },
-    [fetchOffers, handleSetPage]
+    [view, fetchOfferForView, handleSetPage]
   );
 
-  const controlsBox = useMemo(() => {
+  const navigationBox = useMemo(() => {
     return (
-      showControls &&
+      showNavigation &&
       user && (
-        <div className={classes.controlsBox}>
+        <div className={classes.navigationBox}>
           {user.isAdmin && (
             <Button
               variant="secondary"
@@ -78,6 +102,9 @@ const OfferList = ({
               Import offers
             </Button>
           )}
+          <Link to="/offer/archive">
+            <Button variant="primary">Archive</Button>
+          </Link>
           <Link to="/offer/edit">
             <Button variant="primary">Add offer</Button>
           </Link>
@@ -87,16 +114,19 @@ const OfferList = ({
   }, [user]);
 
   return (
-    <div className={classes.offerList}>
+    <div className={`${classes.offerList}`}>
       <OfferFilters
         onSubmit={handleFilterList}
-        totalItems={offers.length}
         activePage={activePage}
         itemsPerPage={itemsPerPage}
       />
       {isFetching && <LoadingSpinner message="Fetching offer list" />}
-      {controlsBox}
-      <div className={`${classes.list} ${classNames}`}>
+      {navigationBox}
+      <div
+        className={`${classes.list} ${classNames} ${
+          !offers.length ? classes.empty : ""
+        }`}
+      >
         {offers.length ? (
           offers.map(
             ({
@@ -117,7 +147,7 @@ const OfferList = ({
                 contract={contract}
                 createdAt={createdAt ?? 0}
                 archived={archived}
-                showMenu={showControls}
+                showMenu={showNavigation}
               />
             )
           )
@@ -125,7 +155,7 @@ const OfferList = ({
           <div className={classes.noOffersWarningBox}>
             <SvgIcon
               id="icon-error"
-              color={theme === 'dark' ? 'white' : '#19202d'}
+              color={theme === "dark" ? "white" : "#19202d"}
               width={64}
               height={64}
             />

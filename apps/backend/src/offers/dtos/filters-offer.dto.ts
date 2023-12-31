@@ -22,7 +22,7 @@ export class FiltersOfferDto {
 
   @IsBoolean()
   @IsOptional()
-  archived: boolean;
+  archived = false;
 
   @IsNumber()
   @IsOptional()
