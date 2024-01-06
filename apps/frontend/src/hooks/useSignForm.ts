@@ -6,6 +6,8 @@ import { HttpMethod } from '../enums/HttpMethods';
 import { User } from '../types/User';
 import { useUser } from '../providers/UserProvider';
 
+const AUTH_API_PATH = '/api/auth';
+
 type InputError =
   | 'EMPTY'
   | 'WRONG_PASSWORD_FORMAT'
@@ -105,7 +107,7 @@ export const useSignForm = (): SignForm => {
   const handleSignIn = useCallback(
     async (username: string, password: string) => {
       const [response] = await fetch<SignResponse>(HttpMethod.POST, {
-        path: '/api/auth/signin',
+        path: `${AUTH_API_PATH}/signin`,
         payload: JSON.stringify({
           username,
           password,
@@ -119,7 +121,7 @@ export const useSignForm = (): SignForm => {
   const handleSignUp = useCallback(
     async (username: string, password: string, confirmPassword: string) => {
       const [response] = await fetch<SignResponse>(HttpMethod.POST, {
-        path: '/api/auth/signup',
+        path: `${AUTH_API_PATH}/signup`,
         payload: JSON.stringify({
           username,
           password,
@@ -134,7 +136,7 @@ export const useSignForm = (): SignForm => {
 
   const handleSignOut = useCallback(async () => {
     const [response] = await fetch<SignResponse>(HttpMethod.POST, {
-      path: '/api/auth/signout',
+      path: `${AUTH_API_PATH}/signout`,
     });
     if (response.statusCode === 200) {
       changeUser(undefined);

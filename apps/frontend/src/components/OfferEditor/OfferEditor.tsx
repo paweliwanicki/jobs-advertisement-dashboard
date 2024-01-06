@@ -1,28 +1,29 @@
-import classes from "./OfferEditor.module.scss";
-import Input from "../common/Input/Input";
-import Button from "../common/Button/Button";
-import ValidationIcon from "../common/ValidationIcon/ValidationIcon";
-import { Editor } from "@tinymce/tinymce-react";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { SingleValue } from "react-select";
-import { useOfferEditor } from "../../hooks/useOfferEditor";
-import { useParams } from "react-router-dom";
-import { LoadingSpinner } from "../common/LoadingSpinner/LoadingSpinner";
-import type { Option } from "react-google-places-autocomplete/build/types";
-import type { Editor as TinyMceEditor } from "tinymce";
-import { HttpMethod } from "../../enums/HttpMethods";
-import { useApi } from "../../hooks/useApi";
-import UploadCompanyLogoModal from "../UploadCompanyLogoModal/UploadCompanyLogoModal";
-import { Company } from "../../types/Company";
-import { Offer } from "../../types/Offer";
-import { Contract } from "../../types/Contract";
-import { useRouter } from "../../hooks/useRouter";
-import { useDictionaries } from "../../providers/DictionaryProvider";
-import { useTheme } from "../../providers/ThemeProvider";
-import GoogleLocationSelect from "../common/GoogleLocationSelect/GoogleLocationSelect";
-import CustomReactSelect from "../common/CustomReactSelect/CustomReactSelect";
-import SvgIcon from "../common/SvgIcon/SvgIcon";
-import InfoBox from "../common/InfoBox/InfoBox";
+import classes from './OfferEditor.module.scss';
+import Input from '../common/Input/Input';
+import Button from '../common/Button/Button';
+import ValidationIcon from '../common/ValidationIcon/ValidationIcon';
+import { Editor } from '@tinymce/tinymce-react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { SingleValue } from 'react-select';
+import { useOfferEditor } from '../../hooks/useOfferEditor';
+import { useParams } from 'react-router-dom';
+import { LoadingSpinner } from '../common/LoadingSpinner/LoadingSpinner';
+import type { Option } from 'react-google-places-autocomplete/build/types';
+import type { Editor as TinyMceEditor } from 'tinymce';
+import { HttpMethod } from '../../enums/HttpMethods';
+import { useApi } from '../../hooks/useApi';
+import UploadCompanyLogoModal from '../UploadCompanyLogoModal/UploadCompanyLogoModal';
+import { Company } from '../../types/Company';
+import { Offer } from '../../types/Offer';
+import { Contract } from '../../types/Contract';
+import { useRouter } from '../../hooks/useRouter';
+import { useDictionaries } from '../../providers/DictionaryProvider';
+import { useTheme } from '../../providers/ThemeProvider';
+import GoogleLocationSelect from '../common/GoogleLocationSelect/GoogleLocationSelect';
+import CustomReactSelect from '../common/CustomReactSelect/CustomReactSelect';
+import SvgIcon from '../common/SvgIcon/SvgIcon';
+import InfoBox from '../common/InfoBox/InfoBox';
+import { OFFERS_API_PATH } from '../../providers/OfferProvider';
 
 const OfferEditor = () => {
   let { id } = useParams();
@@ -67,20 +68,20 @@ const OfferEditor = () => {
   } = isValidated;
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [title, setTitle] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
+  const [title, setTitle] = useState<string>('');
+  const [description, setDescription] = useState<string>('');
   const [company, setCompany] = useState<Option | null>();
   const [location, setLocation] = useState<Option | null>();
   const [contract, setContract] = useState<Option | null>();
   const [editorElementKey, setEditorElementKey] = useState<number>(0);
-  const [initialEditorValue, setInitialEditorValue] = useState<string>("");
+  const [initialEditorValue, setInitialEditorValue] = useState<string>('');
 
   const [showNewCompanyModal, setShowNewCompanyModal] =
     useState<boolean>(false);
 
   const handleTitleOnChange = useCallback(
     (title: string) => {
-      titleIsValidated && clearValidationAndError("TITLE");
+      titleIsValidated && clearValidationAndError('TITLE');
       setTitle(title);
     },
     [titleIsValidated, clearValidationAndError]
@@ -88,7 +89,7 @@ const OfferEditor = () => {
 
   const handleCompanyOnChange = useCallback(
     (company: any) => {
-      companyIsValidated && clearValidationAndError("COMPANY");
+      companyIsValidated && clearValidationAndError('COMPANY');
       setCompany(company);
     },
     [companyIsValidated, clearValidationAndError]
@@ -96,7 +97,7 @@ const OfferEditor = () => {
 
   const handleLocationOnChange = useCallback(
     (location: SingleValue<Option>) => {
-      locationIsValidated && clearValidationAndError("LOCATION");
+      locationIsValidated && clearValidationAndError('LOCATION');
       console.log(location);
       setLocation(location);
     },
@@ -105,7 +106,7 @@ const OfferEditor = () => {
 
   const handleContractOnChange = useCallback(
     (contract: any) => {
-      contractIsValidated && clearValidationAndError("CONTRACT");
+      contractIsValidated && clearValidationAndError('CONTRACT');
       setContract(contract);
     },
     [contractIsValidated, clearValidationAndError]
@@ -113,7 +114,7 @@ const OfferEditor = () => {
 
   const handleDescriptionOnChange = useCallback(
     (description: string) => {
-      descriptionIsValidated && clearValidationAndError("DESCRIPTION");
+      descriptionIsValidated && clearValidationAndError('DESCRIPTION');
       setDescription(description);
     },
     [descriptionIsValidated, clearValidationAndError]
@@ -137,19 +138,20 @@ const OfferEditor = () => {
       e.preventDefault();
       const isValid = validateOfferEditor(
         title,
-        company?.value ?? "",
-        location?.label ?? "",
-        contract?.value ?? "",
+        company?.value ?? '',
+        location?.label ?? '',
+        contract?.value ?? '',
         description
       );
 
       if (isValid) {
         const offer: Offer = {
           title,
-          id: parseInt(id ?? ""),
-          location: location?.label ?? "",
+          id: parseInt(id ?? ''),
+          location: location?.label ?? '',
           company: company?.value,
           contract: contract?.value,
+          archived: false,
           description,
         };
 
@@ -171,12 +173,12 @@ const OfferEditor = () => {
     const { title, company, contract, location, description } = offer;
     setTitle(title);
     setCompany({
-      label: company?.name ?? "",
-      value: company?.id ?? "",
+      label: company?.name ?? '',
+      value: company?.id ?? '',
     });
     setContract({
-      label: contract?.name ?? "",
-      value: contract?.id ?? "",
+      label: contract?.name ?? '',
+      value: contract?.id ?? '',
     });
     setLocation({ label: location, value: location });
     setInitialEditorValue(description);
@@ -185,7 +187,7 @@ const OfferEditor = () => {
 
   const fetchOffer = useCallback(async (id: string) => {
     const [fetchedOffer] = await fetch<Offer>(HttpMethod.GET, {
-      path: `/api/offers/${id}`,
+      path: `${OFFERS_API_PATH}/${id}`,
     });
     if (fetchedOffer.id) {
       handleSetOffer(fetchedOffer);
@@ -240,7 +242,7 @@ const OfferEditor = () => {
         HTML. In the form all fields are required!
       </InfoBox>
       {(isLoading || isFetching) && (
-        <LoadingSpinner message={isLoading ? "Form loading" : ""} />
+        <LoadingSpinner message={isLoading ? 'Form loading' : ''} />
       )}
       <form onSubmit={handleSaveOffer}>
         <div className={classes.inputsBox}>
@@ -380,12 +382,12 @@ const OfferEditor = () => {
                 height: 500,
                 menubar: true,
                 plugins:
-                  "preview code searchreplace autolink directionality visualblocks visualchars fullscreen image link media  codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists",
+                  'preview code searchreplace autolink directionality visualblocks visualchars fullscreen image link media  codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists',
                 toolbar:
-                  "formatselect | bold italic underline strikethrough | forecolor backcolor blockquote | link image media | alignleft aligncenter alignright alignjustify | numlist bullist outdent indent | removeformat | code",
+                  'formatselect | bold italic underline strikethrough | forecolor backcolor blockquote | link image media | alignleft aligncenter alignright alignjustify | numlist bullist outdent indent | removeformat | code',
                 image_advtab: true,
-                skin: theme === "dark" ? "oxide-dark" : "oxide",
-                content_css: theme === "dark" ? "dark" : "",
+                skin: theme === 'dark' ? 'oxide-dark' : 'oxide',
+                content_css: theme === 'dark' ? 'dark' : '',
               }}
             />
           </div>

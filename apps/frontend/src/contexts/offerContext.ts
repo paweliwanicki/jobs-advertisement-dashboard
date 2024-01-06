@@ -1,12 +1,12 @@
-import { createContext } from "react";
-import { Offer } from "../types/Offer";
-import { FiltersValuesType } from "./filtersContext";
+import { createContext } from 'react';
+import { Offer } from '../types/Offer';
+import { FiltersValuesType } from './filtersContext';
 
 type OfferContextType = {
   selectedOffer?: Offer;
   countOffers: number;
   offers: Offer[];
-  myOffers: Offer[];
+  countMyOffers: number;
   countMyArchivedOffers: number;
   fetchOffer: (id: number) => void;
   fetchOffers: (filters?: FiltersValuesType) => void;
@@ -20,7 +20,7 @@ export const OfferContext = createContext<OfferContextType>({
   selectedOffer: undefined,
   countOffers: 0,
   offers: [],
-  myOffers: [],
+  countMyOffers: 0,
   countMyArchivedOffers: 0,
   fetchOffer: () => undefined,
   fetchOffers: () => undefined,

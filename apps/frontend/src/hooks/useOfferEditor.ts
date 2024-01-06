@@ -3,6 +3,7 @@ import { HttpMethod } from '../enums/HttpMethods';
 import { ResponseParams, useApi } from './useApi';
 import { Offer } from '../types/Offer';
 import { useSnackBar } from '../providers/SnackBarProvider';
+import { OFFERS_API_PATH } from '../providers/OfferProvider';
 
 const OFFER_STATUS_MESSAGES: Record<number, string> = {
   200: 'Offer has been updated successfuly!',
@@ -132,7 +133,7 @@ export const useOfferEditor = (): UseOfferEditor => {
 
   const addOffer = useCallback(async (offer: Offer) => {
     const [, response] = await useFetch<Offer>(HttpMethod.POST, {
-      path: '/api/offers',
+      path: OFFERS_API_PATH,
       payload: JSON.stringify(offer),
     });
 
@@ -143,7 +144,7 @@ export const useOfferEditor = (): UseOfferEditor => {
 
   const updateOffer = useCallback(async (offer: Offer) => {
     const [, response] = await useFetch<Offer>(HttpMethod.PATCH, {
-      path: '/api/offers',
+      path: OFFERS_API_PATH,
       payload: JSON.stringify(offer),
     });
 

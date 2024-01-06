@@ -1,13 +1,13 @@
-import "./App.scss";
-import ThemeProvider from "./providers/ThemeProvider";
-import SnackBarProvider from "./providers/SnackBarProvider";
-import { CookiesProvider } from "react-cookie";
-import { RouterProvider } from "react-router-dom";
-import { useRouter } from "./hooks/useRouter";
-import UserProvider from "./providers/UserProvider";
-import OfferProvider from "./providers/OfferProvider";
-import DictionaryProvider from "./providers/DictionaryProvider";
-import FiltersProvider from "./providers/FiltersProvider";
+import './App.scss';
+import { useRouter } from './hooks/useRouter';
+import ThemeProvider from './providers/ThemeProvider';
+import SnackBarProvider from './providers/SnackBarProvider';
+import { CookiesProvider } from 'react-cookie';
+import { RouterProvider } from 'react-router-dom';
+import UserProvider from './providers/UserProvider';
+import OfferProvider from './providers/OfferProvider';
+import DictionaryProvider from './providers/DictionaryProvider';
+import FiltersProvider from './providers/FiltersProvider';
 
 const { router } = useRouter();
 

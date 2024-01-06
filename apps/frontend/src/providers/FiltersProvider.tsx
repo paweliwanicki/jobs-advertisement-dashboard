@@ -1,12 +1,18 @@
-import { ReactNode, useCallback, useContext, useMemo, useState } from "react";
-import { useOffer } from "./OfferProvider";
-import { FiltersContext } from "../contexts/filtersContext";
+import { ReactNode, useCallback, useContext, useMemo, useState } from 'react';
+import { FiltersContext } from '../contexts/filtersContext';
 
 export type OffersFiltersState = {
   title?: string;
   location: any | null;
   company: any | null;
   contract: any | null;
+};
+
+export type OffersFiltersSearchParams = {
+  title?: string;
+  location?: string;
+  company?: number;
+  contract?: number;
 };
 
 export type OffersFiltersValues = {
@@ -23,9 +29,7 @@ type FiltersProviderProps = {
 };
 
 const FiltersProvider = ({ children }: FiltersProviderProps) => {
-  const { fetchOffers } = useOffer();
-
-  const [title, setTitle] = useState<string>("");
+  const [title, setTitle] = useState<string>('');
   const [location, setLocation] = useState<any | null>();
   const [company, setCompany] = useState<any | null>();
   const [contract, setContract] = useState<any | null>();
@@ -46,17 +50,16 @@ const FiltersProvider = ({ children }: FiltersProviderProps) => {
     setContract(contract);
   }, []);
 
-  const handleClearFilters = useCallback(() => {
-    setTitle("");
+  const clearFilters = useCallback(() => {
+    setTitle('');
     setLocation(null);
     setCompany(null);
     setContract(null);
-    fetchOffers();
   }, []);
 
   const getFiltersValues = useCallback(() => {
     const values: OffersFiltersValues = {
-      title: title === "" ? undefined : title,
+      title: title === '' ? undefined : title,
       location: location?.value.description,
     };
     if (company) {
@@ -67,6 +70,16 @@ const FiltersProvider = ({ children }: FiltersProviderProps) => {
       values.contract = { id: contract?.value };
     }
 
+    return values;
+  }, [title, location, company, contract]);
+
+  const getFiltersSearchParams = useCallback(() => {
+    const values: OffersFiltersSearchParams = {
+      title,
+      location: location?.value.description,
+      company: company?.value,
+      contract: contract?.value,
+    };
     return values;
   }, [title, location, company, contract]);
 
@@ -83,20 +96,22 @@ const FiltersProvider = ({ children }: FiltersProviderProps) => {
     () => ({
       getFiltersValues,
       getFiltersStates,
+      getFiltersSearchParams,
       handleSetTitle,
       handleSetLocation,
       handleSetCompany,
       handleSetContract,
-      handleClearFilters,
+      clearFilters,
     }),
     [
       getFiltersValues,
       getFiltersStates,
+      getFiltersSearchParams,
       handleSetTitle,
       handleSetLocation,
       handleSetCompany,
       handleSetContract,
-      handleClearFilters,
+      clearFilters,
     ]
   );
 

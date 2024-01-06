@@ -1,37 +1,35 @@
-import { useCallback, useMemo } from "react";
-import { HttpMethod } from "../../enums/HttpMethods";
-import { Link } from "react-router-dom";
-import classes from "./OfferList.module.scss";
-import Button from "../../components/common/Button/Button";
-import SvgIcon from "../../components/common/SvgIcon/SvgIcon";
+import { useCallback, useEffect, useMemo } from 'react';
+import { HttpMethod } from '../../enums/HttpMethods';
+import { Link, useSearchParams } from 'react-router-dom';
+import classes from './OfferList.module.scss';
+import Button from '../../components/common/Button/Button';
+import SvgIcon from '../../components/common/SvgIcon/SvgIcon';
 import OfferCard, {
   OfferCardProps,
-} from "../../components/OfferCard/OfferCard";
-import { LoadingSpinner } from "../../components/common/LoadingSpinner/LoadingSpinner";
-import OfferFilters from "../../components/OfferFilters/OfferFilters";
-import Pagination from "../../components/common/Pagination/Pagination";
-import { useUser } from "../../providers/UserProvider";
-import { useOffer } from "../../providers/OfferProvider";
-import { useApi } from "../../hooks/useApi";
-import { usePagination } from "../../hooks/usePagination";
-import { FiltersValuesType } from "../../contexts/filtersContext";
-import { Offer } from "../../types/Offer";
-import { useTheme } from "../../providers/ThemeProvider";
+} from '../../components/OfferCard/OfferCard';
+import { LoadingSpinner } from '../../components/common/LoadingSpinner/LoadingSpinner';
+import OfferFilters from '../../components/OfferFilters/OfferFilters';
+import Pagination from '../../components/common/Pagination/Pagination';
+import { useUser } from '../../providers/UserProvider';
+import { OFFERS_API_PATH, useOffer } from '../../providers/OfferProvider';
+import { useApi } from '../../hooks/useApi';
+import { usePagination } from '../../hooks/usePagination';
+import { FiltersValuesType } from '../../contexts/filtersContext';
+import { Offer } from '../../types/Offer';
+import { useTheme } from '../../providers/ThemeProvider';
 
-type OfferListView = "MAIN" | "ARCHIVE" | "MY" | "MY_ARCHIVE";
+type OfferListView = 'MAIN' | 'ARCHIVE' | 'MY' | 'MY_ARCHIVE';
 
 type OfferListProps = {
-  offers: Offer[];
   view?: OfferListView;
   classNames?: string;
-  showNavigation?: boolean;
+  showMenus?: boolean;
 };
 
 const OfferList = ({
-  offers,
-  view = "MAIN",
-  classNames = "",
-  showNavigation = false,
+  view = 'MAIN',
+  classNames = '',
+  showMenus = false,
 }: OfferListProps) => {
   const { theme } = useTheme();
   const { fetch, isFetching } = useApi();
@@ -42,6 +40,7 @@ const OfferList = ({
     fetchArchivedOffers,
     fetchMyArchivedOffers,
     countOffers,
+    offers,
   } = useOffer();
 
   const {
@@ -54,12 +53,14 @@ const OfferList = ({
     totalItems: countOffers,
   });
 
+  const [searchParams] = useSearchParams();
+
   const handleImportOffers = useCallback(async () => {
     const [offers] = await fetch<any[]>(HttpMethod.GET, {
-      path: "/offers.json",
+      path: '/offers.json',
     });
     const [, response] = await fetch<OfferCardProps[]>(HttpMethod.POST, {
-      path: "/api/offers/import",
+      path: `${OFFERS_API_PATH}/import`,
       payload: JSON.stringify(offers),
     });
 
@@ -68,9 +69,9 @@ const OfferList = ({
     }
   }, [fetchOffers]);
 
-  const fetchOfferForView: Record<
+  const fetchOffersByView: Record<
     OfferListView,
-    (filters: FiltersValuesType) => void
+    (filters?: FiltersValuesType) => void
   > = useMemo(() => {
     return {
       MAIN: fetchOffers,
@@ -83,14 +84,56 @@ const OfferList = ({
   const handleFilterList = useCallback(
     (filters: FiltersValuesType) => {
       handleSetPage(filters?.activePage);
-      fetchOfferForView[view]?.(filters);
+      fetchOffersByView[view]?.(filters);
     },
-    [view, fetchOfferForView, handleSetPage]
+    [view, fetchOffersByView, handleSetPage]
   );
+
+  const handleClearFilterList = useCallback(
+    (filters: FiltersValuesType) => {
+      fetchOffersByView[view]?.(filters);
+    },
+    [view, fetchOffersByView, handleSetPage]
+  );
+
+  const handlefetchOffersListOnInit = useCallback(() => {
+    const filtersParams = searchParams.get('filters');
+    if (!filtersParams) {
+      fetchOffersByView[view]?.();
+      return;
+    }
+
+    if (filtersParams) {
+      const { title, company, contract, location, activePage, itemsPerPage } =
+        JSON.parse(filtersParams);
+
+      const filters: FiltersValuesType = {
+        title: title === '' ? undefined : title,
+        location,
+        activePage,
+        itemsPerPage,
+      };
+
+      if (company) {
+        filters.company = { id: company };
+      }
+
+      if (contract) {
+        filters.contract = { id: contract };
+      }
+
+      fetchOffersByView[view]?.(filters);
+    }
+  }, [fetchOffersByView]);
+
+  useEffect(() => {
+    handlefetchOffersListOnInit();
+  }, []);
 
   const navigationBox = useMemo(() => {
     return (
-      showNavigation &&
+      view === 'MY' &&
+      showMenus &&
       user && (
         <div className={classes.navigationBox}>
           {user.isAdmin && (
@@ -117,6 +160,7 @@ const OfferList = ({
     <div className={`${classes.offerList}`}>
       <OfferFilters
         onSubmit={handleFilterList}
+        onClear={handleClearFilterList}
         activePage={activePage}
         itemsPerPage={itemsPerPage}
       />
@@ -124,7 +168,7 @@ const OfferList = ({
       {navigationBox}
       <div
         className={`${classes.list} ${classNames} ${
-          !offers.length ? classes.empty : ""
+          !offers.length ? classes.empty : ''
         }`}
       >
         {offers.length ? (
@@ -147,7 +191,7 @@ const OfferList = ({
                 contract={contract}
                 createdAt={createdAt ?? 0}
                 archived={archived}
-                showMenu={showNavigation}
+                showMenu={showMenus}
               />
             )
           )
@@ -155,7 +199,7 @@ const OfferList = ({
           <div className={classes.noOffersWarningBox}>
             <SvgIcon
               id="icon-error"
-              color={theme === "dark" ? "white" : "#19202d"}
+              color={theme === 'dark' ? 'white' : '#19202d'}
               width={64}
               height={64}
             />

@@ -1,10 +1,12 @@
-import { ReactNode, useCallback, useContext, useMemo, useState } from "react";
-import { OfferContext } from "../contexts/offerContext";
-import { HttpMethod } from "../enums/HttpMethods";
-import { Offer } from "../types/Offer";
-import { RequestOptions, useApi } from "../hooks/useApi";
-import { useSnackBar } from "./SnackBarProvider";
-import { FiltersValuesType } from "../contexts/filtersContext";
+import { ReactNode, useCallback, useContext, useMemo, useState } from 'react';
+import { OfferContext } from '../contexts/offerContext';
+import { HttpMethod } from '../enums/HttpMethods';
+import { Offer } from '../types/Offer';
+import { RequestOptions, useApi } from '../hooks/useApi';
+import { useSnackBar } from './SnackBarProvider';
+import { FiltersValuesType } from '../contexts/filtersContext';
+
+export const OFFERS_API_PATH = '/api/offers';
 
 type OfferProviderProps = {
   children: ReactNode;
@@ -17,13 +19,13 @@ const OfferProvider = ({ children }: OfferProviderProps) => {
   const [selectedOffer, setSelectedOffer] = useState<Offer>();
   const [offers, setOffers] = useState<Offer[]>([]);
   const [countOffers, setCountOffers] = useState<number>(0);
-  const [myOffers, setMyOffers] = useState<Offer[]>([]);
+  const [countMyOffers, setCountMyOffers] = useState<number>(0);
   const [countMyArchivedOffers, setCountMyArchivedOffers] = useState<number>(0);
 
   const fetchOffers = useCallback(
     async (filters?: FiltersValuesType) => {
       const requestOptions: RequestOptions = {
-        path: `/api/offers/all`,
+        path: `${OFFERS_API_PATH}/all`,
       };
       if (filters) {
         requestOptions.payload = JSON.stringify(filters);
@@ -45,7 +47,7 @@ const OfferProvider = ({ children }: OfferProviderProps) => {
   const fetchOffer = useCallback(
     async (id: number) => {
       const [fetchedOffer, response] = await fetch<Offer>(HttpMethod.GET, {
-        path: `/api/offers/${id}`,
+        path: `${OFFERS_API_PATH}/${id}`,
       });
 
       if (response.statusCode === 200) {
@@ -58,16 +60,16 @@ const OfferProvider = ({ children }: OfferProviderProps) => {
   const removeOffer = useCallback(
     async (id: number) => {
       const [, response] = await fetch<Offer>(HttpMethod.DELETE, {
-        path: `/api/offers/${id}`,
+        path: `${OFFERS_API_PATH}/${id}`,
       });
 
       if (response.statusCode === 200) {
         fetchOffers();
-        handleShowSnackBar("Offer removed successfully", "success");
+        handleShowSnackBar('Offer removed successfully', 'success');
       } else {
         handleShowSnackBar(
-          "There was an error when deleting the offer",
-          "error"
+          'There was an error when deleting the offer',
+          'error'
         );
       }
     },
@@ -77,7 +79,7 @@ const OfferProvider = ({ children }: OfferProviderProps) => {
   const fetchArchivedOffers = useCallback(
     async (filters?: FiltersValuesType) => {
       const requestOptions: RequestOptions = {
-        path: `/api/offers/archive`,
+        path: `${OFFERS_API_PATH}/archive`,
       };
       if (filters) {
         requestOptions.payload = JSON.stringify(filters);
@@ -99,7 +101,7 @@ const OfferProvider = ({ children }: OfferProviderProps) => {
   const fetchMyOffers = useCallback(
     async (filters?: FiltersValuesType) => {
       const requestOptions: RequestOptions = {
-        path: `/api/offers/my`,
+        path: `${OFFERS_API_PATH}/my`,
       };
       if (filters) {
         requestOptions.payload = JSON.stringify(filters);
@@ -111,8 +113,9 @@ const OfferProvider = ({ children }: OfferProviderProps) => {
 
       if (response.statusCode === 201) {
         const [_offers, count] = fetchedOffers;
+        setCountMyOffers(count);
         setCountOffers(count);
-        setMyOffers(_offers);
+        setOffers(_offers);
       }
     },
     [offers]
@@ -121,7 +124,7 @@ const OfferProvider = ({ children }: OfferProviderProps) => {
   const fetchMyArchivedOffers = useCallback(
     async (filters?: FiltersValuesType) => {
       const requestOptions: RequestOptions = {
-        path: `/api/offers/myArchive`,
+        path: `${OFFERS_API_PATH}/myArchive`,
       };
       if (filters) {
         requestOptions.payload = JSON.stringify(filters);
@@ -146,7 +149,7 @@ const OfferProvider = ({ children }: OfferProviderProps) => {
       selectedOffer,
       offers,
       countOffers,
-      myOffers,
+      countMyOffers,
       countMyArchivedOffers,
       isFetching,
       fetchOffer,
@@ -160,7 +163,7 @@ const OfferProvider = ({ children }: OfferProviderProps) => {
       selectedOffer,
       offers,
       countOffers,
-      myOffers,
+      countMyOffers,
       countMyArchivedOffers,
       isFetching,
       fetchOffer,

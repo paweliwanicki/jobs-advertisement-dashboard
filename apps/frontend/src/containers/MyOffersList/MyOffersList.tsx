@@ -1,15 +1,7 @@
-import OfferList from "../OfferList/OfferList";
-import { useOffer } from "../../providers/OfferProvider";
-import { useEffect } from "react";
+import OfferList from '../OfferList/OfferList';
 
 const MyOffersList = () => {
-  const { myOffers, fetchMyOffers } = useOffer();
-
-  useEffect(() => {
-    fetchMyOffers();
-  }, []);
-
-  return <OfferList offers={myOffers} view="MY" />;
+  return <OfferList view="MY" showMenus />;
 };
 
 export default MyOffersList;

@@ -1,15 +1,7 @@
-import OfferList from "../OfferList/OfferList";
-import { useOffer } from "../../providers/OfferProvider";
-import { useEffect } from "react";
+import OfferList from '../OfferList/OfferList';
 
 const ArchivedOffersList = () => {
-  const { offers, fetchArchivedOffers } = useOffer();
-
-  useEffect(() => {
-    fetchArchivedOffers();
-  }, []);
-
-  return <OfferList offers={offers} view="ARCHIVE" />;
+  return <OfferList view="ARCHIVE" />;
 };
 
 export default ArchivedOffersList;

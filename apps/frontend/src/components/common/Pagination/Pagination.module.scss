@@ -1,5 +1,5 @@
-@use "../../../styles/variables.scss";
-@use "../../../styles/themeVariables.scss";
+@use '../../../styles/variables.scss';
+@use '../../../styles/themeVariables.scss';
 
 .pagination {
   margin-top: 30px;
@@ -17,7 +17,7 @@
     font-family: variables.$font-family-light;
 
     @include themeVariables.themify(themeVariables.$themes) {
-      color: themeVariables.themed("text-main-color");
+      color: themeVariables.themed('text-main-color');
     }
   }
 
@@ -27,11 +27,16 @@
     align-items: center;
     justify-content: center;
     @include themeVariables.themify(themeVariables.$themes) {
-      color: themeVariables.themed("text-main-color");
+      color: themeVariables.themed('text-main-color');
     }
 
     svg {
       cursor: pointer;
+
+      &.disabled {
+        cursor: not-allowed;
+        opacity: 0.3;
+      }
     }
 
     button {
@@ -49,8 +54,8 @@
 
       &.active {
         @include themeVariables.themify(themeVariables.$themes) {
-          background-color: themeVariables.themed("pagination-bg-color");
-          color: themeVariables.themed("pagination-text-color");
+          background-color: themeVariables.themed('pagination-bg-color');
+          color: themeVariables.themed('pagination-text-color');
         }
       }
     }

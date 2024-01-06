@@ -48,10 +48,13 @@ const Pagination = ({
     [onSetPage]
   );
 
-  const handleChangeItemsPerPage = useCallback((option: any) => {
-    setSelectedItemsPerPage(option);
-    onSetItemsPerPage(option?.value);
-  }, []);
+  const handleChangeItemsPerPage = useCallback(
+    (option: any) => {
+      setSelectedItemsPerPage(option);
+      onSetItemsPerPage(option?.value);
+    },
+    [onSetItemsPerPage]
+  );
 
   const renderPagesList = useCallback(() => {
     const separator = '...';
@@ -127,6 +130,7 @@ const Pagination = ({
           height={22}
           viewBox="0 0 24 24"
           onClick={() => handleChangePage(1)}
+          classNames={totalPages === 1 ? classes.disabled : ''}
         />
         <SvgIcon
           id={theme === 'dark' ? 'left-arrow-dark' : 'left-arrow-light'}
@@ -134,6 +138,7 @@ const Pagination = ({
           height={16}
           viewBox="0 0 20 20"
           onClick={() => handleChangePage(activePage - 1)}
+          classNames={totalPages === 1 ? classes.disabled : ''}
         />
         {renderPagesList()}
         <SvgIcon
@@ -142,6 +147,7 @@ const Pagination = ({
           height={16}
           viewBox="0 0 20 20"
           onClick={() => handleChangePage(activePage + 1)}
+          classNames={totalPages === 1 ? classes.disabled : ''}
         />
         <SvgIcon
           id={
@@ -153,6 +159,7 @@ const Pagination = ({
           height={22}
           viewBox="0 0 24 24"
           onClick={() => handleChangePage(totalPages)}
+          classNames={totalPages === 1 ? classes.disabled : ''}
         />
       </div>
     </div>

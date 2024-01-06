@@ -1,4 +1,11 @@
-import { ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import {
+  ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { HttpMethod } from '../enums/HttpMethods';
 import { useApi } from '../hooks/useApi';
 import { Company } from '../types/Company';
@@ -6,6 +13,9 @@ import { Option } from 'react-google-places-autocomplete/build/types';
 import { Contract } from '../types/Contract';
 import { DictionaryContext } from '../contexts/dictionaryContext';
 import { useSnackBar } from './SnackBarProvider';
+import { OFFERS_API_PATH } from './OfferProvider';
+
+export const DICT_API_PATH = '/api/dict';
 
 type DictionaryProviderProps = {
   children: ReactNode;
@@ -30,7 +40,7 @@ export const uploadCompanyLogo = async (file: Blob, companyId: number) => {
   const formData = new FormData();
   formData.append('file', file);
   formData.append('companyId', companyId.toString());
-  const response = await fetch('/api/offers/uploadCompanyLogo', {
+  const response = await fetch(`${OFFERS_API_PATH}'/uploadCompanyLogo`, {
     method: HttpMethod.POST,
     body: formData,
   });
@@ -54,7 +64,7 @@ const DictionaryProvider = ({ children }: DictionaryProviderProps) => {
 
   const getCompanies = useCallback(async () => {
     const [allCompanies, response] = await fetch<Company[]>(HttpMethod.GET, {
-      path: '/api/dict/company/',
+      path: `${DICT_API_PATH}/company/`,
     });
 
     if (response.statusCode === 200) {
@@ -65,7 +75,7 @@ const DictionaryProvider = ({ children }: DictionaryProviderProps) => {
 
   const addUpdateCompany = useCallback(async (company: Company) => {
     const [newCompany, response] = await fetch<Company>(HttpMethod.POST, {
-      path: '/api/dict/company/',
+      path: `${DICT_API_PATH}/company/`,
       payload: JSON.stringify(company),
     });
     if (response.statusCode === 201) {
@@ -79,7 +89,7 @@ const DictionaryProvider = ({ children }: DictionaryProviderProps) => {
 
   const deleteCompany = useCallback(async (id: number) => {
     const [, response] = await fetch<Company>(HttpMethod.DELETE, {
-      path: `/api/dict/company/${id}`,
+      path: `${DICT_API_PATH}/company/${id}`,
     });
     if (response.statusCode === 200) {
       await getCompanies();
@@ -93,7 +103,7 @@ const DictionaryProvider = ({ children }: DictionaryProviderProps) => {
 
   const getContracts = useCallback(async () => {
     const [allContracts, response] = await fetch<Contract[]>(HttpMethod.GET, {
-      path: '/api/dict/contract/',
+      path: `${DICT_API_PATH}/contract/`,
     });
     if (response.statusCode === 200) {
       setContracts(allContracts);
@@ -103,7 +113,7 @@ const DictionaryProvider = ({ children }: DictionaryProviderProps) => {
 
   const addUpdateContract = useCallback(async (contract: Contract) => {
     const [newContract, response] = await fetch<Contract>(HttpMethod.POST, {
-      path: '/api/dict/contract/',
+      path: `${DICT_API_PATH}/contract/`,
       payload: JSON.stringify(contract),
     });
     if (response.statusCode === 201) {
@@ -117,7 +127,7 @@ const DictionaryProvider = ({ children }: DictionaryProviderProps) => {
 
   const deleteContract = useCallback(async (id: number) => {
     const [, response] = await fetch<Contract>(HttpMethod.DELETE, {
-      path: `/api/dict/contract/${id}`,
+      path: `${DICT_API_PATH}/contract/${id}`,
     });
     if (response.statusCode === 200) {
       await getContracts();
