@@ -1,4 +1,5 @@
 @use '../../styles/variables.scss';
+@use '../../styles/themeVariables.scss';
 
 .userPanel {
   color: variables.$midnight;
@@ -16,7 +17,9 @@
 
   .userProfileDetails {
     text-align: left;
-
+    @include themeVariables.themify(themeVariables.$themes) {
+      color: themeVariables.themed('text-main-color');
+    }
     p {
       span {
         font-size: 15px;

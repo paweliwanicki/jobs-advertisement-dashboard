@@ -1,24 +1,24 @@
-import { useMemo } from "react";
-import Button from "../common/Button/Button";
-import classes from "./UserPanel.module.scss";
-import { useSignForm } from "../../hooks/useSignForm";
-import { Link } from "react-router-dom";
-import SvgIcon from "../common/SvgIcon/SvgIcon";
-import { useOffer } from "../../providers/OfferProvider";
-import { useUser } from "../../providers/UserProvider";
+import { useMemo } from 'react';
+import Button from '../common/Button/Button';
+import classes from './UserPanel.module.scss';
+import { useSignForm } from '../../hooks/useSignForm';
+import { Link } from 'react-router-dom';
+import SvgIcon from '../common/SvgIcon/SvgIcon';
+import { useOffer } from '../../providers/OfferProvider';
+import { useUser } from '../../providers/UserProvider';
 
 export const UserPanel = () => {
   const { user } = useUser();
-  const { countOffers, countMyArchivedOffers } = useOffer();
+  const { countMyArchivedOffers, countMyOffers } = useOffer();
   const { handleSignOut } = useSignForm();
 
   const createdAtDate = useMemo(
     () =>
       user
-        ? new Date(user.createdAt * 1000).toLocaleString("pl-PL", {
-            timeZone: "UTC",
+        ? new Date(user.createdAt * 1000).toLocaleString('pl-PL', {
+            timeZone: 'UTC',
           })
-        : "",
+        : '',
     [user]
   );
 
@@ -45,7 +45,7 @@ export const UserPanel = () => {
           <span>Registered at:</span> {`${createdAtDate}`}
         </p>
         <p>
-          <span>Your active offers:</span> {countOffers}
+          <span>Your active offers:</span> {countMyOffers}
         </p>
         <p>
           <span>Archived offers:</span> {countMyArchivedOffers}

@@ -25,11 +25,11 @@
     @include themeVariables.themify(themeVariables.$themes) {
       background-color: themeVariables.themed('background');
       color: themeVariables.themed('text-main-color');
+      -webkit-box-shadow: themeVariables.themed('modal-box-shadow');
+      -moz-box-shadow: themeVariables.themed('modal-box-shadow');
+      box-shadow: themeVariables.themed('modal-box-shadow');
     }
 
-    -webkit-box-shadow: 8px 8px 24px 0px variables.$dark-grey;
-    -moz-box-shadow: 8px 8px 24px 0px variables.$dark-grey;
-    box-shadow: 8px 8px 24px 0px variables.$dark-grey;
     border-color: variables.$light-grey;
 
     position: relative;

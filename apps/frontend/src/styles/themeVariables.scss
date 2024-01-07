@@ -30,6 +30,7 @@ $themes: (
     filter-collapse-btn-bg-color: variables.$light-grey,
     checkbox-bg-color-1: variables.$pale-grey,
     checkbox-bg-color-2: variables.$pale-blue,
+    modal-box-shadow: 6px 6px 16px 0px variables.$dark-blue,
   ),
 
   dark: (
@@ -63,6 +64,7 @@ $themes: (
     filter-collapse-btn-bg-color: variables.$very-dark-blue,
     checkbox-bg-color-1: variables.$dark-blue,
     checkbox-bg-color-2: variables.$very-dark-blue,
+    modal-box-shadow: 1px 1px 15px 0px variables.$dark-blue,
   ),
 );
 

@@ -13,7 +13,8 @@ $border-bottom-color: #d9dce26c;
   background-color: variables.$very-light-grey;
   margin-top: -65px;
   margin-bottom: 35px;
-  border-radius: 6px;
+  border-top-right-radius: 6px;
+  border-top-left-radius: 6px;
   padding: 5px;
 
   @include themeVariables.themify(themeVariables.$themes) {
@@ -120,13 +121,14 @@ $border-bottom-color: #d9dce26c;
         grid-template-columns: 60px 1fr;
         column-gap: 10px;
 
+        @include themeVariables.themify(themeVariables.$themes) {
+          color: themeVariables.themed('text-main-color');
+        }
+
         p {
           width: max-content;
         }
 
-        @include themeVariables.themify(themeVariables.$themes) {
-          color: themeVariables.themed('text-main-color');
-        }
         span {
           font-family: variables.$font-family-bold;
         }
